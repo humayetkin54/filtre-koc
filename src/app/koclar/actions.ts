@@ -20,6 +20,8 @@ export async function bookAppointment(formData: FormData) {
     date,
     time,
     note: note || null,
+    student_name: user.user_metadata?.full_name ?? null,
+    student_email: user.email ?? null,
   });
 
   if (error) {
