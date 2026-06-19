@@ -43,9 +43,12 @@ export default function Navbar({ user }: { user: User | null }) {
               >
                 Randevularım
               </Link>
-              <span className="text-sm text-zinc-500">
+              <Link
+                href="/profil"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
+              >
                 {user.user_metadata?.full_name ?? user.email}
-              </span>
+              </Link>
               <form action={signOut}>
                 <button
                   type="submit"

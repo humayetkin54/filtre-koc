@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname, searchParams, origin } = request.nextUrl;
   const code = searchParams.get("code");
   const errorCode = searchParams.get("error_code");
