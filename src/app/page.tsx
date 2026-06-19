@@ -1,7 +1,6 @@
 import Link from 'next/link'
 
 const stats = [
-  { num: '4K+', lbl: 'Öğrenci kazandı' },
   { num: '320+', lbl: 'Uzman koç' },
   { num: '14', lbl: 'Gün iade garantisi' },
   { num: 'Max 8', lbl: 'Öğrenci / koç' },
@@ -115,9 +114,27 @@ export default function HomePage() {
       {/* KALİTE GÜVENCE */}
       <section className="py-24 px-[5%]" style={{ background: 'linear-gradient(135deg, #0e0e14 0%, #1a1040 100%)' }}>
         <div className="max-w-6xl mx-auto">
-          <p className="text-xs font-semibold tracking-widest uppercase text-purple-400 mb-3">Neden FiltrEkoç?</p>
-          <h2 className="font-bold text-4xl tracking-tight text-white mb-4">Rakiplerden farkımız:<br />kalite güvencesi</h2>
-          <p className="text-gray-400 max-w-lg mb-12">Diğer platformlardaki şikayetlerin en büyük nedeni koç ilgisizliği. Biz bunu sistem düzeyinde çözüyoruz.</p>
+          <p className="text-xs font-semibold tracking-widest uppercase text-purple-400 mb-3">Seçkin Bir Gelecek Tasarımı</p>
+          <h2 className="font-bold text-4xl tracking-tight text-white mb-4">Sıradan bir çalışma değil,<br />seçkin bir gelecek tasarımı</h2>
+          <p className="text-gray-400 max-w-2xl mb-12">FiltrEkoç&apos;ta her öğrenci, kendine özgü bir yol haritasıyla ilerler. Akademik başarıyı psikolojik denge ve veriye dayalı takiple harmanlıyoruz — çünkü gerçek dönüşüm, sistemli bir yaklaşımla mümkündür.</p>
+
+          {/* Değer kartları */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+            {[
+              { icon: '👔', title: 'Terzi Usulü Mentorluk', desc: 'Her öğrenci tektir, programı da öyle olmalıdır.' },
+              { icon: '🧠', title: 'Akademik & Psikolojik Denge', desc: 'Sadece netleri değil, kaygıyı da yönetiyoruz.' },
+              { icon: '👑', title: 'Ayrıcalıklı Kulüp', desc: 'Burası sadece bir kurs değil, başarıya odaklanmış bir topluluk.' },
+              { icon: '📊', title: 'Veriye Dayalı Takip', desc: 'Anlık analizler, gerçek zamanlı gelişim grafikleri.' },
+            ].map(v => (
+              <div key={v.title} className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <div className="text-3xl mb-4">{v.icon}</div>
+                <h4 className="font-semibold text-white mb-2">{v.title}</h4>
+                <p className="text-sm text-gray-400 leading-relaxed">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Kalite güvencesi kartları */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {garantiler.map(g => (
               <div key={g.title} className="bg-white/5 border border-white/10 rounded-2xl p-6">
