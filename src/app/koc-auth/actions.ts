@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export async function coachSignIn(formData: FormData) {
@@ -62,7 +62,8 @@ export async function coachSignUp(formData: FormData) {
       .slice(0, 2)
       .toUpperCase();
 
-    await supabase.from("coaches").insert({
+    const admin = createAdminClient();
+    await admin.from("coaches").insert({
       user_id: data.user.id,
       name,
       university,
