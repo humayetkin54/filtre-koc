@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/paketler", label: "Paketler" },
 ];
 
-export default function Navbar({ user }: { user: User | null }) {
+export default function Navbar({ user, isCoach = false }: { user: User | null; isCoach?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -38,13 +38,13 @@ export default function Navbar({ user }: { user: User | null }) {
           {user ? (
             <>
               <Link
-                href="/randevularim"
+                href={isCoach ? "/koc-paneli" : "/randevularim"}
                 className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
               >
-                Randevularım
+                {isCoach ? "Koç Paneli" : "Randevularım"}
               </Link>
               <Link
-                href="/profil"
+                href={isCoach ? "/koc-paneli" : "/profil"}
                 className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
               >
                 {user.user_metadata?.full_name ?? user.email}
@@ -115,6 +115,13 @@ export default function Navbar({ user }: { user: User | null }) {
                 <span className="px-3 py-2 text-sm text-zinc-500">
                   {user.user_metadata?.full_name ?? user.email}
                 </span>
+                <Link
+                  href={isCoach ? "/koc-paneli" : "/randevularim"}
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+                >
+                  {isCoach ? "Koç Paneli" : "Randevularım"}
+                </Link>
                 <form action={signOut}>
                   <button
                     type="submit"
