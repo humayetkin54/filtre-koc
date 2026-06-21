@@ -1,9 +1,8 @@
 import Link from 'next/link'
 
 const stats = [
-  { num: '320+', lbl: 'Uzman koç' },
-  { num: '14', lbl: 'Gün iade garantisi' },
-  { num: 'Max 8', lbl: 'Öğrenci / koç' },
+  { num: '%100', lbl: 'PDR / Psikoloji Koordinasyonu' },
+  { num: '14', lbl: 'Gün Koşulsuz İade Garantisi' },
 ]
 
 const steps = [
@@ -38,22 +37,22 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-600 text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-6">
             <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            Türkiye'nin kalite güvenceli koçluk platformu
+            🧠 Türkiye'nin PDR altyapılı ilk premium koçluk platformu
           </div>
           <h1 className="font-bold text-5xl md:text-7xl tracking-tight text-gray-900 max-w-3xl mb-6 leading-tight">
-            Hedefine giden yolu{' '}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">bilen koçla</span>{' '}
-            çalış
+            Sınav maratonunu{' '}
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">uzmanıyla</span>{' '}
+            yönet
           </h1>
           <p className="text-lg text-gray-500 max-w-xl mb-10 leading-relaxed">
-            Hedeflediğin üniversiteyi kazanmış, aynı yolu yürümüş koçlarla eşleşiyorsun. Max 8 öğrenci per koç. 14 gün iade garantisi.
+            Sıradan tavsiyeleri ve ezbere programları unutun. Öğrencinin mizaç özelliklerini, bilişsel süreçlerini ve sınav kaygısını yöneten, diploma güvenceli PDR koordinatörleri liderliğinde çalışın. Sadece çalışmayı değil, kazanma psikolojisini öğrenin.
           </p>
           <div className="flex gap-4 flex-wrap">
             <Link href="/koclar" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl text-base transition-all hover:-translate-y-0.5">
-              Ücretsiz ön görüşme al →
+              Ücretsiz Uzman Görüşmesi Al →
             </Link>
             <a href="#nasil-calisir" className="border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white font-semibold px-8 py-4 rounded-xl text-base transition-all">
-              Nasıl çalışır?
+              Bilimsel Metodumuz
             </a>
           </div>
           <div className="flex gap-12 mt-16 flex-wrap">
