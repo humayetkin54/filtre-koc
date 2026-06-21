@@ -62,10 +62,16 @@ export default function Navbar({ user, isCoach = false }: { user: User | null; i
           ) : (
             <>
               <Link
+                href="/koc-giris"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
+              >
+                Eğitmen Girişi
+              </Link>
+              <Link
                 href="/giris"
                 className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
               >
-                Giriş yap
+                Öğrenci Girişi
               </Link>
               <Link
                 href="/kayit"
@@ -135,11 +141,18 @@ export default function Navbar({ user, isCoach = false }: { user: User | null; i
             ) : (
               <>
                 <Link
+                  href="/koc-giris"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+                >
+                  Eğitmen Girişi
+                </Link>
+                <Link
                   href="/giris"
                   onClick={() => setMenuOpen(false)}
                   className="rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
                 >
-                  Giriş yap
+                  Öğrenci Girişi
                 </Link>
                 <Link
                   href="/kayit"
