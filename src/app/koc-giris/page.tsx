@@ -7,24 +7,27 @@ export default function KocGirisPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-gray-50 px-4">
+    <div
+      className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4"
+      style={{ background: 'linear-gradient(135deg, #1a1040 0%, #0e0e14 100%)' }}
+    >
       <div className="w-full max-w-md">
-        <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+        <div className="rounded-2xl p-8" style={{ background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.12)' }}>
           <div className="mb-8 text-center">
-            <Link href="/" className="text-2xl font-bold text-[#3a4cff]">
+            <Link href="/" className="text-2xl font-bold text-white">
               FiltrEkoç
             </Link>
-            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700">
+            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-purple-500/20 px-3 py-1 text-xs font-semibold text-purple-300">
               Koç Paneli
             </div>
-            <h1 className="mt-3 text-xl font-semibold text-gray-900">
+            <h1 className="mt-3 text-xl font-semibold text-white">
               Koç girişi
             </h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-400">
               Koç hesabın yok mu?{" "}
               <Link
                 href="/koc-kayit"
-                className="font-medium text-[#3a4cff] hover:underline"
+                className="font-medium text-purple-300 hover:underline"
               >
                 Başvur
               </Link>
@@ -35,7 +38,7 @@ export default function KocGirisPage({
 
           <form action={coachSignIn} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
+              <label className="mb-1.5 block text-sm font-medium text-gray-300">
                 E-posta
               </label>
               <input
@@ -44,11 +47,11 @@ export default function KocGirisPage({
                 required
                 autoComplete="email"
                 placeholder="ada@ornek.com"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
+              <label className="mb-1.5 block text-sm font-medium text-gray-300">
                 Şifre
               </label>
               <input
@@ -57,20 +60,20 @@ export default function KocGirisPage({
                 required
                 autoComplete="current-password"
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
               />
             </div>
             <button
               type="submit"
-              className="w-full rounded-xl bg-[#3a4cff] px-6 py-3 font-semibold text-white transition hover:bg-[#2f3fd4]"
+              className="w-full rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-700"
             >
               Giriş yap
             </button>
           </form>
 
-          <p className="mt-6 text-center text-xs text-gray-400">
+          <p className="mt-6 text-center text-xs text-gray-500">
             Öğrenci hesabıyla mı giriş yapacaksın?{" "}
-            <Link href="/giris" className="text-gray-500 hover:underline">
+            <Link href="/giris" className="text-gray-400 hover:underline">
               Öğrenci girişi
             </Link>
           </p>
@@ -95,7 +98,7 @@ async function ErrorMessage({
   const msg = messages[params.error] ?? params.error;
 
   return (
-    <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+    <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
       {msg}
     </div>
   );
