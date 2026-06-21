@@ -23,12 +23,12 @@ export async function coachSignIn(formData: FormData) {
 
   if (!coach) {
     await supabase.auth.signOut();
-    redirect("/koc-giris?error=Bu+hesap+bir+koç+hesabı+değil.");
+    redirect(`/koc-giris?error=${encodeURIComponent("Bu hesap bir koç hesabı değil.")}`);
   }
 
   if (coach.status === "pending") {
     await supabase.auth.signOut();
-    redirect("/koc-giris?error=Hesabınız+henüz+onaylanmadı.+En+kısa+sürede+dönüş+yapacağız.");
+    redirect(`/koc-giris?error=${encodeURIComponent("Hesabınız henüz onaylanmadı. En kısa sürede dönüş yapacağız.")}`);
   }
 
   redirect("/koc-paneli");
