@@ -14,6 +14,7 @@ const navLinks = [
 
 export default function Navbar({ user, isCoach = false }: { user: User | null; isCoach?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const links = isCoach ? navLinks.filter((l) => l.href === "/") : navLinks;
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/80 backdrop-blur-md">
@@ -23,7 +24,7 @@ export default function Navbar({ user, isCoach = false }: { user: User | null; i
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
+          {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -98,7 +99,7 @@ export default function Navbar({ user, isCoach = false }: { user: User | null; i
       {menuOpen && (
         <div className="border-t border-zinc-200/80 bg-white/95 px-4 py-4 backdrop-blur-md md:hidden">
           <nav className="flex flex-col gap-1">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
