@@ -115,7 +115,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <p className="text-xs font-semibold tracking-widest uppercase text-purple-400 mb-3">Seçkin Bir Gelecek Tasarımı</p>
           <h2 className="font-bold text-4xl tracking-tight text-white mb-4">Sıradan bir çalışma değil,<br />seçkin bir gelecek tasarımı</h2>
-          <p className="text-gray-400 max-w-2xl mb-12">FiltrEkoç&apos;ta her öğrenci, kendine özgü bir yol haritasıyla ilerler. Akademik başarıyı psikolojik denge ve veriye dayalı takiple harmanlıyoruz — çünkü gerçek dönüşüm, sistemli bir yaklaşımla mümkündür.</p>
+          <p className="text-gray-400 max-w-2xl mb-12">Rekormatik&apos;te her öğrenci, kendine özgü bir yol haritasıyla ilerler. Akademik başarıyı psikolojik denge ve veriye dayalı takiple harmanlıyoruz — çünkü gerçek dönüşüm, sistemli bir yaklaşımla mümkündür.</p>
 
           {/* Değer kartları */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">

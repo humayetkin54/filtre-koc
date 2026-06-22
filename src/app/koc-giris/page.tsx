@@ -15,7 +15,7 @@ export default function KocGirisPage({
         <div className="rounded-2xl p-8" style={{ background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.12)' }}>
           <div className="mb-8 text-center">
             <Link href="/" className="text-2xl font-bold text-white">
-              FiltrEkoç
+              Rekormatik
             </Link>
             <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-purple-500/20 px-3 py-1 text-xs font-semibold text-purple-300">
               Koç Paneli
