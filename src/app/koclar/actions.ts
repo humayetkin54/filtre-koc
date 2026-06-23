@@ -16,7 +16,7 @@ export async function bookAppointment(formData: FormData) {
     .eq("is_intro", true);
 
   if (count && count > 0) {
-    return { error: "Ömür boyu sadece 1 ücretsiz ön görüşme hakkınız var ve bunu daha önce kullandınız." };
+    return { error: "Ücretsiz ön görüşme hakkınızı doldurdunuz." };
   }
 
   const coachId = formData.get("coach_id") as string;
