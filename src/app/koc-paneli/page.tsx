@@ -59,6 +59,12 @@ export default async function KocPaneliPage() {
 
   const appts = (appointments ?? []) as Appointment[];
 
+  await supabase
+    .from("appointments")
+    .update({ seen_by_coach: true })
+    .eq("coach_id", coach.id)
+    .eq("seen_by_coach", false);
+
   const upcoming = appts.filter(
     (a) => a.status !== "cancelled" && new Date(a.date) >= new Date(new Date().toDateString())
   );

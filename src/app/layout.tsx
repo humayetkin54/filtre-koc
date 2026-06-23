@@ -29,6 +29,7 @@ export default async function RootLayout({
   const { data: { user } } = await supabase.auth.getUser();
 
   let isCoach = false;
+  let unseenCount = 0;
   if (user) {
     const { data: coach } = await supabase
       .from("coaches")
@@ -37,6 +38,15 @@ export default async function RootLayout({
       .eq("status", "approved")
       .maybeSingle();
     isCoach = !!coach;
+
+    if (coach) {
+      const { count } = await supabase
+        .from("appointments")
+        .select("id", { count: "exact", head: true })
+        .eq("coach_id", coach.id)
+        .eq("seen_by_coach", false);
+      unseenCount = count ?? 0;
+    }
   }
 
   return (
@@ -45,7 +55,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <Navbar user={user} isCoach={isCoach} />
+        <Navbar user={user} isCoach={isCoach} unseenCount={unseenCount} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

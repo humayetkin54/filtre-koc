@@ -12,7 +12,15 @@ const navLinks = [
   { href: "/paketler", label: "Paketler" },
 ];
 
-export default function Navbar({ user, isCoach = false }: { user: User | null; isCoach?: boolean }) {
+export default function Navbar({
+  user,
+  isCoach = false,
+  unseenCount = 0,
+}: {
+  user: User | null;
+  isCoach?: boolean;
+  unseenCount?: number;
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const links = isCoach ? navLinks.filter((l) => l.href === "/") : navLinks;
 
@@ -40,9 +48,14 @@ export default function Navbar({ user, isCoach = false }: { user: User | null; i
             <>
               <Link
                 href={isCoach ? "/koc-paneli" : "/randevularim"}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
+                className="relative rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
               >
                 {isCoach ? "Koç Paneli" : "Randevularım"}
+                {isCoach && unseenCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                    {unseenCount}
+                  </span>
+                )}
               </Link>
               <Link
                 href={isCoach ? "/koc-paneli" : "/profil"}
@@ -125,9 +138,14 @@ export default function Navbar({ user, isCoach = false }: { user: User | null; i
                 <Link
                   href={isCoach ? "/koc-paneli" : "/randevularim"}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+                  className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
                 >
                   {isCoach ? "Koç Paneli" : "Randevularım"}
+                  {isCoach && unseenCount > 0 && (
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                      {unseenCount}
+                    </span>
+                  )}
                 </Link>
                 <form action={signOut}>
                   <button

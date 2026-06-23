@@ -1,7 +1,8 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { Resend } from "resend";
 
 export async function bookAppointment(formData: FormData) {
   const supabase = await createClient();
@@ -23,6 +24,7 @@ export async function bookAppointment(formData: FormData) {
   const date = formData.get("date") as string;
   const time = formData.get("time") as string;
   const note = formData.get("note") as string;
+  const studentName = user.user_metadata?.full_name ?? null;
 
   const { error } = await supabase.from("appointments").insert({
     user_id: user.id,
@@ -30,14 +32,44 @@ export async function bookAppointment(formData: FormData) {
     date,
     time,
     note: note || null,
-    student_name: user.user_metadata?.full_name ?? null,
+    student_name: studentName,
     student_email: user.email ?? null,
     is_intro: true,
+    seen_by_coach: false,
   });
 
   if (error) {
     return { error: error.message };
   }
 
+  await notifyCoach(coachId, studentName ?? user.email ?? "Bir öğrenci", date, time);
+
   return { success: true };
+}
+
+async function notifyCoach(coachId: string, studentName: string, date: string, time: string) {
+  const admin = createAdminClient();
+  const { data: coach } = await admin
+    .from("coaches")
+    .select("user_id, name")
+    .eq("id", coachId)
+    .single();
+
+  if (!coach?.user_id) return;
+
+  const { data: coachUser } = await admin.auth.admin.getUserById(coach.user_id);
+  const coachEmail = coachUser?.user?.email;
+  if (!coachEmail || !process.env.RESEND_API_KEY) return;
+
+  const dateStr = new Date(date).toLocaleDateString("tr-TR", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  });
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  await resend.emails.send({
+    from: "Rekormatik <bildirim@rekormatik.com>",
+    to: coachEmail,
+    subject: "Yeni randevu talebiniz var",
+    html: `<p>Merhaba ${coach.name},</p><p><strong>${studentName}</strong> sizden <strong>${dateStr} ${time}</strong> için randevu talep etti.</p><p>Talebi onaylamak veya iptal etmek için <a href="https://filtre-koc.vercel.app/koc-paneli">koç panelinize</a> gidin.</p>`,
+  });
 }
