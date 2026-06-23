@@ -144,9 +144,17 @@ export function BookingModal({
             </div>
 
             {error && (
-              <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-600">
-                {error}
-              </p>
+              <div className="rounded-xl bg-red-50 px-4 py-2.5">
+                <p className="text-sm text-red-600">{error}</p>
+                {error.includes("ön görüşme hakkınızı doldurdunuz") && (
+                  <a
+                    href="/paketler"
+                    className="mt-2 inline-block rounded-lg bg-[#3a4cff] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#2f3fd4]"
+                  >
+                    Paket satın al →
+                  </a>
+                )}
+              </div>
             )}
 
             <button
