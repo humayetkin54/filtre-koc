@@ -123,13 +123,15 @@ export function BookingSection({ coach }: { coach: Coach }) {
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={isPending}
-            className="w-full rounded-xl bg-[#3a4cff] py-3 text-sm font-semibold text-white transition hover:bg-[#2f3fd4] disabled:opacity-50"
-          >
-            {isPending ? "Gönderiliyor..." : "Randevu talep et"}
-          </button>
+          {!error.includes("ön görüşme hakkınızı doldurdunuz") && (
+            <button
+              type="submit"
+              disabled={isPending}
+              className="w-full rounded-xl bg-[#3a4cff] py-3 text-sm font-semibold text-white transition hover:bg-[#2f3fd4] disabled:opacity-50"
+            >
+              {isPending ? "Gönderiliyor..." : "Randevu talep et"}
+            </button>
+          )}
 
           <p className="text-center text-xs text-gray-400">
             Ücretsiz ön görüşme — taahhüt yok

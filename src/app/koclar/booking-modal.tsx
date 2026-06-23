@@ -157,13 +157,15 @@ export function BookingModal({
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={isPending}
-              className="w-full rounded-xl bg-[#3a4cff] py-3 text-sm font-semibold text-white transition hover:bg-[#2f3fd4] disabled:bg-[#3a4cff]/50"
-            >
-              {isPending ? "Gönderiliyor..." : "Randevu talep et"}
-            </button>
+            {!error.includes("ön görüşme hakkınızı doldurdunuz") && (
+              <button
+                type="submit"
+                disabled={isPending}
+                className="w-full rounded-xl bg-[#3a4cff] py-3 text-sm font-semibold text-white transition hover:bg-[#2f3fd4] disabled:bg-[#3a4cff]/50"
+              >
+                {isPending ? "Gönderiliyor..." : "Randevu talep et"}
+              </button>
+            )}
           </form>
         )}
       </div>
