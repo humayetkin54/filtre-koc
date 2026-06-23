@@ -15,7 +15,7 @@ export async function bookAppointment(formData: FormData) {
     .eq("user_id", user.id)
     .eq("is_intro", true);
 
-  if (count && count > 0) {
+  if (count && count >= 3) {
     return { error: "Ücretsiz ön görüşme hakkınızı doldurdunuz." };
   }
 
