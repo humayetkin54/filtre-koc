@@ -21,7 +21,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <p className="text-xl font-bold text-[#3a4cff]">Rekormatik</p>
+            <p className="text-xl font-bold text-[#3a4cff]">Rekor Zeka</p>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/60">
               Hedefinize uygun koçu bulun, kişiselleştirilmiş eğitimle
               başarınızı artırın.
@@ -82,7 +82,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-6 text-center text-sm text-white/40">
-          © 2026 Rekormatik
+          © 2026 Rekor Zeka
         </div>
       </div>
     </footer>

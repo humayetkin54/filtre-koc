@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rekormatik",
+  title: "Rekor Zeka",
   description: "Hedefinize uygun koçu bulun ve koçluğa başlayın.",
 };
 

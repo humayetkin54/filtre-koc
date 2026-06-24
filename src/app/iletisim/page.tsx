@@ -1,7 +1,7 @@
 const contactItems = [
   {
     label: "E-posta",
-    value: "destek@rekormatik.com",
+    value: "destek@rekorzeka.com",
     icon: "✉️",
   },
   {

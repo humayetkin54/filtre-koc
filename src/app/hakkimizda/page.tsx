@@ -16,7 +16,7 @@ const values = [
   },
   {
     title: "Deneyimden geliyor",
-    desc: "Rekormatik kurucuları bizzat koçluk aldı, sistemin eksiklerini yaşayarak keşfetti.",
+    desc: "Rekor Zeka kurucuları bizzat koçluk aldı, sistemin eksiklerini yaşayarak keşfetti.",
     icon: "🎓",
   },
 ]
@@ -61,7 +61,7 @@ export default function HakkimizdaPage() {
             Hakkımızda
           </h1>
           <p className="mt-4 max-w-xl mx-auto text-lg text-white/70">
-            Rekormatik, kalitesiz koçluk deneyimlerini yaşamış öğrenciler tarafından kuruldu.
+            Rekor Zeka, kalitesiz koçluk deneyimlerini yaşamış öğrenciler tarafından kuruldu.
             Çözüm: sistematik kalite güvencesi.
           </p>
         </div>

@@ -12,7 +12,7 @@ export default function KayitPage({
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div className="mb-8 text-center">
             <Link href="/" className="text-2xl font-bold text-[#3a4cff]">
-              Rekormatik
+              Rekor Zeka
             </Link>
             <h1 className="mt-4 text-xl font-semibold text-gray-900">
               Hesap oluştur
