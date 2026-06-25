@@ -16,10 +16,12 @@ export default function Navbar({
   user,
   isCoach = false,
   unseenCount = 0,
+  isAdmin = false,
 }: {
   user: User | null;
   isCoach?: boolean;
   unseenCount?: number;
+  isAdmin?: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const links = isCoach ? navLinks.filter((l) => l.href === "/") : navLinks;
@@ -57,6 +59,14 @@ export default function Navbar({
                   </span>
                 )}
               </Link>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="rounded-lg bg-amber-50 px-4 py-2 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100"
+                >
+                  Talepler
+                </Link>
+              )}
               <Link
                 href={isCoach ? "/koc-paneli" : "/profil"}
                 className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
@@ -147,6 +157,15 @@ export default function Navbar({
                     </span>
                   )}
                 </Link>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-lg bg-amber-50 px-3 py-2.5 text-sm font-medium text-amber-700 hover:bg-amber-100"
+                  >
+                    Talepler
+                  </Link>
+                )}
                 <form action={signOut}>
                   <button
                     type="submit"

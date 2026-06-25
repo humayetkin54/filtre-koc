@@ -28,6 +28,9 @@ export default async function RootLayout({
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  const ADMIN_EMAILS = ["enes2oo8@hotmail.com"];
+  const isAdmin = !!user && ADMIN_EMAILS.includes((user.email ?? "").toLowerCase());
+
   let isCoach = false;
   let unseenCount = 0;
   if (user) {
@@ -55,7 +58,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <Navbar user={user} isCoach={isCoach} unseenCount={unseenCount} />
+        <Navbar user={user} isCoach={isCoach} unseenCount={unseenCount} isAdmin={isAdmin} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
