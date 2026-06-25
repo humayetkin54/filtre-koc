@@ -50,7 +50,7 @@ export default function HomePage() {
             Sıradan tavsiyeleri ve ezbere programları unutun. Öğrencinin mizaç özelliklerini, bilişsel süreçlerini ve sınav kaygısını yöneten, diploma güvenceli PDR koordinatörleri liderliğinde çalışın. Sadece çalışmayı değil, kazanma psikolojisini öğrenin.
           </p>
           <div className="flex gap-4 flex-wrap">
-            <Link href="/koclar" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl text-base transition-all hover:-translate-y-0.5">
+            <Link href="/on-gorusme" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl text-base transition-all hover:-translate-y-0.5">
               Ücretsiz Uzman Görüşmesi Al →
             </Link>
             <a href="#nasil-calisir" className="border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white font-semibold px-8 py-4 rounded-xl text-base transition-all">
