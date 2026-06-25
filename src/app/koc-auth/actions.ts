@@ -3,6 +3,8 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
+const ADMIN_EMAILS = ["enes2oo8@hotmail.com"];
+
 export async function coachSignIn(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -12,6 +14,10 @@ export async function coachSignIn(formData: FormData) {
 
   if (error) {
     redirect(`/koc-giris?error=${encodeURIComponent(error.message)}`);
+  }
+
+  if (ADMIN_EMAILS.includes(email.toLowerCase())) {
+    redirect("/admin");
   }
 
   // Koç kaydı ve onay kontrolü

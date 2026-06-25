@@ -21,7 +21,7 @@ export async function submitIntroRequest(formData: FormData) {
   });
 
   if (error) {
-    return { error: `Hata: ${error.message}` };
+    return { error: "Bir hata oluştu, lütfen tekrar deneyin." };
   }
 
   return { success: true };
