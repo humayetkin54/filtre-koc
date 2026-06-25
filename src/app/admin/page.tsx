@@ -1,5 +1,6 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { deleteIntroRequest } from "./actions";
 
 const ADMIN_EMAILS = ["enes2oo8@hotmail.com"];
 
@@ -56,11 +57,21 @@ export default async function AdminPage() {
                     <p className="font-semibold text-gray-900">{r.name}</p>
                     <p className="text-sm text-gray-500">{r.phone}</p>
                   </div>
-                  <span className="text-xs text-gray-400">
-                    {new Date(r.created_at).toLocaleDateString("tr-TR", {
-                      day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
-                    })}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-gray-400">
+                      {new Date(r.created_at).toLocaleDateString("tr-TR", {
+                        day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
+                      })}
+                    </span>
+                    <form action={deleteIntroRequest.bind(null, r.id)}>
+                      <button
+                        type="submit"
+                        className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-100"
+                      >
+                        Talebi sil
+                      </button>
+                    </form>
+                  </div>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
