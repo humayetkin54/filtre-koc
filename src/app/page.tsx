@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { IntroPopup } from './intro-popup'
 
 const stats = [
   { num: '%100', lbl: 'PDR / Psikoloji Koordinasyonu' },
@@ -31,6 +32,7 @@ const garantiler = [
 export default function HomePage() {
   return (
     <main>
+      <IntroPopup />
       {/* HERO */}
       <section className="min-h-screen flex flex-col justify-center px-[5%] py-32"
         style={{ background: 'radial-gradient(ellipse 70% 60% at 60% 40%, #dde1ff 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 20% 80%, #f0e8ff 0%, transparent 60%), #f7f6f2' }}>
