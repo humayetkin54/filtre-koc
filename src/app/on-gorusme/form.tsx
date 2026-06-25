@@ -82,10 +82,11 @@ export function OnGorusmeForm() {
             className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           >
             <option value="" disabled>Alan</option>
-            <option value="YKS">YKS</option>
-            <option value="LGS">LGS</option>
-            <option value="KPSS/AGS">KPSS/AGS</option>
-            <option value="DGS">DGS</option>
+            <option value="Sayısal">Sayısal</option>
+            <option value="Eşit Ağırlık">Eşit Ağırlık</option>
+            <option value="Sözel">Sözel</option>
+            <option value="Dil">Dil</option>
+            <option value="Diğer">Diğer</option>
           </select>
 
           <div>
