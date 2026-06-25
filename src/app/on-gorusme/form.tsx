@@ -64,11 +64,15 @@ export function OnGorusmeForm() {
             className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           >
             <option value="" disabled>Sınıf</option>
-            <option value="9. Sınıf">9. Sınıf</option>
-            <option value="10. Sınıf">10. Sınıf</option>
-            <option value="11. Sınıf">11. Sınıf</option>
-            <option value="12. Sınıf">12. Sınıf</option>
             <option value="Mezun">Mezun</option>
+            <option value="12. Sınıf (2028 YKS Adayı)">12. Sınıf (2028 YKS Adayı)</option>
+            <option value="11. Sınıf (2027 YKS Adayı)">11. Sınıf (2027 YKS Adayı)</option>
+            <option value="10. Sınıf">10. Sınıf</option>
+            <option value="9. Sınıf">9. Sınıf</option>
+            <option value="8. Sınıf (2028 LGS Adayı)">8. Sınıf (2028 LGS Adayı)</option>
+            <option value="7. Sınıf (2027 LGS Adayı)">7. Sınıf (2027 LGS Adayı)</option>
+            <option value="6. Sınıf">6. Sınıf</option>
+            <option value="5. Sınıf">5. Sınıf</option>
           </select>
 
           <select
