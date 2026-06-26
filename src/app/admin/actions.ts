@@ -3,7 +3,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
-const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.io"];
+const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.com"];
 
 export async function deleteIntroRequest(id: string) {
   const supabase = await createClient();
