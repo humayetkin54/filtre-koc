@@ -28,7 +28,7 @@ export default async function RootLayout({
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const ADMIN_EMAILS = ["enes2oo8@hotmail.com"];
+  const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.com"];
   const isAdmin = !!user && ADMIN_EMAILS.includes((user.email ?? "").toLowerCase());
 
   let isCoach = false;
