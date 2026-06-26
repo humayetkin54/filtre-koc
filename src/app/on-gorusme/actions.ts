@@ -37,7 +37,7 @@ async function notifyAdmin(name: string, grade: string, area: string, phone: str
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({
-    from: "Rekor Zeka <bildirim@rekorzeka.com>",
+    from: "Rekor Zeka <onboarding@resend.dev>",
     to: NOTIFY_EMAIL,
     subject: "Yeni ücretsiz ön görüşme talebi",
     html: `<p>Yeni bir ön görüşme talebi geldi:</p><ul><li><strong>Ad Soyad:</strong> ${name}</li><li><strong>Sınıf:</strong> ${grade}</li><li><strong>Alan:</strong> ${area}</li><li><strong>Telefon:</strong> ${phone}</li></ul><p>Tüm talepleri görmek için <a href="https://filtre-koc.vercel.app/admin">admin paneline</a> gidin.</p>`,

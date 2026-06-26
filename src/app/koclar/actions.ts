@@ -67,7 +67,7 @@ async function notifyCoach(coachId: string, studentName: string, date: string, t
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({
-    from: "Rekor Zeka <bildirim@rekorzeka.com>",
+    from: "Rekor Zeka <onboarding@resend.dev>",
     to: coachEmail,
     subject: "Yeni randevu talebiniz var",
     html: `<p>Merhaba ${coach.name},</p><p><strong>${studentName}</strong> sizden <strong>${dateStr} ${time}</strong> için randevu talep etti.</p><p>Talebi onaylamak veya iptal etmek için <a href="https://filtre-koc.vercel.app/koc-paneli">koç panelinize</a> gidin.</p>`,
