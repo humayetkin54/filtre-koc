@@ -7,6 +7,7 @@ export function OnGorusmeForm() {
   const [isPending, startTransition] = useTransition();
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const [debug, setDebug] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   function handleSubmit(e: React.FormEvent) {
@@ -17,6 +18,7 @@ export function OnGorusmeForm() {
       const result = await submitIntroRequest(fd);
       if (result?.error) setError(result.error);
       else setDone(true);
+      if (result?.debug) setDebug(result.debug);
     });
   }
 
@@ -39,6 +41,11 @@ export function OnGorusmeForm() {
           <p className="mt-2 text-sm text-emerald-600">
             Danışmanımız en kısa sürede sizi arayacak.
           </p>
+          {debug && (
+            <p className="mt-4 break-all rounded-lg bg-white px-3 py-2 text-left text-xs text-gray-500">
+              {debug}
+            </p>
+          )}
         </div>
       ) : (
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
