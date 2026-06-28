@@ -1,4 +1,4 @@
-import { guarantees } from "./data";
+import { categories, guarantees } from "./data";
 import { CategoryCard } from "./category-card";
 
 export default function PaketlerPage() {
@@ -20,7 +20,13 @@ export default function PaketlerPage() {
       </section>
 
       {/* Categories */}
-      <CategoryCard />
+      <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
+          {categories.map((cat) => (
+            <CategoryCard key={cat.tag} cat={cat} />
+          ))}
+        </div>
+      </section>
 
       {/* Guarantees */}
       <section className="px-4 py-16 sm:px-6 lg:px-8">
