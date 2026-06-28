@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { signOut } from "@/app/auth/actions";
@@ -29,8 +30,8 @@ export default function Navbar({
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="text-xl font-bold tracking-tight text-[#3a4cff]">
-          Rekor Zeka
+        <Link href="/" className="flex items-center">
+          <Image src="/logo-navbar.svg" alt="Rekor Zeka" width={175} height={80} className="h-9 w-auto" priority />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
