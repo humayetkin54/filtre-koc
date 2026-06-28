@@ -18,16 +18,16 @@ export function CategoryCard() {
     <section className="px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-xl">
         {/* Category tabs */}
-        <div className="mx-auto mb-8 flex w-fit rounded-xl bg-gray-100 p-1">
+        <div className="mb-8 grid grid-cols-3 gap-3">
           {categories.map((c, i) => (
             <button
               key={c.tag}
               type="button"
               onClick={() => selectCategory(i)}
-              className={`rounded-lg px-5 py-2.5 text-sm font-bold transition-colors ${
+              className={`rounded-xl border px-4 py-2.5 text-sm font-bold transition-colors ${
                 i === catIdx
-                  ? "bg-[#3a4cff] text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "border-[#3a4cff] bg-[#3a4cff] text-white shadow-sm"
+                  : "border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-gray-700"
               }`}
             >
               {c.tag}
