@@ -1,33 +1,55 @@
 "use client";
 
 import { useState } from "react";
-import type { categories } from "./data";
+import { categories } from "./data";
 
-export function CategoryCard({ cat }: { cat: (typeof categories)[number] }) {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const plan = cat.plans[activeIdx];
+export function CategoryCard() {
+  const [catIdx, setCatIdx] = useState(0);
+  const [planIdx, setPlanIdx] = useState(0);
+  const cat = categories[catIdx];
+  const plan = cat.plans[planIdx];
+
+  function selectCategory(i: number) {
+    setCatIdx(i);
+    setPlanIdx(0);
+  }
 
   return (
-    <section className="border-b border-gray-100 px-4 py-16 sm:px-6 lg:px-8">
+    <section className="px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-xl">
+        {/* Category tabs */}
+        <div className="mx-auto mb-8 flex w-fit rounded-xl bg-gray-100 p-1">
+          {categories.map((c, i) => (
+            <button
+              key={c.tag}
+              type="button"
+              onClick={() => selectCategory(i)}
+              className={`rounded-lg px-5 py-2.5 text-sm font-bold transition-colors ${
+                i === catIdx
+                  ? "bg-[#3a4cff] text-white shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              {c.tag}
+            </button>
+          ))}
+        </div>
+
         <div className="mb-8 text-center">
-          <span className="inline-flex items-center rounded-full bg-blue-50 px-4 py-1.5 text-sm font-bold text-blue-700">
-            {cat.tag}
-          </span>
-          <h2 className="mt-3 text-2xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             {cat.title}
           </h2>
         </div>
 
-        {/* Tabs */}
+        {/* Plan tabs */}
         <div className="mx-auto mb-6 flex w-fit rounded-xl bg-gray-100 p-1">
           {cat.plans.map((p, i) => (
             <button
               key={p.name}
               type="button"
-              onClick={() => setActiveIdx(i)}
+              onClick={() => setPlanIdx(i)}
               className={`rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
-                i === activeIdx
+                i === planIdx
                   ? "bg-white text-gray-900 shadow-sm"
                   : "text-gray-500 hover:text-gray-700"
               }`}

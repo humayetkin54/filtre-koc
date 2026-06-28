@@ -1,4 +1,4 @@
-import { categories, guarantees } from "./data";
+import { guarantees } from "./data";
 import { CategoryCard } from "./category-card";
 
 export default function PaketlerPage() {
@@ -20,9 +20,7 @@ export default function PaketlerPage() {
       </section>
 
       {/* Categories */}
-      {categories.map((cat) => (
-        <CategoryCard key={cat.tag} cat={cat} />
-      ))}
+      <CategoryCard />
 
       {/* Guarantees */}
       <section className="px-4 py-16 sm:px-6 lg:px-8">
