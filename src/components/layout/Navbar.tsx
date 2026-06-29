@@ -31,7 +31,7 @@ export default function Navbar({
     <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center">
-          <Image src="/logo-navbar.svg" alt="Rekor Zeka" width={512} height={512} className="h-16 w-16" priority />
+          <Image src="/logo-navbar.svg" alt="Rekor Zeka" width={315} height={190} className="h-11 w-auto" priority />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
