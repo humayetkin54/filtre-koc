@@ -87,7 +87,7 @@ export default async function ProfilPage({
             </div>
             <button
               type="submit"
-              className="rounded-xl bg-[#3a4cff] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2f3fd4]"
+              className="btn-primary px-6 py-2.5 text-sm"
             >
               Kaydet
             </button>

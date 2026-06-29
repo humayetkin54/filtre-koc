@@ -59,7 +59,7 @@ export default function GirisPage({
             </div>
             <button
               type="submit"
-              className="w-full rounded-xl bg-[#3a4cff] px-6 py-3 font-semibold text-white transition hover:bg-[#2f3fd4]"
+              className="btn-primary w-full py-3"
             >
               Giriş yap
             </button>

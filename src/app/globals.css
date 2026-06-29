@@ -36,17 +36,15 @@ h3 {
   letter-spacing: -0.02em;
 }
 
-/* Primary button — use as: <button class="btn-primary"> */
+/* Primary button — gradient core only; size with Tailwind utilities (px-*, py-*, text-*) per usage */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   border-radius: 0.75rem;
-  padding: 0.75rem 1.75rem;
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   font-weight: 600;
-  font-size: 0.875rem;
   color: #ffffff;
   background-image: linear-gradient(135deg, var(--color-primary-start) 0%, var(--color-primary-end) 100%);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;

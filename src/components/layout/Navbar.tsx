@@ -99,7 +99,7 @@ export default function Navbar({
               </Link>
               <Link
                 href="/kayit"
-                className="rounded-lg bg-[#3a4cff] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#2f3fd4]"
+                className="btn-primary px-4 py-2 text-sm"
               >
                 Ücretsiz kaydol
               </Link>
@@ -195,7 +195,7 @@ export default function Navbar({
                 <Link
                   href="/kayit"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg bg-[#3a4cff] px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-[#2f3fd4]"
+                  className="btn-primary px-3 py-2.5 text-sm"
                 >
                   Ücretsiz kaydol
                 </Link>

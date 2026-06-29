@@ -77,11 +77,11 @@ export function CategoryCard({ cat }: { cat: (typeof categories)[number] }) {
 
         <a
           href="/koclar"
-          className={`mt-6 block rounded-xl px-6 py-3 text-center text-sm font-bold transition-all hover:-translate-y-0.5 ${
+          className={
             plan.highlight
-              ? "bg-white text-[#3a4cff] hover:shadow-lg"
-              : "bg-[#3a4cff] text-white hover:bg-[#2f3fd4]"
-          }`}
+              ? "mt-6 block rounded-xl bg-white px-6 py-3 text-center text-sm font-bold text-[#3a4cff] transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              : "btn-primary mt-6 w-full text-sm hover:-translate-y-0.5"
+          }
         >
           Koç seç →
         </a>

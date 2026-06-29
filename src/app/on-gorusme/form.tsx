@@ -119,7 +119,7 @@ export function OnGorusmeForm() {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full rounded-xl bg-blue-600 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
+            className="btn-primary w-full py-3.5 text-sm disabled:opacity-50"
           >
             {isPending ? "Gönderiliyor..." : "Talebi gönder"}
           </button>

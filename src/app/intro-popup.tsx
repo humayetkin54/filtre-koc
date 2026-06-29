@@ -49,7 +49,7 @@ export function IntroPopup() {
         <a
           href="/on-gorusme"
           onClick={close}
-          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 font-semibold text-white transition hover:bg-blue-700"
+          className="btn-primary mt-6 w-full py-3.5"
         >
           Tıkla, hemen görüş →
         </a>

@@ -149,7 +149,7 @@ function CoachCard({ coach }: { coach: Coach }) {
           type="button"
           disabled={isFull}
           onClick={() => setShowModal(true)}
-          className="rounded-xl bg-[#3a4cff] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2f3fd4] disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-400"
+          className="rounded-xl bg-gradient-to-br from-[#3a4cff] to-[#7c3aff] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:translate-y-0 disabled:bg-none disabled:bg-zinc-200 disabled:text-zinc-400 disabled:shadow-none"
         >
           Koçluk başlat
         </button>

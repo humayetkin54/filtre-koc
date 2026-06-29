@@ -115,7 +115,7 @@ export function BookingSection({ coach }: { coach: Coach }) {
               {error.includes("ön görüşme hakkınızı doldurdunuz") && (
                 <a
                   href="/paketler"
-                  className="mt-2 inline-block rounded-lg bg-[#3a4cff] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#2f3fd4]"
+                  className="btn-primary mt-2 px-4 py-2 text-xs"
                 >
                   Paket satın al →
                 </a>
@@ -127,7 +127,7 @@ export function BookingSection({ coach }: { coach: Coach }) {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full rounded-xl bg-[#3a4cff] py-3 text-sm font-semibold text-white transition hover:bg-[#2f3fd4] disabled:opacity-50"
+              className="btn-primary w-full py-3 text-sm disabled:opacity-50"
             >
               {isPending ? "Gönderiliyor..." : "Randevu talep et"}
             </button>

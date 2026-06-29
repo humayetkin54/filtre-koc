@@ -88,7 +88,7 @@ export default function IletisimPage() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full rounded-xl bg-[#3a4cff] px-6 py-3 font-semibold text-white transition hover:bg-[#2f3fd4]"
+                  className="btn-primary w-full py-3"
                 >
                   Gönder
                 </button>
@@ -127,7 +127,7 @@ export default function IletisimPage() {
                 </p>
                 <a
                   href="/koclar"
-                  className="mt-4 inline-block rounded-xl bg-[#3a4cff] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2f3fd4]"
+                  className="btn-primary mt-4 px-5 py-2.5 text-sm"
                 >
                   Görüşme planla →
                 </a>
