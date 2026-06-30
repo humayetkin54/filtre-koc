@@ -63,12 +63,12 @@ export default async function RootLayout({
         <Script
           type="module"
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
         <Script
           noModule
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
         <Navbar user={user} isCoach={isCoach} unseenCount={unseenCount} isAdmin={isAdmin} />
         <main className="flex-1">{children}</main>
