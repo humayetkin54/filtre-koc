@@ -39,7 +39,7 @@ export default function Navbar({
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-[#0E8FA3] transition-colors hover:bg-[#0E8FA3] hover:text-white"
+              className="rounded-lg px-3 py-1.5 text-sm font-bold text-[#0E8FA3] transition-colors hover:bg-[#0E8FA3] hover:text-white"
             >
               {link.label}
             </Link>
@@ -134,7 +134,7 @@ export default function Navbar({
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-[#0E8FA3] transition-colors hover:bg-[#0E8FA3] hover:text-white"
+                className="rounded-lg px-3 py-2.5 text-sm font-bold text-[#0E8FA3] transition-colors hover:bg-[#0E8FA3] hover:text-white"
               >
                 {link.label}
               </Link>
