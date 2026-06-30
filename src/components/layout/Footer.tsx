@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const footerLinks = [
   { href: "/hakkimizda", label: "Hakkımızda" },
@@ -21,7 +22,9 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <p className="text-xl font-bold text-[#3a4cff]">Rekor Zeka</p>
+            <div className="inline-flex items-center rounded-xl bg-white px-3 py-1.5">
+              <Image src="/logo-navbar.png" alt="Rekor Zeka" width={1316} height={1183} className="h-8 w-auto" />
+            </div>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/60">
               Hedefinize uygun koçu bulun, kişiselleştirilmiş eğitimle
               başarınızı artırın.

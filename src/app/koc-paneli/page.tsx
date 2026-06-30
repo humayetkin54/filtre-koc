@@ -85,7 +85,7 @@ export default async function KocPaneliPage() {
             {coach.avatar_initials}
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#3a4cff]">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#123A57]">
               Koç Paneli
             </p>
             <h1 className="text-2xl font-bold text-gray-900">{coach.name}</h1>

@@ -52,7 +52,7 @@ export default function NasilCalisirPage() {
   return (
     <div className="min-h-full bg-white">
       {/* Hero */}
-      <section className="border-b border-gray-100 bg-gradient-to-br from-slate-900 via-[#1a1f5c] to-[#3a4cff] px-4 py-20 sm:px-6 lg:px-8">
+      <section className="border-b border-gray-100 bg-gradient-to-br from-slate-900 via-[#1a1f5c] to-[#123A57] px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-blue-300">
             Süreç
@@ -71,8 +71,8 @@ export default function NasilCalisirPage() {
         <div className="mx-auto max-w-4xl space-y-10">
           {steps.map((step) => (
             <div key={step.num} className="flex gap-6">
-              <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#3a4cff]/10">
-                <span className="text-xl font-bold text-[#3a4cff]">{step.num}</span>
+              <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#123A57]/10">
+                <span className="text-xl font-bold text-[#123A57]">{step.num}</span>
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">{step.title}</h2>
@@ -104,13 +104,13 @@ export default function NasilCalisirPage() {
       {/* CTA */}
       <section
         className="px-4 py-20 text-center sm:px-6 lg:px-8"
-        style={{ background: "linear-gradient(135deg, #3a4cff 0%, #7c3aff 100%)" }}
+        style={{ background: "linear-gradient(135deg, #123A57 0%, #E2600F 100%)" }}
       >
         <h2 className="text-3xl font-bold text-white">Hâlâ sorun mu var?</h2>
         <p className="mt-3 text-white/70">30 dakikalık ücretsiz görüşmede her şeyi netleştirelim.</p>
         <a
           href="/koclar"
-          className="mt-8 inline-block rounded-xl bg-white px-8 py-4 font-bold text-[#3a4cff] transition-all hover:-translate-y-0.5 hover:shadow-xl"
+          className="mt-8 inline-block rounded-xl bg-white px-8 py-4 font-bold text-[#123A57] transition-all hover:-translate-y-0.5 hover:shadow-xl"
         >
           Ücretsiz görüşme planla →
         </a>

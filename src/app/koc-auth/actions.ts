@@ -77,7 +77,7 @@ export async function coachSignUp(formData: FormData) {
       bio: bio || null,
       status: "pending",
       avatar_initials: initials,
-      avatar_color: "#3a4cff",
+      avatar_color: "#123A57",
       avatar_text_color: "#ffffff",
       types: [],
       rating: 0,

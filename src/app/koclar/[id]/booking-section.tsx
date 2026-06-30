@@ -58,7 +58,7 @@ export function BookingSection({ coach }: { coach: Coach }) {
         <div className="rounded-xl bg-gray-50 px-4 py-6 text-center">
           <p className="font-semibold text-gray-500">Bu koç şu an dolu</p>
           <p className="mt-1 text-sm text-gray-400">Başka bir koç seçebilirsiniz.</p>
-          <a href="/koclar" className="mt-3 inline-block text-sm font-medium text-[#3a4cff] hover:underline">
+          <a href="/koclar" className="mt-3 inline-block text-sm font-medium text-[#123A57] hover:underline">
             Diğer koçlara bak →
           </a>
         </div>
@@ -73,7 +73,7 @@ export function BookingSection({ coach }: { coach: Coach }) {
               name="date"
               required
               min={todayMin()}
-              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+              className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
             />
           </div>
 
@@ -87,8 +87,8 @@ export function BookingSection({ coach }: { coach: Coach }) {
                   onClick={() => setSelectedTime(t)}
                   className={`rounded-lg border py-2 text-xs font-medium transition-colors ${
                     selectedTime === t
-                      ? "border-[#3a4cff] bg-[#3a4cff] text-white"
-                      : "border-gray-200 text-gray-600 hover:border-[#3a4cff]/50"
+                      ? "border-[#123A57] bg-[#123A57] text-white"
+                      : "border-gray-200 text-gray-600 hover:border-[#123A57]/50"
                   }`}
                 >
                   {t}
@@ -105,7 +105,7 @@ export function BookingSection({ coach }: { coach: Coach }) {
               name="note"
               rows={3}
               placeholder="Hedefini kısaca yaz..."
-              className="w-full resize-none rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+              className="w-full resize-none rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
             />
           </div>
 

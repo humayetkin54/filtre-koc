@@ -39,7 +39,7 @@ export function CategoryCard({ cat }: { cat: (typeof categories)[number] }) {
       <div
         className={`relative flex flex-1 flex-col rounded-2xl border p-6 ${
           plan.highlight
-            ? "border-[#3a4cff] bg-[#3a4cff] text-white shadow-2xl shadow-[#3a4cff]/20"
+            ? "border-[#123A57] bg-[#123A57] text-white shadow-2xl shadow-[#123A57]/20"
             : "border-gray-200 bg-white"
         }`}
       >
@@ -79,7 +79,7 @@ export function CategoryCard({ cat }: { cat: (typeof categories)[number] }) {
           href="/koclar"
           className={
             plan.highlight
-              ? "mt-6 block rounded-xl bg-white px-6 py-3 text-center text-sm font-bold text-[#3a4cff] transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              ? "mt-6 block rounded-xl bg-white px-6 py-3 text-center text-sm font-bold text-[#123A57] transition-all hover:-translate-y-0.5 hover:shadow-lg"
               : "btn-primary mt-6 w-full text-sm hover:-translate-y-0.5"
           }
         >

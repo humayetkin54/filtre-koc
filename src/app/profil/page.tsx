@@ -18,7 +18,7 @@ export default async function ProfilPage({
     <div className="min-h-full bg-gray-50">
       <div className="border-b border-gray-100 bg-white px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#3a4cff]">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#123A57]">
             Hesabım
           </p>
           <h1 className="mt-1 text-2xl font-bold text-gray-900">Profil</h1>
@@ -30,7 +30,7 @@ export default async function ProfilPage({
         {/* Avatar */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#3a4cff]/10 text-2xl font-bold text-[#3a4cff]">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#123A57]/10 text-2xl font-bold text-[#123A57]">
               {(user.user_metadata?.full_name as string)?.[0]?.toUpperCase() ??
                 user.email?.[0]?.toUpperCase()}
             </div>
@@ -71,7 +71,7 @@ export default async function ProfilPage({
                 name="name"
                 defaultValue={user.user_metadata?.full_name ?? ""}
                 placeholder="Ada Yılmaz"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
               />
             </div>
             <div>
@@ -82,7 +82,7 @@ export default async function ProfilPage({
                 type="email"
                 name="email"
                 defaultValue={user.email ?? ""}
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
               />
             </div>
             <button
@@ -107,7 +107,7 @@ export default async function ProfilPage({
                 name="password"
                 minLength={6}
                 placeholder="En az 6 karakter"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
               />
             </div>
             <button

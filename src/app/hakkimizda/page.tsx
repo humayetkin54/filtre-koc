@@ -28,7 +28,7 @@ const team = [
     university: "Boğaziçi Üniversitesi — İşletme",
     initials: "AK",
     color: "#dde1ff",
-    textColor: "#3a4cff",
+    textColor: "#123A57",
   },
   {
     name: "Mehmet Demir",
@@ -36,7 +36,7 @@ const team = [
     university: "ODTÜ — Bilgisayar Mühendisliği",
     initials: "MD",
     color: "#f0e8ff",
-    textColor: "#7c3aff",
+    textColor: "#E2600F",
   },
   {
     name: "Zeynep Arslan",
@@ -52,7 +52,7 @@ export default function HakkimizdaPage() {
   return (
     <div className="min-h-full bg-white">
       {/* Hero */}
-      <section className="border-b border-gray-100 bg-gradient-to-br from-slate-900 via-[#1a1f5c] to-[#3a4cff] px-4 py-20 sm:px-6 lg:px-8">
+      <section className="border-b border-gray-100 bg-gradient-to-br from-slate-900 via-[#1a1f5c] to-[#123A57] px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-blue-300">
             Biz kimiz
@@ -72,7 +72,7 @@ export default function HakkimizdaPage() {
         <div className="mx-auto max-w-4xl">
           <div className="grid gap-12 md:grid-cols-2 md:items-center">
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#3a4cff]">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#123A57]">
                 Misyon
               </p>
               <h2 className="text-3xl font-bold tracking-tight text-gray-900">
@@ -85,12 +85,12 @@ export default function HakkimizdaPage() {
                 aylık performans puanı.
               </p>
             </div>
-            <div className="rounded-2xl bg-gradient-to-br from-[#3a4cff]/10 to-[#7c3aff]/10 p-10 text-center">
-              <div className="text-5xl font-bold text-[#3a4cff]">4K+</div>
+            <div className="rounded-2xl bg-gradient-to-br from-[#123A57]/10 to-[#E2600F]/10 p-10 text-center">
+              <div className="text-5xl font-bold text-[#123A57]">4K+</div>
               <div className="mt-1 text-sm text-gray-500">Başarılı öğrenci</div>
-              <div className="mt-6 text-5xl font-bold text-[#3a4cff]">320+</div>
+              <div className="mt-6 text-5xl font-bold text-[#123A57]">320+</div>
               <div className="mt-1 text-sm text-gray-500">Doğrulanmış koç</div>
-              <div className="mt-6 text-5xl font-bold text-[#3a4cff]">%94</div>
+              <div className="mt-6 text-5xl font-bold text-[#123A57]">%94</div>
               <div className="mt-1 text-sm text-gray-500">Memnuniyet oranı</div>
             </div>
           </div>
@@ -100,7 +100,7 @@ export default function HakkimizdaPage() {
       {/* Values */}
       <section className="border-t border-gray-100 bg-gray-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#3a4cff]">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#123A57]">
             Değerlerimiz
           </p>
           <h2 className="mb-10 text-3xl font-bold tracking-tight text-gray-900">
@@ -124,7 +124,7 @@ export default function HakkimizdaPage() {
       {/* Team */}
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#3a4cff]">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#123A57]">
             Ekip
           </p>
           <h2 className="mb-10 text-3xl font-bold tracking-tight text-gray-900">
@@ -148,7 +148,7 @@ export default function HakkimizdaPage() {
                 <h3 className="mt-4 font-semibold text-gray-900">
                   {member.name}
                 </h3>
-                <p className="text-sm font-medium text-[#3a4cff]">
+                <p className="text-sm font-medium text-[#123A57]">
                   {member.role}
                 </p>
                 <p className="mt-1 text-xs text-gray-400">{member.university}</p>

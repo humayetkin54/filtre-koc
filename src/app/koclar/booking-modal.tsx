@@ -105,7 +105,7 @@ export function BookingModal({
                 name="date"
                 required
                 min={todayMin()}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
               />
             </div>
 
@@ -121,8 +121,8 @@ export function BookingModal({
                     onClick={() => setSelectedTime(t)}
                     className={`rounded-lg border py-2 text-sm font-medium transition-colors ${
                       selectedTime === t
-                        ? "border-[#3a4cff] bg-[#3a4cff] text-white"
-                        : "border-gray-200 text-gray-600 hover:border-[#3a4cff]/50"
+                        ? "border-[#123A57] bg-[#123A57] text-white"
+                        : "border-gray-200 text-gray-600 hover:border-[#123A57]/50"
                     }`}
                   >
                     {t}
@@ -139,7 +139,7 @@ export function BookingModal({
                 name="note"
                 rows={3}
                 placeholder="Hedefini, hangi sınavı hazırladığını kısaca yaz..."
-                className="w-full resize-none rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                className="w-full resize-none rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
               />
             </div>
 

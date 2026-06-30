@@ -48,7 +48,7 @@ export default async function RandevularimPage() {
     <div className="min-h-full bg-gray-50">
       <div className="border-b border-gray-100 bg-white px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#3a4cff]">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#123A57]">
             Hesabım
           </p>
           <h1 className="mt-1 text-2xl font-bold text-gray-900">Randevularım</h1>
@@ -101,7 +101,7 @@ function Empty({ text, href, cta }: { text: string; href: string; cta: string })
   return (
     <div className="rounded-2xl border border-dashed border-gray-200 bg-white px-6 py-10 text-center">
       <p className="text-sm text-gray-400">{text}</p>
-      <a href={href} className="mt-3 inline-block text-sm font-medium text-[#3a4cff] hover:underline">
+      <a href={href} className="mt-3 inline-block text-sm font-medium text-[#123A57] hover:underline">
         {cta}
       </a>
     </div>

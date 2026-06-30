@@ -4,8 +4,8 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  --color-primary-start: #3a4cff;
-  --color-primary-end: #7c3aff;
+  --color-primary-start: #123A57;
+  --color-primary-end: #E2600F;
 }
 
 @theme inline {
@@ -41,12 +41,12 @@ body {
   color: #ffffff;
   background-image: linear-gradient(135deg, var(--color-primary-start) 0%, var(--color-primary-end) 100%);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
-  box-shadow: 0 4px 14px rgba(58, 76, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(18, 58, 87, 0.25);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(124, 58, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(226, 96, 15, 0.3);
 }
 
 .btn-primary:active {

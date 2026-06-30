@@ -151,7 +151,7 @@ export default async function CoachDetailPage({
                   { num: "4", text: "Deneme sonuçlarına göre plan güncelleniyor, net artışın somut olarak ölçülüyor." },
                 ].map((s) => (
                   <li key={s.num} className="flex gap-3 text-sm text-gray-600">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#3a4cff]/10 text-xs font-bold text-[#3a4cff]">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#123A57]/10 text-xs font-bold text-[#123A57]">
                       {s.num}
                     </span>
                     {s.text}

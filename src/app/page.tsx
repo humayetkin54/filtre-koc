@@ -149,7 +149,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-[5%] text-center" style={{ background: 'linear-gradient(135deg, #3a4cff 0%, #7c3aff 100%)' }}>
+      <section className="py-24 px-[5%] text-center" style={{ background: 'linear-gradient(135deg, #123A57 0%, #E2600F 100%)' }}>
         <div className="max-w-2xl mx-auto">
           <h2 className="font-bold text-4xl md:text-5xl tracking-tight text-white mb-4">Hedefin ne? Konuşalım.</h2>
           <p className="text-white/80 text-lg mb-10 leading-relaxed">

@@ -11,7 +11,7 @@ export default function GirisPage({
       <div className="w-full max-w-md">
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div className="mb-8 text-center">
-            <Link href="/" className="text-2xl font-bold text-[#3a4cff]">
+            <Link href="/" className="text-2xl font-bold text-[#123A57]">
               Rekor Zeka
             </Link>
             <h1 className="mt-4 text-xl font-semibold text-gray-900">
@@ -21,7 +21,7 @@ export default function GirisPage({
               Hesabın yok mu?{" "}
               <Link
                 href="/kayit"
-                className="font-medium text-[#3a4cff] hover:underline"
+                className="font-medium text-[#123A57] hover:underline"
               >
                 Ücretsiz kaydol
               </Link>
@@ -41,7 +41,7 @@ export default function GirisPage({
                 required
                 autoComplete="email"
                 placeholder="ada@ornek.com"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
               />
             </div>
             <div>
@@ -54,7 +54,7 @@ export default function GirisPage({
                 required
                 autoComplete="current-password"
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
               />
             </div>
             <button

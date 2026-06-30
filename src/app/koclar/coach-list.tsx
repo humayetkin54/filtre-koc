@@ -84,7 +84,7 @@ function CoachCard({ coach }: { coach: Coach }) {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <article className="flex flex-col rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:border-[#3a4cff]/20 hover:shadow-md">
+    <article className="flex flex-col rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:border-[#123A57]/20 hover:shadow-md">
       <div className="flex items-start gap-4">
         <div
           className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-base font-bold"
@@ -101,7 +101,7 @@ function CoachCard({ coach }: { coach: Coach }) {
             <div>
               <Link href={`/koclar/${coach.id}`}>
             <h2
-              className="truncate text-lg font-semibold text-zinc-900 hover:text-[#3a4cff] transition-colors"
+              className="truncate text-lg font-semibold text-zinc-900 hover:text-[#123A57] transition-colors"
               style={{ fontFamily: "var(--font-sora)" }}
             >
               {coach.name}
@@ -149,7 +149,7 @@ function CoachCard({ coach }: { coach: Coach }) {
           type="button"
           disabled={isFull}
           onClick={() => setShowModal(true)}
-          className="rounded-xl bg-gradient-to-br from-[#3a4cff] to-[#7c3aff] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:translate-y-0 disabled:bg-none disabled:bg-zinc-200 disabled:text-zinc-400 disabled:shadow-none"
+          className="rounded-xl bg-gradient-to-br from-[#123A57] to-[#E2600F] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:translate-y-0 disabled:bg-none disabled:bg-zinc-200 disabled:text-zinc-400 disabled:shadow-none"
         >
           Koçluk başlat
         </button>
@@ -181,7 +181,7 @@ export function CoachList({ coaches }: { coaches: Coach[] }) {
 
   return (
     <div className="min-h-full bg-zinc-50">
-      <header className="bg-gradient-to-br from-zinc-900 via-[#1a1f5c] to-[#3a4cff] px-4 py-14 sm:px-6 lg:px-8">
+      <header className="bg-gradient-to-br from-zinc-900 via-[#1a1f5c] to-[#123A57] px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <h1
             className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
@@ -205,7 +205,7 @@ export function CoachList({ coaches }: { coaches: Coach[] }) {
                 onClick={() => setFilter(value)}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                   filter === value
-                    ? "bg-[#3a4cff] text-white shadow-sm"
+                    ? "bg-[#123A57] text-white shadow-sm"
                     : "bg-white text-zinc-600 ring-1 ring-zinc-200 hover:bg-zinc-50"
                 }`}
               >
@@ -233,7 +233,7 @@ export function CoachList({ coaches }: { coaches: Coach[] }) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Koç adına göre ara..."
-              className="w-full rounded-xl border border-zinc-200 bg-white py-2.5 pl-10 pr-4 text-sm text-zinc-900 outline-none transition-shadow placeholder:text-zinc-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+              className="w-full rounded-xl border border-zinc-200 bg-white py-2.5 pl-10 pr-4 text-sm text-zinc-900 outline-none transition-shadow placeholder:text-zinc-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
             />
           </div>
         </div>

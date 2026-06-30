@@ -20,7 +20,7 @@ export default function IletisimPage() {
   return (
     <div className="min-h-full bg-white">
       {/* Hero */}
-      <section className="border-b border-gray-100 bg-gradient-to-br from-slate-900 via-[#1a1f5c] to-[#3a4cff] px-4 py-20 sm:px-6 lg:px-8">
+      <section className="border-b border-gray-100 bg-gradient-to-br from-slate-900 via-[#1a1f5c] to-[#123A57] px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-blue-300">
             İletişim
@@ -51,7 +51,7 @@ export default function IletisimPage() {
                   <input
                     type="text"
                     placeholder="Ada Yılmaz"
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
                   />
                 </div>
                 <div>
@@ -61,14 +61,14 @@ export default function IletisimPage() {
                   <input
                     type="email"
                     placeholder="ada@ornek.com"
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
                   />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">
                     Konu
                   </label>
-                  <select className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20">
+                  <select className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20">
                     <option value="">Seçin...</option>
                     <option>Koç eşleştirme</option>
                     <option>Fiyatlandırma</option>
@@ -83,7 +83,7 @@ export default function IletisimPage() {
                   <textarea
                     rows={4}
                     placeholder="Mesajınızı yazın..."
-                    className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#3a4cff] focus:ring-2 focus:ring-[#3a4cff]/20"
+                    className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
                   />
                 </div>
                 <button
@@ -107,7 +107,7 @@ export default function IletisimPage() {
                     key={item.label}
                     className="flex items-start gap-4 rounded-2xl border border-gray-100 bg-gray-50 p-5"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#3a4cff]/10 text-xl">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#123A57]/10 text-xl">
                       {item.icon}
                     </div>
                     <div>
@@ -118,7 +118,7 @@ export default function IletisimPage() {
                 ))}
               </div>
 
-              <div className="mt-8 rounded-2xl bg-gradient-to-br from-[#3a4cff]/10 to-[#7c3aff]/10 p-6">
+              <div className="mt-8 rounded-2xl bg-gradient-to-br from-[#123A57]/10 to-[#E2600F]/10 p-6">
                 <p className="font-semibold text-gray-900">
                   Ücretsiz ön görüşme tercih eder misiniz?
                 </p>

@@ -33,7 +33,7 @@ export default async function AdminPage() {
     <div className="min-h-full bg-gray-50">
       <div className="border-b border-gray-100 bg-white px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#3a4cff]">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#123A57]">
             Admin Paneli
           </p>
           <h1 className="mt-1 text-2xl font-bold text-gray-900">Ön Görüşme Talepleri</h1>
