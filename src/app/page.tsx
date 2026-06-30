@@ -6,11 +6,37 @@ const stats = [
   { num: '14', lbl: 'Gün Koşulsuz İade Garantisi' },
 ]
 
-const steps = [
-  { icon: '🎯', num: '01', title: 'Ücretsiz ön görüşme', desc: 'Hedefini, mevcut netlerini ve çalışma alışkanlıklarını konuşuyoruz. 30 dakika, sıfır maliyet.' },
-  { icon: '🔎', num: '02', title: 'Akıllı eşleştirme', desc: 'Hedeflediğin bölümü okuyan, aynı branştan mezun ve müsait olan koçları seninle eşleştiriyoruz.' },
-  { icon: '📋', num: '03', title: 'Kişisel plan', desc: 'Koçun sana özel haftalık çalışma programı hazırlıyor. Hangi konuya kaç saat, hangi stratejiyle.' },
-  { icon: '📈', num: '04', title: 'Sürekli takip', desc: 'Günlük WhatsApp takibi, haftalık görüşmeler ve deneme analizleriyle net artışını izliyoruz.' },
+const yolHaritasi = [
+  {
+    num: '01', icon: '🔬', color: '#0E8FA3',
+    title: 'Bilişsel ve Mizaç Analizi',
+    tag: 'Teşhis',
+    desc: 'Sürece ezbere programlarla değil, öğrencinin öğrenme stilini, mizaç özelliklerini ve mevcut akademik temelini analiz eden profesyonel envanterlerle başlarız.',
+  },
+  {
+    num: '02', icon: '♟️', color: '#123A57',
+    title: 'Stratejik Akademik Planlama',
+    tag: 'Kurgu',
+    desc: 'Tıpkı tahtada birkaç hamle sonrasını kurgulayan büyük usta titizliğiyle, öğrenciye özel uzun vadeli bir çalışma haritası çıkarılır. Rastgele çalışmaya son verilir.',
+  },
+  {
+    num: '03', icon: '📊', color: '#0E8FA3',
+    title: 'Veri Odaklı Performans Takibi',
+    tag: 'Analiz',
+    desc: 'Öğrencinin çözdüğü her soru ve katıldığı her deneme sayısal bir kesinlikle veri setlerine dönüştürülür. Eksik kazanımlar algoritmik hassasiyetle tespit edilir.',
+  },
+  {
+    num: '04', icon: '🛡️', color: '#123A57',
+    title: 'Güvenli ve Motive Edici İletişim',
+    tag: 'PDR Desteği',
+    desc: 'Öğrencinin sadece netleri değil, psikolojik süreçleri de takip edilir. Sınav stresinden uzak, güvenli bir iletişim kanalı ile motivasyon daima yüksek tutulur.',
+  },
+  {
+    num: '05', icon: '🏆', color: '#E2600F',
+    title: 'Sürekli Optimizasyon',
+    tag: 'Hedefe Ulaşma',
+    desc: 'Verilerden elde edilen geri bildirimlerle program sürekli güncellenir. Öğrencinin potansiyeli maksimuma çıkarılarak gerçek sınav anına kusursuz bir hazırlık sağlanır.',
+  },
 ]
 
 const kocTipleri = [
@@ -68,21 +94,65 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* NASIL ÇALIŞIR */}
-      <section id="nasil-calisir" className="py-24 px-[5%] bg-white">
+      {/* YOL HARİTASI */}
+      <section id="nasil-calisir" className="py-24 px-[5%] bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto">
-          <p className="text-xs font-semibold tracking-widest uppercase text-blue-600 mb-3">Süreç</p>
-          <h2 className="font-bold text-4xl tracking-tight text-gray-900 mb-4">4 adımda koçuna kavuş</h2>
-          <p className="text-gray-500 max-w-lg mb-12">Seni en iyi anlayan koçu bulmak için sistematik bir eşleştirme sürecinden geçiyorsun.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map(s => (
-              <div key={s.num} className="bg-gray-50 rounded-2xl p-6 border border-gray-100 relative">
-                <span className="absolute top-4 right-5 text-5xl font-bold text-gray-100 leading-none">{s.num}</span>
-                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-xl mb-4">{s.icon}</div>
-                <h3 className="font-semibold text-gray-900 mb-2">{s.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
+          <p className="text-xs font-semibold tracking-widest uppercase text-[#0E8FA3] mb-3">Bilimsel Metodumuz</p>
+          <h2 className="font-bold text-4xl tracking-tight text-gray-900 mb-4">Başarıya Giden Yol Haritası</h2>
+          <p className="text-gray-500 max-w-xl mb-16">Öğrencinin potansiyelini sistematik bir süreçle maksimuma çıkarıyoruz. Her adım, bir öncekinin üzerine inşa edilir.</p>
+
+          {/* Desktop: yatay zaman çizelgesi */}
+          <div className="hidden lg:block relative">
+            {/* Bağlantı çizgisi */}
+            <div className="absolute top-10 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-[#0E8FA3] via-[#123A57] to-[#E2600F]" />
+            <div className="grid grid-cols-5 gap-4">
+              {yolHaritasi.map((s, i) => (
+                <div key={s.num} className="flex flex-col items-center text-center">
+                  {/* Numara dairesi */}
+                  <div
+                    className="relative z-10 w-20 h-20 rounded-full flex flex-col items-center justify-center text-white font-bold mb-6 shadow-lg"
+                    style={{ background: s.color }}
+                  >
+                    <span className="text-2xl leading-none">{s.icon}</span>
+                    <span className="text-[10px] font-bold mt-0.5 opacity-80">{s.num}</span>
+                  </div>
+                  {/* Etiket */}
+                  <span className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: s.color }}>{s.tag}</span>
+                  {/* Başlık */}
+                  <h3 className="font-bold text-gray-900 text-sm mb-3 leading-snug">{s.title}</h3>
+                  {/* Açıklama */}
+                  <p className="text-xs text-gray-500 leading-relaxed">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile: dikey zaman çizelgesi */}
+          <div className="lg:hidden relative pl-10">
+            {/* Dikey çizgi */}
+            <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-gradient-to-b from-[#0E8FA3] via-[#123A57] to-[#E2600F]" />
+            <div className="flex flex-col gap-8">
+              {yolHaritasi.map((s) => (
+                <div key={s.num} className="relative flex gap-4">
+                  {/* Daire */}
+                  <div
+                    className="absolute -left-[2.35rem] z-10 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md flex-shrink-0"
+                    style={{ background: s.color }}
+                  >
+                    <span className="text-lg">{s.icon}</span>
+                  </div>
+                  {/* İçerik */}
+                  <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100 flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full text-white" style={{ background: s.color }}>{s.tag}</span>
+                      <span className="text-xs text-gray-400 font-bold">{s.num}</span>
+                    </div>
+                    <h3 className="font-bold text-gray-900 mb-2">{s.title}</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
