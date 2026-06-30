@@ -17,7 +17,7 @@ const kocTipleri = [
   { tag: 'YKS', title: 'YKS Koçluğu', desc: 'TYT ve AYT\'de net artışı hedefleyen, hedef bölümü okuyan koçlarla çalış.', features: ['Hedef üniversite mezunu koç', 'TYT + AYT strateji planı', 'Haftalık deneme analizi', '7/24 WhatsApp desteği'] },
   { tag: 'LGS', title: 'LGS Koçluğu', desc: 'LGS\'de ilk 100\'e girmek ve fen lisesi kazanmak için stratejik hazırlık.', features: ['Fen lisesi mezunu koçlar', 'Yeni nesil soru taktikleri', 'Veli bilgilendirme raporu', 'Düzenli performans takibi'] },
   { tag: 'KPSS/AGS', title: 'KPSS/AGS Koçluğu', desc: 'KPSS\'de üst sıralara girmek için deneyimli, sınavı kazanmış koçlar.', features: ['KPSS kazanmış koçlar', 'GY/GK + Alan sınavı planı', 'Özgün soru analizleri', 'Esnek program desteği'] },
-  { tag: 'DGS', title: 'DGS Koçluğu', desc: 'Dikey Geçiş Sınavı\'nda üst sıralara çıkmak için hedefe odaklı hazırlık.', features: ['DGS kazanmış koçlar', 'Alan + Sayısal/Sözel strateji', 'Özgün soru analizleri', 'Esnek program desteği'] },
+  { tag: 'PDR', title: 'Psikolojik Danışmanlık', desc: 'Sınav kaygısı, motivasyon ve stres yönetimi için uzman PDR desteği.', features: ['Psikoloji mezunu danışmanlar', 'Sınav kaygısı terapisi', 'Kariyer & tercih rehberliği', 'Aile görüşmeleri'] },
 ]
 
 const garantiler = [
@@ -95,7 +95,7 @@ export default function HomePage() {
           <p className="text-gray-500 max-w-lg mb-12">Sınavına ve hedefine özel koçluk modeli seçiyorsun.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {kocTipleri.map(k => (
-              <div key={k.tag} className="group bg-white rounded-2xl p-6 border border-gray-100 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-transparent hover:bg-gradient-to-br hover:from-blue-600 hover:to-purple-600">
+              <div key={k.tag} className="group bg-white rounded-2xl p-6 border border-gray-100 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-transparent koc-card">
                 <span className="inline-block text-xs font-bold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-4 group-hover:bg-white/20 group-hover:text-white transition-colors">{k.tag}</span>
                 <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-white transition-colors">{k.title}</h3>
                 <p className="text-sm text-gray-500 mb-4 group-hover:text-white/80 transition-colors">{k.desc}</p>

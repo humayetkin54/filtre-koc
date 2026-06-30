@@ -47,6 +47,10 @@ body {
 }
 
 /* Primary button — brain-blue background, arrow-orange text; size with Tailwind utilities (px-*, py-*, text-*) per usage */
+.koc-card:hover {
+  background: linear-gradient(135deg, #123A57 0%, #E2600F 100%) !important;
+}
+
 .btn-primary {
   display: inline-flex;
   align-items: center;
