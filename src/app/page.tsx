@@ -41,9 +41,9 @@ const yolHaritasi = [
 
 const kocTipleri = [
   { tag: 'YKS', title: 'YKS Koçluğu', desc: 'TYT ve AYT\'de net artışı hedefleyen, hedef bölümü okuyan koçlarla çalış.', features: ['Hedef üniversite mezunu koç', 'TYT + AYT strateji planı', 'Haftalık deneme analizi', '7/24 WhatsApp desteği'] },
-  { tag: 'LGS', title: 'LGS Koçluğu', desc: 'Fen ve Anadolu Lisesi\'ni kazanmak için stratejik hazırlık.', features: ['Fen lisesi mezunu koçlar', 'Yeni nesil soru taktikleri', 'Veli bilgilendirme raporu', 'Düzenli performans takibi'] },
-  { tag: 'KPSS/AGS', title: 'KPSS/AGS Koçluğu', desc: 'KPSS\'de üst sıralara girmek için deneyimli, sınavı kazanmış koçlar.', features: ['KPSS kazanmış koçlar', 'GY/GK + Alan sınavı planı', 'Özgün soru analizleri', 'Esnek program desteği'] },
-  { tag: 'PDR', title: 'Psikolojik Danışmanlık', desc: 'Sınav kaygısı, motivasyon ve stres yönetimi için uzman PDR desteği.', features: ['Psikoloji mezunu danışmanlar', 'Sınav kaygısı terapisi', 'Kariyer & tercih rehberliği', 'Aile görüşmeleri'] },
+  { tag: 'LGS', title: 'LGS Koçluğu', desc: 'Fen ve Anadolu Lisesi\'ni kazanmak için stratejik hazırlık.', features: ['Yeni nesil soru taktikleri', 'Veli bilgilendirme raporu', 'Düzenli performans takibi'] },
+  { tag: 'KPSS/AGS', title: 'KPSS/AGS Koçluğu', desc: 'KPSS\'de üst sıralara girmek için deneyimli, sınavı kazanmış koçlar.', features: ['GY/GK + Alan sınavı planı', 'Özgün soru analizleri', 'Esnek program desteği'] },
+  { tag: 'PDR', title: 'Psikolojik Danışmanlık', desc: 'Sınav kaygısı, motivasyon ve stres yönetimi için uzman PDR desteği.', features: ['PDR mezunu danışmanlar', 'Sınav kaygısı terapisi', 'Kariyer & tercih rehberliği', 'Aile görüşmeleri'] },
 ]
 
 const garantiler = [
