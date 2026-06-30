@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
@@ -59,6 +60,16 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <Script
+          type="module"
+          src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+          strategy="beforeInteractive"
+        />
+        <Script
+          noModule
+          src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+          strategy="beforeInteractive"
+        />
         <Navbar user={user} isCoach={isCoach} unseenCount={unseenCount} isAdmin={isAdmin} />
         <main className="flex-1">{children}</main>
         <Footer />

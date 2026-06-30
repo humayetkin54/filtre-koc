@@ -7,10 +7,10 @@ import type { User } from "@supabase/supabase-js";
 import { signOut } from "@/app/auth/actions";
 
 const navLinks = [
-  { href: "/", label: "Ana Sayfa", icon: "🏠" },
-  { href: "/koclar", label: "Koçlar", icon: "👤" },
-  { href: "/nasil-calisir", label: "Nasıl Çalışır", icon: "🔄" },
-  { href: "/paketler", label: "Paketler", icon: "📋" },
+  { href: "/", label: "Ana Sayfa", icon: "home" },
+  { href: "/koclar", label: "Koçlar", icon: "people" },
+  { href: "/nasil-calisir", label: "Nasıl Çalışır", icon: "swap-horizontal" },
+  { href: "/paketler", label: "Paketler", icon: "layers" },
 ];
 
 export default function Navbar({
@@ -41,7 +41,7 @@ export default function Navbar({
               href={link.href}
               className="flex items-center gap-1.5 text-sm font-bold text-[#1e293b] transition-colors hover:text-[#0E8FA3]"
             >
-              <span aria-hidden>{link.icon}</span>
+              <ion-icon name={link.icon} aria-hidden="true" />
               {link.label}
             </Link>
           ))}
@@ -90,13 +90,17 @@ export default function Navbar({
                 href="/koc-giris"
                 className="flex items-center gap-1.5 rounded-full bg-[#1e293b] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0f172a]"
               >
-                🤝 Eğitmen Girişi
+                <ion-icon name="compass-outline" aria-hidden="true" />
+                Eğitmen Girişi
+                <ion-icon name="hand-right-outline" aria-hidden="true" />
               </Link>
               <Link
                 href="/giris"
                 className="flex items-center gap-1.5 rounded-full bg-[#0E8FA3] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0c7689]"
               >
-                🎓 Öğrenci Girişi
+                <ion-icon name="school-outline" aria-hidden="true" />
+                Öğrenci Girişi
+                <ion-icon name="book-outline" aria-hidden="true" />
               </Link>
               <Link
                 href="/kayit"
@@ -135,8 +139,9 @@ export default function Navbar({
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-bold text-[#1e293b] transition-colors hover:bg-zinc-50 hover:text-[#0E8FA3]"
+                className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold text-[#1e293b] transition-colors hover:bg-zinc-50 hover:text-[#0E8FA3]"
               >
+                <ion-icon name={link.icon} aria-hidden="true" />
                 {link.label}
               </Link>
             ))}
@@ -182,16 +187,20 @@ export default function Navbar({
                 <Link
                   href="/koc-giris"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg bg-purple-50 px-3 py-2.5 text-sm font-medium text-[#1e293b] hover:bg-purple-100"
+                  className="flex items-center justify-center gap-1.5 rounded-full bg-[#1e293b] px-3 py-2.5 text-sm font-semibold text-white hover:bg-[#0f172a]"
                 >
+                  <ion-icon name="compass-outline" aria-hidden="true" />
                   Eğitmen Girişi
+                  <ion-icon name="hand-right-outline" aria-hidden="true" />
                 </Link>
                 <Link
                   href="/giris"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg bg-blue-50 px-3 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-100"
+                  className="flex items-center justify-center gap-1.5 rounded-full bg-[#0E8FA3] px-3 py-2.5 text-sm font-semibold text-white hover:bg-[#0c7689]"
                 >
+                  <ion-icon name="school-outline" aria-hidden="true" />
                   Öğrenci Girişi
+                  <ion-icon name="book-outline" aria-hidden="true" />
                 </Link>
                 <Link
                   href="/kayit"
