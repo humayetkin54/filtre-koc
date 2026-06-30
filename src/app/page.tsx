@@ -14,10 +14,10 @@ const steps = [
 ]
 
 const kocTipleri = [
-  { tag: 'YKS', title: 'Üniversite Koçluğu', desc: 'TYT ve AYT\'de net artışı hedefleyen, hedef bölümü okuyan koçlarla çalış.', features: ['Hedef üniversite mezunu koç', 'TYT + AYT strateji planı', 'Haftalık deneme analizi', '7/24 WhatsApp desteği'] },
-  { tag: 'LGS', title: 'Fen ve Anadolu Lisesi Koçluğu', desc: 'LGS\'de ilk 100\'e girmek ve fen lisesi kazanmak için stratejik hazırlık.', features: ['Fen lisesi mezunu koçlar', 'Yeni nesil soru taktikleri', 'Veli bilgilendirme raporu', 'Düzenli performans takibi'] },
-  { tag: 'KPSS', title: 'Memur Sınavı Koçluğu', desc: 'KPSS\'de üst sıralara girmek için deneyimli, sınavı kazanmış koçlar.', features: ['KPSS kazanmış koçlar', 'GY/GK + Alan sınavı planı', 'Özgün soru analizleri', 'Esnek program desteği'] },
-  { tag: 'PDR', title: 'Psikolojik Danışmanlık', desc: 'Sınav kaygısı, motivasyon ve stres yönetimi için uzman PDR desteği.', features: ['Psikoloji mezunu danışmanlar', 'Sınav kaygısı terapisi', 'Kariyer & tercih rehberliği', 'Aile görüşmeleri'] },
+  { tag: 'YKS', title: 'YKS Koçluğu', desc: 'TYT ve AYT\'de net artışı hedefleyen, hedef bölümü okuyan koçlarla çalış.', features: ['Hedef üniversite mezunu koç', 'TYT + AYT strateji planı', 'Haftalık deneme analizi', '7/24 WhatsApp desteği'] },
+  { tag: 'LGS', title: 'LGS Koçluğu', desc: 'LGS\'de ilk 100\'e girmek ve fen lisesi kazanmak için stratejik hazırlık.', features: ['Fen lisesi mezunu koçlar', 'Yeni nesil soru taktikleri', 'Veli bilgilendirme raporu', 'Düzenli performans takibi'] },
+  { tag: 'KPSS/AGS', title: 'KPSS/AGS Koçluğu', desc: 'KPSS\'de üst sıralara girmek için deneyimli, sınavı kazanmış koçlar.', features: ['KPSS kazanmış koçlar', 'GY/GK + Alan sınavı planı', 'Özgün soru analizleri', 'Esnek program desteği'] },
+  { tag: 'DGS', title: 'DGS Koçluğu', desc: 'Dikey Geçiş Sınavı\'nda üst sıralara çıkmak için hedefe odaklı hazırlık.', features: ['DGS kazanmış koçlar', 'Alan + Sayısal/Sözel strateji', 'Özgün soru analizleri', 'Esnek program desteği'] },
 ]
 
 const garantiler = [
