@@ -34,12 +34,12 @@ export default function Navbar({
           <Image src="/logo-navbar.png" alt="Rekor Zeka" width={1316} height={1183} className="h-12 w-auto" priority />
         </Link>
 
-        <nav className="hidden items-center gap-4 md:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="w-32 rounded-lg border border-[#0E8FA3] px-3 py-1.5 text-center text-sm font-bold text-[#0E8FA3] transition-colors hover:bg-[#0E8FA3] hover:text-white"
+              className="text-sm font-bold text-[#1e293b] transition-colors hover:text-[#0E8FA3] hover:underline hover:underline-offset-4"
             >
               {link.label}
             </Link>
@@ -87,7 +87,7 @@ export default function Navbar({
             <>
               <Link
                 href="/koc-giris"
-                className="rounded-lg bg-purple-50 px-4 py-2 text-sm font-medium text-purple-700 transition-colors hover:bg-purple-100"
+                className="rounded-lg bg-purple-50 px-4 py-2 text-sm font-medium text-[#1e293b] transition-colors hover:bg-purple-100"
               >
                 Eğitmen Girişi
               </Link>
@@ -134,7 +134,7 @@ export default function Navbar({
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="rounded-lg border border-[#0E8FA3] px-3 py-2.5 text-sm font-bold text-[#0E8FA3] transition-colors hover:bg-[#0E8FA3] hover:text-white"
+                className="rounded-lg px-3 py-2.5 text-sm font-bold text-[#1e293b] transition-colors hover:bg-zinc-50 hover:text-[#0E8FA3]"
               >
                 {link.label}
               </Link>
@@ -181,7 +181,7 @@ export default function Navbar({
                 <Link
                   href="/koc-giris"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg bg-purple-50 px-3 py-2.5 text-sm font-medium text-purple-700 hover:bg-purple-100"
+                  className="rounded-lg bg-purple-50 px-3 py-2.5 text-sm font-medium text-[#1e293b] hover:bg-purple-100"
                 >
                   Eğitmen Girişi
                 </Link>
