@@ -39,7 +39,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-white border border-gray-200 text-[#1e293b] text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-6">
             <span className="w-2 h-2 bg-[#0E8FA3] rounded-full animate-pulse" />
-            🧠 Türkiye'nin PDR altyapılı ilk premium koçluk platformu
+            YENİ NESİL · PDR DESTEKLİ · SEÇKİN AKADEMİK KOÇLUK PLATFORMU
           </div>
           <h1 className="font-bold text-5xl md:text-7xl tracking-tight text-[#1e293b] max-w-3xl mb-6 leading-tight">
             Sınav maratonunu{' '}
