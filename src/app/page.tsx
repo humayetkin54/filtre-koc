@@ -43,7 +43,7 @@ export default function HomePage() {
           </div>
           <h1 className="font-bold text-5xl md:text-7xl tracking-tight text-gray-900 max-w-3xl mb-6 leading-tight">
             Sınav maratonunu{' '}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">uzmanıyla</span>{' '}
+            <span className="text-[#E2600F]">uzmanıyla</span>{' '}
             yönet
           </h1>
           <p className="text-lg text-gray-500 max-w-xl mb-10 leading-relaxed">
