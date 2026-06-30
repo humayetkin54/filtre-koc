@@ -166,7 +166,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {kocTipleri.map(k => (
               <div key={k.tag} className="group bg-white rounded-2xl p-6 border border-gray-100 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-transparent koc-card">
-                <span className="inline-block text-xs font-bold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-4 group-hover:bg-white/20 group-hover:text-white transition-colors">{k.tag}</span>
+                <span className="koc-tag inline-block text-xs font-bold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-4 transition-colors">{k.tag}</span>
                 <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-white transition-colors">{k.title}</h3>
                 <p className="text-sm text-gray-500 mb-4 group-hover:text-white/80 transition-colors">{k.desc}</p>
                 <ul className="space-y-2">

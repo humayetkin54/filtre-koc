@@ -50,6 +50,16 @@ body {
 .koc-card:hover {
   background: linear-gradient(135deg, #0E8FA3 0%, #E2600F 100%) !important;
 }
+.koc-card:hover h3,
+.koc-card:hover p,
+.koc-card:hover li,
+.koc-card:hover span {
+  color: #ffffff !important;
+}
+.koc-card:hover .koc-tag {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
 
 .btn-primary {
   display: inline-flex;
