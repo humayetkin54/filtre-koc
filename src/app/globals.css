@@ -6,8 +6,8 @@
 
   --color-primary-start: #123A57;
   --color-primary-end: #E2600F;
-  --color-btn-bg: #0E8FA3;
-  --color-btn-text: #E2600F;
+  --color-btn-bg: #E2600F;
+  --color-btn-text: #ffffff;
 }
 
 @theme inline {
@@ -57,13 +57,13 @@ body {
   color: var(--color-btn-text);
   background-color: var(--color-btn-bg);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
-  box-shadow: 0 4px 14px rgba(14, 143, 163, 0.25);
+  box-shadow: 0 4px 14px rgba(226, 96, 15, 0.25);
 }
 
 .btn-primary:hover {
-  background-color: #0c7689;
+  background-color: #c2530d;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(14, 143, 163, 0.35);
+  box-shadow: 0 8px 20px rgba(226, 96, 15, 0.35);
 }
 
 .btn-primary:active {
