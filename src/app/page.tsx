@@ -35,13 +35,13 @@ export default function HomePage() {
       <IntroPopup />
       {/* HERO */}
       <section className="min-h-screen flex flex-col justify-center px-[5%] py-32"
-        style={{ background: 'radial-gradient(ellipse 70% 60% at 60% 40%, #dde1ff 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 20% 80%, #f0e8ff 0%, transparent 60%), #f7f6f2' }}>
+        style={{ background: 'linear-gradient(135deg, #eef3f5 0%, #e3eef0 35%, #cfe9e6 70%, #b8e0db 100%)' }}>
         <div className="max-w-6xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-600 text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-6">
-            <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+          <div className="inline-flex items-center gap-2 bg-white border border-gray-200 text-[#1e293b] text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-6">
+            <span className="w-2 h-2 bg-[#0E8FA3] rounded-full animate-pulse" />
             🧠 Türkiye'nin PDR altyapılı ilk premium koçluk platformu
           </div>
-          <h1 className="font-bold text-5xl md:text-7xl tracking-tight text-gray-900 max-w-3xl mb-6 leading-tight">
+          <h1 className="font-bold text-5xl md:text-7xl tracking-tight text-[#1e293b] max-w-3xl mb-6 leading-tight">
             Sınav maratonunu{' '}
             <span className="text-[#E2600F]">uzmanıyla</span>{' '}
             yönet
@@ -53,7 +53,7 @@ export default function HomePage() {
             <Link href="/on-gorusme" className="btn-primary px-8 py-4 text-base">
               Ücretsiz Uzman Görüşmesi Al →
             </Link>
-            <a href="#nasil-calisir" className="border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white font-semibold px-8 py-4 rounded-xl text-base transition-all">
+            <a href="#nasil-calisir" className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-8 py-4 rounded-xl text-base transition-all">
               Bilimsel Metodumuz
             </a>
           </div>

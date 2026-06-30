@@ -7,10 +7,10 @@ import type { User } from "@supabase/supabase-js";
 import { signOut } from "@/app/auth/actions";
 
 const navLinks = [
-  { href: "/", label: "Ana Sayfa" },
-  { href: "/koclar", label: "Koçlar" },
-  { href: "/nasil-calisir", label: "Nasıl Çalışır" },
-  { href: "/paketler", label: "Paketler" },
+  { href: "/", label: "Ana Sayfa", icon: "🏠" },
+  { href: "/koclar", label: "Koçlar", icon: "👤" },
+  { href: "/nasil-calisir", label: "Nasıl Çalışır", icon: "🔄" },
+  { href: "/paketler", label: "Paketler", icon: "📋" },
 ];
 
 export default function Navbar({
@@ -34,13 +34,14 @@ export default function Navbar({
           <Image src="/logo-navbar.png" alt="Rekor Zeka" width={1316} height={1183} className="h-12 w-auto" priority />
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-6 md:flex">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-bold text-[#1e293b] transition-colors hover:text-[#0E8FA3] hover:underline hover:underline-offset-4"
+              className="flex items-center gap-1.5 text-sm font-bold text-[#1e293b] transition-colors hover:text-[#0E8FA3]"
             >
+              <span aria-hidden>{link.icon}</span>
               {link.label}
             </Link>
           ))}
@@ -87,15 +88,15 @@ export default function Navbar({
             <>
               <Link
                 href="/koc-giris"
-                className="rounded-lg bg-purple-50 px-4 py-2 text-sm font-medium text-[#1e293b] transition-colors hover:bg-purple-100"
+                className="flex items-center gap-1.5 rounded-full bg-[#1e293b] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0f172a]"
               >
-                Eğitmen Girişi
+                🤝 Eğitmen Girişi
               </Link>
               <Link
                 href="/giris"
-                className="rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition-colors hover:bg-blue-100"
+                className="flex items-center gap-1.5 rounded-full bg-[#0E8FA3] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0c7689]"
               >
-                Öğrenci Girişi
+                🎓 Öğrenci Girişi
               </Link>
               <Link
                 href="/kayit"
