@@ -15,6 +15,20 @@
   --color-primary-end: var(--color-primary-end);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Remap Tailwind's blue-* scale to the Rekor Zeka navy/teal palette,
+     so existing bg-blue-*, text-blue-*, border-blue-* utilities follow suit. */
+  --color-blue-50: #eef5f8;
+  --color-blue-100: #d9eaf0;
+  --color-blue-200: #b3d5e0;
+  --color-blue-300: #80b8cc;
+  --color-blue-400: #4d9ab8;
+  --color-blue-500: #1f7a95;
+  --color-blue-600: #123a57;
+  --color-blue-700: #0c2a40;
+  --color-blue-800: #081d2d;
+  --color-blue-900: #05131f;
+  --color-blue-950: #030b12;
 }
 
 @media (prefers-color-scheme: dark) {
