@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { signUp } from "@/app/auth/actions";
+import KayitForm from "./kayit-form";
 
 export default function KayitPage({
   searchParams,
@@ -30,93 +30,7 @@ export default function KayitPage({
           </div>
 
           <StatusMessage searchParams={searchParams} />
-
-          <form action={signUp} className="space-y-4">
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                Ad Soyad
-              </label>
-              <input
-                type="text"
-                name="name"
-                required
-                autoComplete="name"
-                placeholder="Ada Yılmaz"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
-              />
-            </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                E-posta
-              </label>
-              <input
-                type="email"
-                name="email"
-                required
-                autoComplete="email"
-                placeholder="ada@ornek.com"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
-              />
-            </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                Şifre
-              </label>
-              <input
-                type="password"
-                name="password"
-                required
-                minLength={6}
-                autoComplete="new-password"
-                placeholder="En az 6 karakter"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
-              />
-            </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                Sınıf
-              </label>
-              <select
-                name="grade"
-                required
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
-              >
-                <option value="">Sınıfını seç</option>
-                <option value="5. Sınıf">5. Sınıf</option>
-                <option value="6. Sınıf">6. Sınıf</option>
-                <option value="7. Sınıf">7. Sınıf</option>
-                <option value="8. Sınıf (LGS)">8. Sınıf (LGS)</option>
-                <option value="9. Sınıf">9. Sınıf</option>
-                <option value="10. Sınıf">10. Sınıf</option>
-                <option value="11. Sınıf">11. Sınıf</option>
-                <option value="12. Sınıf (YKS)">12. Sınıf (YKS)</option>
-                <option value="Mezun">Mezun</option>
-              </select>
-            </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                Destek almak istediğim sınav
-              </label>
-              <select
-                name="exam_type"
-                required
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
-              >
-                <option value="">Sınav türünü seç</option>
-                <option value="YKS (TYT/AYT)">YKS (TYT/AYT)</option>
-                <option value="LGS">LGS</option>
-                <option value="KPSS/AGS">KPSS/AGS</option>
-                <option value="PDR Desteği">PDR Desteği</option>
-                <option value="Diğer">Diğer</option>
-              </select>
-            </div>
-            <button
-              type="submit"
-              className="btn-primary w-full py-3"
-            >
-              Kayıt ol
-            </button>
-          </form>
+          <KayitForm />
 
           <p className="mt-4 text-center text-xs text-gray-400">
             Kayıt olarak{" "}
