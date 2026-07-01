@@ -3,6 +3,42 @@
 import { useState } from "react";
 import { saveOnboarding } from "./actions";
 
+const UNIVERSITELER = [
+  "Boğaziçi Üniversitesi","İstanbul Teknik Üniversitesi (İTÜ)","Orta Doğu Teknik Üniversitesi (ODTÜ)",
+  "Hacettepe Üniversitesi","Ankara Üniversitesi","Gazi Üniversitesi","İstanbul Üniversitesi",
+  "İstanbul Üniversitesi-Cerrahpaşa","Ege Üniversitesi","Dokuz Eylül Üniversitesi",
+  "Marmara Üniversitesi","Yıldız Teknik Üniversitesi","Bilkent Üniversitesi","Koç Üniversitesi",
+  "Sabancı Üniversitesi","Bahçeşehir Üniversitesi","Atılım Üniversitesi","TED Üniversitesi",
+  "İzmir Yüksek Teknoloji Enstitüsü (İYTE)","Gebze Teknik Üniversitesi","Erciyes Üniversitesi",
+  "Selçuk Üniversitesi","Akdeniz Üniversitesi","Çukurova Üniversitesi","Uludağ Üniversitesi",
+  "Karadeniz Teknik Üniversitesi","Ondokuz Mayıs Üniversitesi","Fırat Üniversitesi",
+  "İnönü Üniversitesi","Dicle Üniversitesi","Gaziantep Üniversitesi","Pamukkale Üniversitesi",
+  "Muğla Sıtkı Koçman Üniversitesi","Adnan Menderes Üniversitesi","Balıkesir Üniversitesi",
+  "Kocaeli Üniversitesi","Sakarya Üniversitesi","Eskişehir Osmangazi Üniversitesi",
+  "Anadolu Üniversitesi","Eskişehir Teknik Üniversitesi","TOBB Ekonomi ve Teknoloji Üniversitesi",
+  "Başkent Üniversitesi","Çankaya Üniversitesi","İstanbul Medipol Üniversitesi",
+  "Acıbadem Üniversitesi","Nişantaşı Üniversitesi","Maltepe Üniversitesi","Özyeğin Üniversitesi",
+];
+
+const BOLUMLER = [
+  "Tıp","Diş Hekimliği","Eczacılık","Hemşirelik","Veterinerlik",
+  "Hukuk","Siyaset Bilimi ve Kamu Yönetimi","Uluslararası İlişkiler",
+  "İşletme","İktisat","Maliye","Muhasebe ve Finansman",
+  "Psikoloji","Psikolojik Danışmanlık ve Rehberlik (PDR)","Sosyal Hizmet",
+  "Bilgisayar Mühendisliği","Yazılım Mühendisliği","Elektrik-Elektronik Mühendisliği",
+  "Makine Mühendisliği","İnşaat Mühendisliği","Endüstri Mühendisliği","Kimya Mühendisliği",
+  "Biyomedikal Mühendisliği","Havacılık ve Uzay Mühendisliği","Mekatronik Mühendisliği",
+  "Mimarlık","İç Mimarlık","Şehir ve Bölge Planlama",
+  "Matematik","Fizik","Kimya","Biyoloji","İstatistik",
+  "Türk Dili ve Edebiyatı","Tarih","Felsefe","Sosyoloji","Psikoloji",
+  "İngiliz Dili ve Edebiyatı","Mütercim-Tercümanlık",
+  "Öğretmenlik (Matematik)","Öğretmenlik (Fen Bilimleri)","Öğretmenlik (Türkçe)",
+  "Öğretmenlik (İngilizce)","Öğretmenlik (Okul Öncesi)","Öğretmenlik (Sınıf)",
+  "Gastronomi ve Mutfak Sanatları","Turizm İşletmeciliği","Otel Yöneticiliği",
+  "Grafik Tasarım","Görsel İletişim Tasarımı","Sinema ve Televizyon",
+  "Spor Bilimleri","Beslenme ve Diyetetik","Fizyoterapi ve Rehabilitasyon",
+];
+
 const DERSLER = ["Matematik", "Türkçe", "Fizik", "Kimya", "Biyoloji", "Tarih", "Coğrafya", "Felsefe", "İngilizce", "Edebiyat"];
 
 const steps = [
@@ -21,7 +57,8 @@ const inputClass =
 export default function OnboardingForm() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({
-    target: "",
+    target_university: "",
+    target_department: "",
     tyt_net: "",
     ayt_net: "",
     months: "",
@@ -45,7 +82,7 @@ export default function OnboardingForm() {
   }
 
   function canNext() {
-    if (current.id === "target") return answers.target.trim().length > 0;
+    if (current.id === "target") return answers.target_university.trim().length > 0 && answers.target_department.trim().length > 0;
     if (current.id === "nets") return answers.tyt_net.trim().length > 0;
     if (current.id === "months") return answers.months.trim().length > 0;
     if (current.id === "hours") return answers.hours.trim().length > 0;
@@ -58,8 +95,10 @@ export default function OnboardingForm() {
   async function handleSubmit() {
     setLoading(true);
     const fd = new FormData();
+    fd.append("target", `${answers.target_university} - ${answers.target_department}`);
     Object.entries(answers).forEach(([k, v]) => {
-      fd.append(k, Array.isArray(v) ? v.join(", ") : v);
+      if (k !== "target_university" && k !== "target_department")
+        fd.append(k, Array.isArray(v) ? v.join(", ") : v);
     });
     await saveOnboarding(fd);
   }
@@ -87,14 +126,40 @@ export default function OnboardingForm() {
       <div className="rounded-2xl bg-white p-8 shadow-sm">
 
         {current.id === "target" && (
-          <input
-            type="text"
-            placeholder="Örn: Hacettepe Tıp, ODTÜ Bilgisayar Müh."
-            className={inputClass}
-            value={answers.target}
-            onChange={(e) => setAnswers({ ...answers, target: e.target.value })}
-            autoFocus
-          />
+          <div className="space-y-4">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Üniversite</label>
+              <input
+                list="uni-list"
+                placeholder="Aramak için yaz... (örn: Hacettepe)"
+                className={inputClass}
+                value={answers.target_university}
+                onChange={(e) => setAnswers({ ...answers, target_university: e.target.value })}
+                autoFocus
+              />
+              <datalist id="uni-list">
+                {UNIVERSITELER.map((u) => <option key={u} value={u} />)}
+              </datalist>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Bölüm</label>
+              <input
+                list="bolum-list"
+                placeholder="Aramak için yaz... (örn: Tıp, Bilgisayar)"
+                className={inputClass}
+                value={answers.target_department}
+                onChange={(e) => setAnswers({ ...answers, target_department: e.target.value })}
+              />
+              <datalist id="bolum-list">
+                {BOLUMLER.map((b) => <option key={b} value={b} />)}
+              </datalist>
+            </div>
+            {answers.target_university && answers.target_department && (
+              <div className="rounded-xl bg-[#eef9f9] border border-[#0E8FA3]/20 px-4 py-3 text-sm text-[#0E8FA3] font-medium">
+                🎯 {answers.target_university} · {answers.target_department}
+              </div>
+            )}
+          </div>
         )}
 
         {current.id === "nets" && (
