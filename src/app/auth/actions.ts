@@ -14,6 +14,11 @@ export async function signIn(formData: FormData) {
     redirect(`/giris?error=${encodeURIComponent(error.message)}`);
   }
 
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.user_metadata?.onboarding_completed) {
+    redirect("/onboarding");
+  }
+
   redirect("/koclar");
 }
 
