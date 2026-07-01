@@ -85,19 +85,17 @@ export default function KayitForm() {
           <option value="Mezun">Mezun</option>
         </select>
       </div>
-      {grade && (
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">
-            Destek almak istediğim sınav
-          </label>
-          <select name="exam_type" required className={selectClass}>
-            <option value="">Sınav türünü seç</option>
-            {examOptions.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
-        </div>
-      )}
+      <div style={{ display: grade ? "block" : "none" }}>
+        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          Destek almak istediğim sınav
+        </label>
+        <select name="exam_type" required={!!grade} className={selectClass}>
+          <option value="">Sınav türünü seç</option>
+          {examOptions.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+      </div>
       <button type="submit" className="btn-primary w-full py-3">
         Kayıt ol
       </button>
