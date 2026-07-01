@@ -24,5 +24,5 @@ export async function saveOnboarding(formData: FormData) {
     redirect("/onboarding?error=1");
   }
 
-  redirect("/koclar");
+  redirect("/eslestirme");
 }

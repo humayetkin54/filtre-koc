@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { coachSignUp } from "@/app/koc-auth/actions";
+import KocKayitForm from "./koc-kayit-form";
 
 export default function KocKayitPage({
   searchParams,
@@ -30,94 +30,7 @@ export default function KocKayitPage({
           </div>
 
           <StatusMessage searchParams={searchParams} />
-
-          <form action={coachSignUp} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Ad Soyad
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  autoComplete="name"
-                  placeholder="Ada Yılmaz"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
-                />
-              </div>
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Üniversite
-                </label>
-                <input
-                  type="text"
-                  name="university"
-                  required
-                  placeholder="ODTÜ"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
-                />
-              </div>
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Bölüm
-                </label>
-                <input
-                  type="text"
-                  name="department"
-                  required
-                  placeholder="Tıp Fakültesi"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  E-posta
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  autoComplete="email"
-                  placeholder="ada@ornek.com"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Şifre
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  minLength={6}
-                  autoComplete="new-password"
-                  placeholder="En az 6 karakter"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Kendini kısaca tanıt{" "}
-                  <span className="text-gray-500 font-normal">(opsiyonel)</span>
-                </label>
-                <textarea
-                  name="bio"
-                  rows={3}
-                  placeholder="Hangi sınavlara hazırladın, kaç yıllık deneyimin var..."
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20 resize-none"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-700"
-            >
-              Başvur
-            </button>
-          </form>
+          <KocKayitForm />
 
           <p className="mt-6 text-center text-xs text-gray-500">
             Zaten koç hesabın var mı?{" "}
