@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { signIn } from "@/app/auth/actions";
 
 export default function GirisPage({
@@ -11,8 +12,8 @@ export default function GirisPage({
       <div className="w-full max-w-md">
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <div className="mb-8 text-center">
-            <Link href="/" className="text-2xl font-bold text-[#123A57]">
-              Rekor Zeka
+            <Link href="/" className="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2 shadow-sm">
+              <Image src="/logo-navbar.png" alt="Rekor Zeka" width={1316} height={1183} className="h-9 w-auto" />
             </Link>
             <h1 className="mt-4 text-xl font-semibold text-gray-900">
               Giriş yap
