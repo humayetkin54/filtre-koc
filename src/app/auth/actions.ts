@@ -35,6 +35,7 @@ export async function signUp(formData: FormData) {
     password,
     options: {
       data: { full_name: name, grade, exam_type },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://filtre-koc.vercel.app"}/auth/callback`,
     },
   });
 
