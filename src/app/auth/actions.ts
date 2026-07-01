@@ -21,13 +21,15 @@ export async function signUp(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const name = formData.get("name") as string;
+  const grade = formData.get("grade") as string;
+  const exam_type = formData.get("exam_type") as string;
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { full_name: name },
+      data: { full_name: name, grade, exam_type },
     },
   });
 
