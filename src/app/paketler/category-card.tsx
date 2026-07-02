@@ -1,11 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { categories } from "./data";
 
 export function CategoryCard({ cat }: { cat: (typeof categories)[number] }) {
   const [planIdx, setPlanIdx] = useState(0);
   const plan = cat.plans[planIdx];
+  const searchParams = useSearchParams();
+  const coachId = searchParams.get("coach_id") ?? "";
+  const coachName = searchParams.get("coach_name") ?? "";
+
+  const checkoutUrl = `/satin-al?category=${encodeURIComponent(cat.tag)}&plan=${encodeURIComponent(plan.name)}&price=${plan.price}&period=${encodeURIComponent(plan.period)}${coachId ? `&coach_id=${coachId}&coach_name=${encodeURIComponent(coachName)}` : ""}`;
 
   return (
     <div className="flex flex-col">
@@ -65,25 +71,21 @@ export function CategoryCard({ cat }: { cat: (typeof categories)[number] }) {
         <ul className="mt-5 flex-1 space-y-2.5">
           {plan.features.map((f) => (
             <li key={f} className="flex items-start gap-2 text-sm">
-              <span className={`mt-0.5 font-bold ${plan.highlight ? "text-white" : "text-emerald-500"}`}>
-                ✓
-              </span>
-              <span className={plan.highlight ? "text-white/90" : "text-gray-700"}>
-                {f}
-              </span>
+              <span className={`mt-0.5 font-bold ${plan.highlight ? "text-white" : "text-emerald-500"}`}>✓</span>
+              <span className={plan.highlight ? "text-white/90" : "text-gray-700"}>{f}</span>
             </li>
           ))}
         </ul>
 
         <a
-          href="/koclar"
+          href={checkoutUrl}
           className={
             plan.highlight
               ? "mt-6 block rounded-xl bg-white px-6 py-3 text-center text-sm font-bold text-[#123A57] transition-all hover:-translate-y-0.5 hover:shadow-lg"
               : "btn-primary mt-6 w-full text-sm hover:-translate-y-0.5"
           }
         >
-          Koç seç →
+          Satın Al →
         </a>
       </div>
     </div>

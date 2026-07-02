@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { categories, guarantees } from "./data";
 import { CategoryCard } from "./category-card";
 
@@ -21,11 +22,13 @@ export default function PaketlerPage() {
 
       {/* Categories */}
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
-          {categories.map((cat) => (
-            <CategoryCard key={cat.tag} cat={cat} />
-          ))}
-        </div>
+        <Suspense fallback={null}>
+          <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
+            {categories.map((cat) => (
+              <CategoryCard key={cat.tag} cat={cat} />
+            ))}
+          </div>
+        </Suspense>
       </section>
 
       {/* Guarantees */}
@@ -44,5 +47,5 @@ export default function PaketlerPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

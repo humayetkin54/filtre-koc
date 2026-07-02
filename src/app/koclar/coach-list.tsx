@@ -157,7 +157,7 @@ function CoachCard({ coach }: { coach: Coach }) {
         <button
           type="button"
           disabled={isFull}
-          onClick={() => window.location.href = "/paketler"}
+          onClick={() => window.location.href = `/paketler?coach_id=${coach.id}&coach_name=${encodeURIComponent(coach.name)}`}
           className="rounded-xl bg-gradient-to-br from-[#123A57] to-[#E2600F] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:translate-y-0 disabled:bg-none disabled:bg-zinc-200 disabled:text-zinc-400 disabled:shadow-none"
         >
           Koçluk Başlat
