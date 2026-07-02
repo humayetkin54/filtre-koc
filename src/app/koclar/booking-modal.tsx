@@ -60,8 +60,8 @@ export function BookingModal({
               {coach.avatar_initials}
             </div>
             <div>
-              <p className="font-semibold text-gray-900">{coach.name}</p>
-              <p className="text-xs text-gray-500">{coach.university}</p>
+              <p className="font-semibold text-gray-900">{coach.name} ile Tanışma</p>
+              <p className="text-xs text-[#0E8FA3] font-medium">Ücretsiz 15 dk · Taahhüt yok</p>
             </div>
           </div>
           <button

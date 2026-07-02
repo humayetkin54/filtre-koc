@@ -85,6 +85,7 @@ function CoachCard({ coach }: { coach: Coach }) {
 
   return (
     <article className="flex flex-col rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:border-[#123A57]/20 hover:shadow-md">
+
       <div className="flex items-start gap-4">
         <div
           className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-base font-bold"
@@ -149,9 +150,17 @@ function CoachCard({ coach }: { coach: Coach }) {
           type="button"
           disabled={isFull}
           onClick={() => setShowModal(true)}
+          className="rounded-xl border-2 border-[#0E8FA3] px-4 py-2.5 text-sm font-semibold text-[#0E8FA3] transition-all hover:bg-[#0E8FA3] hover:text-white disabled:cursor-not-allowed disabled:border-zinc-200 disabled:text-zinc-400"
+        >
+          Koçla Tanış
+        </button>
+        <button
+          type="button"
+          disabled={isFull}
+          onClick={() => window.location.href = "/paketler"}
           className="rounded-xl bg-gradient-to-br from-[#123A57] to-[#E2600F] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:translate-y-0 disabled:bg-none disabled:bg-zinc-200 disabled:text-zinc-400 disabled:shadow-none"
         >
-          Koçluk başlat
+          Koçluk Başlat
         </button>
       </div>
 
