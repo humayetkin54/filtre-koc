@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 export async function savePurchase(data: {
   coachId: string;
@@ -12,8 +12,9 @@ export async function savePurchase(data: {
 }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const admin = createAdminClient();
 
-  await supabase.from("purchases").insert({
+  await admin.from("purchases").insert({
     user_id: user?.id ?? null,
     student_email: user?.email ?? null,
     student_name: user?.user_metadata?.full_name ?? null,

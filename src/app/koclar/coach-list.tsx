@@ -30,7 +30,15 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
   );
 }
 
-function CoachCard({ coach }: { coach: Coach }) {
+function CoachCard({
+  coach,
+  purchased,
+  hasPurchase,
+}: {
+  coach: Coach;
+  purchased: boolean;   // bu koçu satın almış mı
+  hasPurchase: boolean; // herhangi bir satın alma var mı
+}) {
   const isFull = coach.availability === "full";
   const [showModal, setShowModal] = useState(false);
 
@@ -114,13 +122,22 @@ function CoachCard({ coach }: { coach: Coach }) {
         </Link>
 
         {isFull ? (
-          <button
-            disabled
-            className="w-full rounded-xl bg-gray-200 px-4 py-3 text-sm font-semibold text-gray-400 cursor-not-allowed"
-          >
+          <button disabled className="w-full rounded-xl bg-gray-200 px-4 py-3 text-sm font-semibold text-gray-400 cursor-not-allowed">
             Kontenjan Dolu
           </button>
+        ) : purchased || hasPurchase ? (
+          /* Ödeme yapılmış: direkt koçluk başlat */
+          <Link
+            href={`/paketler?coach_id=${coach.id}&coach_name=${encodeURIComponent(coach.name)}`}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#123A57] to-[#0E8FA3] px-4 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Koçluk Başlat
+          </Link>
         ) : (
+          /* Ödeme yapılmamış: tanışma randevusu */
           <button
             type="button"
             onClick={() => setShowModal(true)}
@@ -138,7 +155,15 @@ function CoachCard({ coach }: { coach: Coach }) {
   );
 }
 
-export function CoachList({ coaches }: { coaches: Coach[] }) {
+export function CoachList({
+  coaches,
+  purchasedCoachIds = [],
+  hasPurchase = false,
+}: {
+  coaches: Coach[];
+  purchasedCoachIds?: string[];
+  hasPurchase?: boolean;
+}) {
   const [filter, setFilter] = useState<FilterType>("all");
   const [search, setSearch] = useState("");
 
@@ -216,7 +241,12 @@ export function CoachList({ coaches }: { coaches: Coach[] }) {
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filteredCoaches.map((coach) => (
-              <CoachCard key={coach.id} coach={coach} />
+              <CoachCard
+                key={coach.id}
+                coach={coach}
+                purchased={purchasedCoachIds.includes(coach.id)}
+                hasPurchase={hasPurchase}
+              />
             ))}
           </div>
         )}
