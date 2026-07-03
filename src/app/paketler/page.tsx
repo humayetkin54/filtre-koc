@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { categories, guarantees } from "./data";
 import { CategoryCard } from "./category-card";
 
@@ -43,6 +44,48 @@ export default function PaketlerPage() {
                 <span className="text-emerald-500">✓</span> {g}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Taksit notu + Sözleşme */}
+      <section className="px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl space-y-5">
+
+          {/* Taksit notu */}
+          <div className="rounded-xl border border-[#f5e8c0] bg-[#fffbeb] px-5 py-4 flex items-start gap-3 text-sm text-[#92400e]">
+            <span className="text-base mt-0.5">💡</span>
+            <p>
+              <strong>Not:</strong> Tüm paketlerde taksit imkânı mevcuttur.
+              Ödeme sayfasında taksit seçeneklerinizi görebilirsiniz.
+            </p>
+          </div>
+
+          {/* Sözleşme onayı */}
+          <div className="rounded-xl border border-gray-200 bg-white px-6 py-5">
+            <div className="flex items-start gap-4">
+              <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded border-2 border-emerald-500 bg-emerald-500 flex items-center justify-center">
+                <svg viewBox="0 0 12 10" fill="none" className="w-3 h-3">
+                  <path d="M1 5l3 3 7-7" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-800 leading-snug">
+                  Kişisel Verilerin Korunması Aydınlatma Metni, Bilgilendirmeleri ve
+                  Mesafeli Satış Sözleşmesi&apos;ni okudum, kabul ediyorum.{" "}
+                  <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                    Zorunlu
+                  </span>
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-1 text-xs text-[#0E8FA3]">
+                  <Link href="/kvkk" className="hover:underline">KVKK Aydınlatma</Link>
+                  <span className="text-gray-300">•</span>
+                  <Link href="/gizlilik" className="hover:underline">Gizlilik Sözleşmesi</Link>
+                  <span className="text-gray-300">•</span>
+                  <Link href="/mesafeli-satis-sozlesmesi" className="hover:underline">Mesafeli Satış Sözleşmesi</Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
