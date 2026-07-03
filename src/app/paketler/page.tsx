@@ -70,9 +70,9 @@ export default function PaketlerPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-800 leading-snug flex flex-wrap items-center gap-2">
-                  <span>Kişisel Verilerin Korunması Aydınlatma Metni, Bilgilendirmeleri ve Mesafeli Satış Sözleşmesi&apos;ni okudum, kabul ediyorum.</span>
-                  <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 whitespace-nowrap">
+                <p className="text-sm font-semibold text-gray-800 leading-snug flex items-center gap-2 flex-nowrap">
+                  <span className="whitespace-nowrap">KVKK, Bilgilendirme ve Mesafeli Satış Sözleşmesi&apos;ni okudum, kabul ediyorum.</span>
+                  <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 whitespace-nowrap flex-shrink-0">
                     Zorunlu
                   </span>
                 </p>
