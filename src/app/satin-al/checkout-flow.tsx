@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { savePurchase } from "./actions";
 
 type Step = "ozet" | "kart" | "onay";
 
@@ -79,7 +80,18 @@ export default function CheckoutFlow() {
   function handlePay() {
     if (!validateCard()) return;
     setLoading(true);
-    setTimeout(() => { setLoading(false); setStep("onay"); }, 1800);
+    setTimeout(async () => {
+      await savePurchase({
+        coachId: sp.get("coach_id") ?? "",
+        coachName: coachName,
+        category,
+        plan,
+        price,
+        period,
+      });
+      setLoading(false);
+      setStep("onay");
+    }, 1800);
   }
 
   return (
