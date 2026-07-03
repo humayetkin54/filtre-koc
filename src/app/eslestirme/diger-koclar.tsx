@@ -31,10 +31,6 @@ type Coach = {
 };
 
 export default function DigerKoclar({ coaches, freeLeft }: { coaches: Coach[]; freeLeft: number }) {
-  function handleBook() {
-    alert("Randevu sistemi yakında aktif olacak!");
-  }
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {coaches.map((c) => {
@@ -95,17 +91,18 @@ export default function DigerKoclar({ coaches, freeLeft }: { coaches: Coach[]; f
             </div>
 
             {/* Buton */}
-            <button
-              onClick={handleBook}
-              disabled={isFull || freeLeft === 0}
-              className={`mt-auto w-full rounded-xl border-2 px-4 py-2.5 text-sm font-semibold transition-all ${
-                isFull || freeLeft === 0
-                  ? "border-gray-200 text-gray-400 cursor-not-allowed"
-                  : "border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white"
-              }`}
-            >
-              {isFull ? "Kontenjan Dolu" : freeLeft === 0 ? "Hak Tükendi" : "Ücretsiz Tanışma"}
-            </button>
+            {isFull ? (
+              <button disabled className="mt-auto w-full rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-400 cursor-not-allowed">
+                Kontenjan Dolu
+              </button>
+            ) : (
+              <a
+                href={`/koclar/${c.id}`}
+                className="mt-auto block w-full rounded-xl bg-[#0E8FA3] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#0c7689]"
+              >
+                {freeLeft > 0 ? "Profili Görüntüle" : "Profili Görüntüle"}
+              </a>
+            )}
           </div>
         );
       })}
