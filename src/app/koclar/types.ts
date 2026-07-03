@@ -18,4 +18,5 @@ export interface Coach {
   availability: Availability;
   types: CoachType[];
   price: number;
+  bio?: string;
 }
