@@ -14,7 +14,7 @@ export async function savePurchase(data: {
   const { data: { user } } = await supabase.auth.getUser();
   const admin = createAdminClient();
 
-  await admin.from("purchases").insert({
+  const { error } = await admin.from("purchases").insert({
     user_id: user?.id ?? null,
     student_email: user?.email ?? null,
     student_name: user?.user_metadata?.full_name ?? null,
@@ -26,4 +26,7 @@ export async function savePurchase(data: {
     period: data.period,
     status: "active",
   });
+
+  if (error) console.error("[savePurchase] HATA:", error.message, error.details);
+  else console.log("[savePurchase] Kaydedildi:", data.category, data.plan, user?.email);
 }
