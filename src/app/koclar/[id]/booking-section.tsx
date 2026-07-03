@@ -37,17 +37,6 @@ export function BookingSection({ coach }: { coach: Coach }) {
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-6">
-      <div className="mb-4 flex items-end justify-between">
-        <div>
-          <p className="text-xs text-gray-400">Aylık ücret</p>
-          <p className="text-3xl font-bold text-gray-900">
-            {coach.price.toLocaleString("tr-TR")} ₺
-            <span className="text-sm font-normal text-gray-400">/ay</span>
-          </p>
-        </div>
-        <span className="text-xs text-gray-400">14 gün iade garantisi</span>
-      </div>
-
       {done ? (
         <div className="rounded-xl bg-emerald-50 px-4 py-6 text-center">
           <p className="text-2xl mb-2">✓</p>
