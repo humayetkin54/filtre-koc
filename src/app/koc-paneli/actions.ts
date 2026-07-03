@@ -28,3 +28,30 @@ export async function updateAppointmentStatus(
 
   revalidatePath("/koc-paneli");
 }
+
+export async function saveAvailability(
+  coachId: string,
+  schedule: Record<string, string[]>
+) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  // Güvenlik: koç kendi kaydı mı
+  const { data: coach } = await supabase
+    .from("coaches")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("id", coachId)
+    .single();
+
+  if (!coach) return;
+
+  await supabase
+    .from("coaches")
+    .update({ availability_schedule: schedule })
+    .eq("id", coachId);
+
+  revalidatePath("/koc-paneli");
+  revalidatePath(`/koclar/${coachId}`);
+}

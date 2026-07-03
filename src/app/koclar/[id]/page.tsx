@@ -48,6 +48,7 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
   const c = coach as Coach;
   const avail = availabilityConfig[c.availability];
   const isFull = c.availability === "full";
+  const schedule = (coach.availability_schedule as Record<string, string[]>) ?? {};
 
   /* Benzer koçlar */
   const { data: similar } = await supabase
@@ -274,7 +275,7 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
         {/* ── 6. RANDEVU ── */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-5">Ücretsiz Tanışma Randevusu</h2>
-          <BookingSection coach={c} />
+          <BookingSection coach={c} schedule={schedule} />
         </div>
 
         {/* ── 7. BENZER KOÇLAR ── */}

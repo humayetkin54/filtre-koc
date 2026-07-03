@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { updateAppointmentStatus } from "./actions";
+import { AvailabilityEditor } from "./availability-editor";
 
 const statusConfig = {
   pending: { label: "Bekliyor", className: "bg-amber-50 text-amber-700 ring-amber-500/25" },
@@ -31,7 +32,7 @@ export default async function KocPaneliPage() {
   // Koç kaydı ve onay kontrolü
   const { data: coach } = await supabase
     .from("coaches")
-    .select("id, name, status, avatar_initials, avatar_color, avatar_text_color")
+    .select("id, name, status, avatar_initials, avatar_color, avatar_text_color, availability_schedule")
     .eq("user_id", user.id)
     .single();
 
@@ -106,6 +107,26 @@ export default async function KocPaneliPage() {
               <p className="mt-1 text-xs text-gray-500">{s.label}</p>
             </div>
           ))}
+        </div>
+
+        {/* Müsaitlik Takvimi */}
+        <div className="mb-10 rounded-2xl border border-gray-200 bg-white p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-9 h-9 rounded-xl bg-[#eef9f9] flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#0E8FA3" strokeWidth={2} className="w-5 h-5">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path strokeLinecap="round" d="M16 2v4M8 2v4M3 10h18" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="font-bold text-gray-900">Müsaitlik Takvimi</h2>
+              <p className="text-xs text-gray-500">Öğrencilerin randevu alabileceği gün ve saatleri belirleyin</p>
+            </div>
+          </div>
+          <AvailabilityEditor
+            coachId={coach.id}
+            initial={(coach.availability_schedule as Record<string, string[]>) ?? {}}
+          />
         </div>
 
         <div className="space-y-10">
