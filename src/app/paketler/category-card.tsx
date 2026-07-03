@@ -81,8 +81,8 @@ export function CategoryCard({ cat }: { cat: (typeof categories)[number] }) {
           href={checkoutUrl}
           className={
             plan.highlight
-              ? "mt-6 block rounded-xl bg-white px-6 py-3 text-center text-sm font-bold text-[#123A57] transition-all hover:-translate-y-0.5 hover:shadow-lg"
-              : "btn-primary mt-6 w-full text-sm hover:-translate-y-0.5"
+              ? "mt-6 block rounded-xl bg-white px-6 py-4 text-center text-sm font-bold text-[#123A57] transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              : "btn-primary mt-6 block w-full py-4 text-sm font-bold hover:-translate-y-0.5"
           }
         >
           Satın Al →
