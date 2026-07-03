@@ -51,6 +51,17 @@ export default function Navbar({
           {user ? (
             <>
               <Link
+                href="/destek"
+                title="Destek Merkezi"
+                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-[#0E8FA3] transition-colors hover:bg-[#eef9f9]"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+                  <circle cx="12" cy="12" r="10" />
+                  <path strokeLinecap="round" d="M12 8v4m0 4h.01" />
+                </svg>
+                <span className="hidden lg:inline text-xs">Destek</span>
+              </Link>
+              <Link
                 href={isCoach ? "/koc-paneli" : "/randevularim"}
                 className="relative rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
               >
@@ -173,6 +184,17 @@ export default function Navbar({
                     Talepler
                   </Link>
                 )}
+                <Link
+                  href="/destek"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#0E8FA3] hover:bg-[#eef9f9]"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+                    <circle cx="12" cy="12" r="10" />
+                    <path strokeLinecap="round" d="M12 8v4m0 4h.01" />
+                  </svg>
+                  Destek Merkezi
+                </Link>
                 <form action={signOut}>
                   <button
                     type="submit"

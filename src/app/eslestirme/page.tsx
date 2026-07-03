@@ -2,6 +2,7 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import EslestirmeClient from "./eslestirme-client";
 import DigerKoclar from "./diger-koclar";
+import DestekPopup from "./destek-popup";
 
 type Coach = {
   id: string;
@@ -82,6 +83,7 @@ export default async function EslestirmePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#eef3f5] to-[#cfe9e6]">
+      <DestekPopup />
       <div className="px-4 py-12">
         <div className="max-w-lg mx-auto space-y-6">
 
