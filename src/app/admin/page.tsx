@@ -32,10 +32,12 @@ export default async function AdminPage() {
   if (!user || !ADMIN_EMAILS.includes((user.email ?? "").toLowerCase())) redirect("/koc-giris");
 
   const admin = createAdminClient();
-  const [{ data: requests }, { data: purchases }] = await Promise.all([
+  const [{ data: requests }, { data: purchases, error: purchasesError }] = await Promise.all([
     admin.from("intro_requests").select("id, name, grade, area, phone, created_at").order("created_at", { ascending: false }),
     admin.from("purchases").select("id, student_email, student_name, coach_name, category, plan, price, period, status, created_at").order("created_at", { ascending: false }),
   ]);
+
+  if (purchasesError) console.error("[Admin] purchases sorgu hatası:", purchasesError.message);
 
   const list = (requests ?? []) as IntroRequest[];
   const sales = (purchases ?? []) as Purchase[];
@@ -85,11 +87,33 @@ export default async function AdminPage() {
             ))}
           </div>
 
-          {sales.length === 0 ? (
+          {purchasesError ? (
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-6">
+              <p className="text-sm font-semibold text-red-700 mb-1">⚠ Tablo bulunamadı</p>
+              <p className="text-xs text-red-600 font-mono">{purchasesError.message}</p>
+              <p className="mt-3 text-xs text-red-500">
+                Supabase SQL Editor&apos;da şu komutu çalıştırın:
+              </p>
+              <pre className="mt-2 rounded-lg bg-red-100 p-3 text-[11px] text-red-800 overflow-x-auto whitespace-pre-wrap">{`CREATE TABLE IF NOT EXISTS purchases (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID,
+  student_email TEXT,
+  student_name TEXT,
+  coach_id TEXT,
+  coach_name TEXT,
+  category TEXT,
+  plan TEXT,
+  price INTEGER,
+  period TEXT,
+  status TEXT DEFAULT 'active',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);`}</pre>
+            </div>
+          ) : sales.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-gray-200 bg-white px-6 py-10 text-center">
               <p className="text-sm text-gray-400">Henüz satın alma kaydı yok.</p>
             </div>
-          ) : (
+          ) : sales.length > 0 ? (
             <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
               <table className="w-full text-sm">
                 <thead className="border-b border-gray-100 bg-gray-50">
@@ -133,7 +157,7 @@ export default async function AdminPage() {
                 </tbody>
               </table>
             </div>
-          )}
+          ) : null}
         </section>
 
         {/* ── ÖN GÖRÜŞME TALEPLERİ ── */}
