@@ -48,12 +48,14 @@ export async function coachSignUp(formData: FormData) {
   const department = formData.get("department") as string;
   const bio = formData.get("bio") as string;
 
-  const supabase = await createClient();
+  const admin = createAdminClient();
 
-  const { data, error } = await supabase.auth.signUp({
+  // E-posta onayı olmadan kullanıcı oluştur (admin zaten onaylıyor)
+  const { data, error } = await admin.auth.admin.createUser({
     email,
     password,
-    options: { data: { full_name: name, role: "coach" } },
+    email_confirm: true,
+    user_metadata: { full_name: name, role: "coach" },
   });
 
   if (error) {
@@ -68,8 +70,7 @@ export async function coachSignUp(formData: FormData) {
       .slice(0, 2)
       .toUpperCase();
 
-    const admin = createAdminClient();
-    await admin.from("coaches").insert({
+    const { error: insertError } = await admin.from("coaches").insert({
       user_id: data.user.id,
       name,
       university,
@@ -88,6 +89,10 @@ export async function coachSignUp(formData: FormData) {
       max_students: 10,
       current_students: 0,
     });
+
+    if (insertError) {
+      console.error("[coachSignUp] Coach insert hatası:", insertError.message);
+    }
   }
 
   redirect("/koc-kayit?success=1");
