@@ -5,6 +5,17 @@ import { revalidatePath } from "next/cache";
 
 const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.com"];
 
+export async function updateCoachStatus(coachId: string, status: "approved" | "rejected") {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || !ADMIN_EMAILS.includes((user.email ?? "").toLowerCase())) return;
+
+  const admin = createAdminClient();
+  await admin.from("coaches").update({ status }).eq("id", coachId);
+  revalidatePath("/admin");
+  revalidatePath("/koclar");
+}
+
 export async function deleteIntroRequest(id: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
