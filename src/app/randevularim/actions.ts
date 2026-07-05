@@ -1,0 +1,54 @@
+"use server";
+
+import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
+
+export async function createAppointment(data: {
+  coachId: string;
+  date: string;
+  time: string;
+  note: string;
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Giriş yapmalısınız." };
+
+  // Satın alma kontrolü
+  const admin = createAdminClient();
+  const { count } = await admin
+    .from("purchases")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("coach_id", data.coachId)
+    .eq("status", "active");
+
+  if ((count ?? 0) === 0) return { error: "Bu koç için aktif paketiniz yok." };
+
+  // Aynı tarih/saat çakışma kontrolü
+  const { count: conflict } = await supabase
+    .from("appointments")
+    .select("id", { count: "exact", head: true })
+    .eq("coach_id", data.coachId)
+    .eq("date", data.date)
+    .eq("time", data.time)
+    .neq("status", "cancelled");
+
+  if ((conflict ?? 0) > 0) return { error: "Bu saat dolu. Lütfen başka bir saat seçin." };
+
+  const { error } = await supabase.from("appointments").insert({
+    coach_id: data.coachId,
+    user_id: user.id,
+    student_name: user.user_metadata?.full_name ?? null,
+    student_email: user.email ?? null,
+    date: data.date,
+    time: data.time,
+    note: data.note || null,
+    status: "pending",
+    seen_by_coach: false,
+  });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/randevularim");
+  return { success: true };
+}

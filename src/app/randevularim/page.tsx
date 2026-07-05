@@ -1,5 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PurchasedCoaches } from "./purchased-coaches";
 
 const statusConfig = {
   pending: { label: "Bekliyor", className: "bg-amber-50 text-amber-700 ring-amber-500/25" },
@@ -32,6 +33,26 @@ export default async function RandevularimPage() {
 
   if (!user) redirect("/giris");
 
+  const admin = createAdminClient();
+
+  // Satın alınan koçlar
+  const { data: purchases } = await admin
+    .from("purchases")
+    .select("coach_id")
+    .eq("user_id", user.id)
+    .eq("status", "active");
+
+  const coachIds = [...new Set((purchases ?? []).map((p) => p.coach_id).filter(Boolean))];
+
+  const purchasedCoaches = coachIds.length > 0
+    ? (await supabase
+        .from("coaches")
+        .select("id, name, avatar_initials, avatar_color, avatar_text_color, availability_schedule")
+        .in("id", coachIds)
+      ).data ?? []
+    : [];
+
+  // Randevular
   const { data: appointments } = await supabase
     .from("appointments")
     .select(`
@@ -48,20 +69,23 @@ export default async function RandevularimPage() {
     <div className="min-h-full bg-gray-50">
       <div className="border-b border-gray-100 bg-white px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#123A57]">
-            Hesabım
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#123A57]">Hesabım</p>
           <h1 className="mt-1 text-2xl font-bold text-gray-900">Randevularım</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            {user.user_metadata?.full_name ?? user.email}
-          </p>
+          <p className="mt-1 text-sm text-gray-500">{user.user_metadata?.full_name ?? user.email}</p>
         </div>
       </div>
 
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8 space-y-10">
+
+        {/* Satın alınan koçlar + randevu al */}
+        {purchasedCoaches.length > 0 && (
+          <PurchasedCoaches coaches={purchasedCoaches as Parameters<typeof PurchasedCoaches>[0]["coaches"]} />
+        )}
+
+        {/* Yaklaşan randevular */}
         <Section title="Yaklaşan" count={upcoming.length}>
           {upcoming.length === 0 ? (
-            <Empty text="Yaklaşan randevunuz yok." href="/koclar" cta="Koç bul →" />
+            <Empty text="Yaklaşan randevunuz yok." />
           ) : (
             upcoming.map((a) => <AppointmentCard key={a.id} appointment={a as unknown as Appointment} />)
           )}
@@ -88,22 +112,17 @@ function Section({ title, count, children }: { title: string; count: number; chi
     <div>
       <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
         {title}
-        <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-bold text-gray-600">
-          {count}
-        </span>
+        <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-bold text-gray-600">{count}</span>
       </h2>
       <div className="space-y-3">{children}</div>
     </div>
   );
 }
 
-function Empty({ text, href, cta }: { text: string; href: string; cta: string }) {
+function Empty({ text }: { text: string }) {
   return (
     <div className="rounded-2xl border border-dashed border-gray-200 bg-white px-6 py-10 text-center">
       <p className="text-sm text-gray-400">{text}</p>
-      <a href={href} className="mt-3 inline-block text-sm font-medium text-[#123A57] hover:underline">
-        {cta}
-      </a>
     </div>
   );
 }
@@ -139,15 +158,11 @@ function AppointmentCard({ appointment: a, muted = false }: { appointment: Appoi
           <span>🕐 {a.time}</span>
         </div>
 
-        {a.note && (
-          <p className="mt-2 text-sm text-gray-400 italic">"{a.note}"</p>
-        )}
+        {a.note && <p className="mt-2 text-sm text-gray-400 italic">&ldquo;{a.note}&rdquo;</p>}
 
         <div className="mt-2 flex flex-wrap gap-1.5">
           {a.coaches.types.map((t) => (
-            <span key={t} className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
-              {t}
-            </span>
+            <span key={t} className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">{t}</span>
           ))}
         </div>
       </div>
