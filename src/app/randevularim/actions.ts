@@ -24,8 +24,19 @@ export async function createAppointment(data: {
 
   if ((count ?? 0) === 0) return { error: "Bu koç için aktif paketiniz yok." };
 
-  // Aynı tarih/saat çakışma kontrolü
-  const { count: conflict } = await supabase
+  // Aynı güne öğrencinin zaten randevusu var mı
+  const { count: studentConflict } = await supabase
+    .from("appointments")
+    .select("id", { count: "exact", head: true })
+    .eq("coach_id", data.coachId)
+    .eq("user_id", user.id)
+    .eq("date", data.date)
+    .neq("status", "cancelled");
+
+  if ((studentConflict ?? 0) > 0) return { error: "Bu güne zaten bir randevunuz var. Lütfen farklı bir gün seçin." };
+
+  // Aynı saat başka öğrenciye verilmiş mi
+  const { count: slotConflict } = await supabase
     .from("appointments")
     .select("id", { count: "exact", head: true })
     .eq("coach_id", data.coachId)
@@ -33,7 +44,7 @@ export async function createAppointment(data: {
     .eq("time", data.time)
     .neq("status", "cancelled");
 
-  if ((conflict ?? 0) > 0) return { error: "Bu saat dolu. Lütfen başka bir saat seçin." };
+  if ((slotConflict ?? 0) > 0) return { error: "Bu saat dolu. Lütfen başka bir saat seçin." };
 
   const { error } = await supabase.from("appointments").insert({
     coach_id: data.coachId,

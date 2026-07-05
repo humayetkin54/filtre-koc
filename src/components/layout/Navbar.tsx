@@ -78,6 +78,14 @@ export default function Navbar({
                   </span>
                 )}
               </Link>
+              {isCoach && (
+                <Link
+                  href="/koc-paneli/ogrencilerim"
+                  className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
+                >
+                  Öğrencilerim
+                </Link>
+              )}
               {isAdmin && (
                 <Link
                   href="/admin"
@@ -181,6 +189,15 @@ export default function Navbar({
                     </span>
                   )}
                 </Link>
+                {isCoach && (
+                  <Link
+                    href="/koc-paneli/ogrencilerim"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+                  >
+                    Öğrencilerim
+                  </Link>
+                )}
                 {isAdmin && (
                   <Link
                     href="/admin"
