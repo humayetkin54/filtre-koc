@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function updateAppointmentStatus(
@@ -47,10 +47,14 @@ export async function saveAvailability(
 
   if (!coach) return;
 
-  await supabase
+  const admin = createAdminClient();
+  const { error } = await admin
     .from("coaches")
     .update({ availability_schedule: schedule })
     .eq("id", coachId);
+
+  if (error) console.error("[saveAvailability] HATA:", error.message);
+  else console.log("[saveAvailability] Kaydedildi:", coachId, Object.keys(schedule));
 
   revalidatePath("/koc-paneli");
   revalidatePath(`/koclar/${coachId}`);
