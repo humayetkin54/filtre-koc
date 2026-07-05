@@ -37,13 +37,13 @@ export default async function KoclarPage() {
   let purchasedCoachIds: string[] = [];
   let hasPurchase = false;
   if (user) {
-    const { data: purchases } = await admin
+    const { data: purchases, count } = await admin
       .from("purchases")
-      .select("coach_id")
+      .select("coach_id", { count: "exact" })
       .eq("user_id", user.id)
       .eq("status", "active");
     purchasedCoachIds = (purchases ?? []).map((p: { coach_id: string }) => p.coach_id).filter(Boolean);
-    hasPurchase = purchasedCoachIds.length > 0;
+    hasPurchase = (count ?? 0) > 0; // coach_id null olsa bile satın alma varsa true
   }
 
   return (
