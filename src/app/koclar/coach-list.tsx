@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { Availability, Coach, CoachType, FilterType } from "./types";
 import Link from "next/link";
 import { BookingModal } from "./booking-modal";
+import { StartCoachingButton } from "./start-coaching-button";
 
 const FILTERS: { value: FilterType; label: string }[] = [
   { value: "all", label: "Tümü" },
@@ -126,16 +127,8 @@ function CoachCard({
             Kontenjan Dolu
           </button>
         ) : purchased || hasPurchase ? (
-          /* Ödeme yapılmış: direkt koçluk başlat */
-          <Link
-            href={`/paketler?coach_id=${coach.id}&coach_name=${encodeURIComponent(coach.name)}`}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#123A57] to-[#0E8FA3] px-4 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-md"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            Koçluk Başlat
-          </Link>
+          /* Ödeme yapılmış: koçu ata ve randevularıma git */
+          <StartCoachingButton coachId={coach.id} coachName={coach.name} />
         ) : (
           /* Ödeme yapılmamış: tanışma randevusu */
           <button

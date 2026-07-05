@@ -2,6 +2,44 @@
 
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+
+export async function startCoaching(coachId: string, coachName: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/giris");
+
+  const admin = createAdminClient();
+
+  // Koçsuz aktif satın alma var mı?
+  const { data: purchase } = await admin
+    .from("purchases")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .is("coach_id", null)
+    .maybeSingle();
+
+  if (purchase) {
+    // Koçsuz satın almaya koç ata
+    await admin.from("purchases").update({ coach_id: coachId, coach_name: coachName }).eq("id", purchase.id);
+  } else {
+    // Zaten koçu olan satın alma varsa, o koçu güncelle
+    const { data: existing } = await admin
+      .from("purchases")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .maybeSingle();
+
+    if (existing) {
+      await admin.from("purchases").update({ coach_id: coachId, coach_name: coachName }).eq("id", existing.id);
+    }
+  }
+
+  revalidatePath("/randevularim");
+  redirect("/randevularim");
+}
 import { Resend } from "resend";
 
 export async function bookAppointment(formData: FormData) {
