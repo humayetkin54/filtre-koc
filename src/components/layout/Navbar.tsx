@@ -67,18 +67,20 @@ export default function Navbar({
                 </svg>
                 <span className="hidden lg:inline text-xs">Destek</span>
               </Link>
-              <Link
-                href={isCoach ? "/koc-paneli" : "/randevularim"}
-                className="relative rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
-              >
-                {isCoach ? "Koç Paneli" : "Randevularım"}
-                {isCoach && unseenCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                    {unseenCount}
-                  </span>
-                )}
-              </Link>
-              {isCoach && (
+              {!isAdmin && (
+                <Link
+                  href={isCoach ? "/koc-paneli" : "/randevularim"}
+                  className="relative rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
+                >
+                  {isCoach ? "Koç Paneli" : "Randevularım"}
+                  {isCoach && unseenCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                      {unseenCount}
+                    </span>
+                  )}
+                </Link>
+              )}
+              {isCoach && !isAdmin && (
                 <Link
                   href="/koc-paneli/ogrencilerim"
                   className="rounded-lg px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
@@ -91,7 +93,7 @@ export default function Navbar({
                   href="/admin"
                   className="rounded-lg bg-amber-50 px-4 py-2 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100"
                 >
-                  Talepler
+                  Satışlar
                 </Link>
               )}
               <Link
@@ -177,19 +179,21 @@ export default function Navbar({
                 <span className="px-3 py-2 text-sm text-zinc-500">
                   {user.user_metadata?.full_name ?? user.email}
                 </span>
-                <Link
-                  href={isCoach ? "/koc-paneli" : "/randevularim"}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
-                >
-                  {isCoach ? "Koç Paneli" : "Randevularım"}
-                  {isCoach && unseenCount > 0 && (
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                      {unseenCount}
-                    </span>
-                  )}
-                </Link>
-                {isCoach && (
+                {!isAdmin && (
+                  <Link
+                    href={isCoach ? "/koc-paneli" : "/randevularim"}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+                  >
+                    {isCoach ? "Koç Paneli" : "Randevularım"}
+                    {isCoach && unseenCount > 0 && (
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                        {unseenCount}
+                      </span>
+                    )}
+                  </Link>
+                )}
+                {isCoach && !isAdmin && (
                   <Link
                     href="/koc-paneli/ogrencilerim"
                     onClick={() => setMenuOpen(false)}
@@ -204,7 +208,7 @@ export default function Navbar({
                     onClick={() => setMenuOpen(false)}
                     className="rounded-lg bg-amber-50 px-3 py-2.5 text-sm font-medium text-amber-700 hover:bg-amber-100"
                   >
-                    Talepler
+                    Satışlar
                   </Link>
                 )}
                 <Link
