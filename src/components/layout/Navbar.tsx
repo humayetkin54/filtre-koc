@@ -89,12 +89,20 @@ export default function Navbar({
                 </Link>
               )}
               {isAdmin && (
-                <Link
-                  href="/admin"
-                  className="rounded-lg bg-amber-50 px-4 py-2 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100"
-                >
-                  Satışlar
-                </Link>
+                <>
+                  <Link
+                    href="/admin"
+                    className="rounded-lg bg-amber-50 px-4 py-2 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100"
+                  >
+                    Satışlar
+                  </Link>
+                  <Link
+                    href="/admin#talepler"
+                    className="rounded-lg bg-orange-50 px-4 py-2 text-sm font-medium text-orange-700 transition-colors hover:bg-orange-100"
+                  >
+                    Talepler
+                  </Link>
+                </>
               )}
               <Link
                 href={isCoach ? "/koc-paneli" : "/profil"}
@@ -203,13 +211,22 @@ export default function Navbar({
                   </Link>
                 )}
                 {isAdmin && (
-                  <Link
-                    href="/admin"
-                    onClick={() => setMenuOpen(false)}
-                    className="rounded-lg bg-amber-50 px-3 py-2.5 text-sm font-medium text-amber-700 hover:bg-amber-100"
-                  >
-                    Satışlar
-                  </Link>
+                  <>
+                    <Link
+                      href="/admin"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-lg bg-amber-50 px-3 py-2.5 text-sm font-medium text-amber-700 hover:bg-amber-100"
+                    >
+                      Satışlar
+                    </Link>
+                    <Link
+                      href="/admin#talepler"
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-lg bg-orange-50 px-3 py-2.5 text-sm font-medium text-orange-700 hover:bg-orange-100"
+                    >
+                      Talepler
+                    </Link>
+                  </>
                 )}
                 <Link
                   href="/destek"

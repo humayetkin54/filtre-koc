@@ -178,7 +178,7 @@ export default async function AdminPage() {
         </section>
 
         {/* ── KOÇ BAŞVURULARI ── */}
-        <section>
+        <section id="talepler">
           <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2 mb-4">
             ⏳ Bekleyen Koç Başvuruları
             <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-700">
