@@ -1,6 +1,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { deleteIntroRequest, updateCoachStatus } from "./actions";
+import { PurchasesTable } from "./purchases-table";
 
 const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.com"];
 
@@ -47,7 +48,7 @@ export default async function AdminPage() {
   const admin = createAdminClient();
   const [{ data: requests }, { data: purchases, error: purchasesError }, { data: coaches }] = await Promise.all([
     admin.from("intro_requests").select("id, name, grade, area, phone, created_at").order("created_at", { ascending: false }),
-    admin.from("purchases").select("id, student_email, student_name, coach_name, category, plan, price, period, status, created_at").order("created_at", { ascending: false }),
+    admin.from("purchases").select("id, student_email, student_name, coach_name, coach_id, category, plan, price, period, status, created_at").order("created_at", { ascending: false }),
     admin.from("coaches").select("id, name, university, department, types, status, created_at, avatar_initials, avatar_color, avatar_text_color").order("created_at", { ascending: false }),
   ]);
 
@@ -131,49 +132,10 @@ export default async function AdminPage() {
               <p className="text-sm text-gray-400">Henüz satın alma kaydı yok.</p>
             </div>
           ) : sales.length > 0 ? (
-            <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-              <table className="w-full text-sm">
-                <thead className="border-b border-gray-100 bg-gray-50">
-                  <tr>
-                    {["Öğrenci", "Koç", "Paket", "Tutar", "Durum", "Tarih"].map((h) => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {sales.map((p) => (
-                    <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-4 py-3">
-                        <p className="font-medium text-gray-900">{p.student_name ?? "—"}</p>
-                        <p className="text-xs text-gray-400">{p.student_email}</p>
-                      </td>
-                      <td className="px-4 py-3 text-gray-600">{p.coach_name ?? "—"}</td>
-                      <td className="px-4 py-3">
-                        <p className="font-medium text-gray-800">{p.category} · {p.plan}</p>
-                        <p className="text-xs text-gray-400">{p.period}</p>
-                      </td>
-                      <td className="px-4 py-3 font-bold text-[#123A57]">
-                        {p.price ? p.price.toLocaleString("tr-TR") + " ₺" : "—"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                          p.status === "active"
-                            ? "bg-emerald-50 text-emerald-700"
-                            : "bg-gray-100 text-gray-500"
-                        }`}>
-                          {p.status === "active" ? "Aktif" : p.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">
-                        {fmt(p.created_at)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <PurchasesTable
+              sales={sales as Parameters<typeof PurchasesTable>[0]["sales"]}
+              coaches={allCoaches.filter(c => c.status === "approved").map(c => ({ id: c.id, name: c.name }))}
+            />
           ) : null}
         </section>
 
