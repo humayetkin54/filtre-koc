@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { cancelPurchase, changePurchaseCoach } from "./actions";
+import { cancelPurchase } from "./actions";
+import { CoachChangeModal } from "./coach-change-modal";
 
 interface Purchase {
   id: string;
@@ -20,6 +21,12 @@ interface Purchase {
 interface Coach {
   id: string;
   name: string;
+  university: string | null;
+  department: string | null;
+  types: string[] | null;
+  avatar_initials: string;
+  avatar_color: string;
+  avatar_text_color: string;
 }
 
 function fmt(date: string) {
@@ -29,120 +36,92 @@ function fmt(date: string) {
 }
 
 export function PurchasesTable({ sales, coaches }: { sales: Purchase[]; coaches: Coach[] }) {
-  const [changingId, setChangingId] = useState<string | null>(null);
-  const [selectedCoach, setSelectedCoach] = useState<string>("");
-  const [loading, setLoading] = useState(false);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [modalPurchase, setModalPurchase] = useState<Purchase | null>(null);
 
-  async function handleCancel(id: string) {
-    if (!confirm("Bu satışı iptal etmek istediğinize emin misiniz?")) return;
-    setLoading(true);
-    await cancelPurchase(id);
-    setLoading(false);
-  }
-
-  async function handleCoachChange(purchaseId: string) {
-    if (!selectedCoach) return;
-    const coach = coaches.find(c => c.id === selectedCoach);
-    if (!coach) return;
-    setLoading(true);
-    await changePurchaseCoach(purchaseId, coach.id, coach.name);
-    setChangingId(null);
-    setSelectedCoach("");
-    setLoading(false);
+  async function handleCancel(p: Purchase) {
+    if (!confirm(`${p.student_name ?? "Öğrenci"} adlı öğrencinin satışı iptal edilsin mi?`)) return;
+    setCancellingId(p.id);
+    await cancelPurchase(p.id);
+    setCancellingId(null);
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-      <table className="w-full text-sm">
-        <thead className="border-b border-gray-100 bg-gray-50">
-          <tr>
-            {["Öğrenci", "Koç", "Paket", "Tutar", "Durum", "Tarih", "İşlem"].map((h) => (
-              <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-50">
-          {sales.map((p) => (
-            <tr key={p.id} className={`transition-colors ${p.status === "cancelled" ? "opacity-50" : "hover:bg-gray-50/50"}`}>
-              <td className="px-4 py-3">
-                <p className="font-medium text-gray-900">{p.student_name ?? "—"}</p>
-                <p className="text-xs text-gray-400">{p.student_email}</p>
-              </td>
-              <td className="px-4 py-3">
-                {changingId === p.id ? (
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={selectedCoach}
-                      onChange={e => setSelectedCoach(e.target.value)}
-                      className="rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 outline-none focus:border-[#0E8FA3]"
-                    >
-                      <option value="">Koç seç...</option>
-                      {coaches.map(c => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
-                      ))}
-                    </select>
-                    <button
-                      onClick={() => handleCoachChange(p.id)}
-                      disabled={!selectedCoach || loading}
-                      className="rounded-lg bg-[#0E8FA3] px-2 py-1 text-[10px] font-semibold text-white disabled:opacity-50"
-                    >
-                      Kaydet
-                    </button>
-                    <button
-                      onClick={() => { setChangingId(null); setSelectedCoach(""); }}
-                      className="rounded-lg bg-gray-100 px-2 py-1 text-[10px] font-semibold text-gray-600"
-                    >
-                      İptal
-                    </button>
-                  </div>
-                ) : (
-                  <span className="text-gray-600">{p.coach_name ?? "—"}</span>
-                )}
-              </td>
-              <td className="px-4 py-3">
-                <p className="font-medium text-gray-800">{p.category} · {p.plan}</p>
-                <p className="text-xs text-gray-400">{p.period}</p>
-              </td>
-              <td className="px-4 py-3 font-bold text-[#123A57]">
-                {p.price ? p.price.toLocaleString("tr-TR") + " ₺" : "—"}
-              </td>
-              <td className="px-4 py-3">
-                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                  p.status === "active" ? "bg-emerald-50 text-emerald-700"
-                  : p.status === "cancelled" ? "bg-red-50 text-red-600"
-                  : "bg-gray-100 text-gray-500"
-                }`}>
-                  {p.status === "active" ? "Aktif" : p.status === "cancelled" ? "İptal" : p.status}
-                </span>
-              </td>
-              <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">
-                {fmt(p.created_at)}
-              </td>
-              <td className="px-4 py-3">
-                {p.status !== "cancelled" && (
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => { setChangingId(p.id); setSelectedCoach(p.coach_id ?? ""); }}
-                      className="rounded-lg bg-blue-50 px-2.5 py-1.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-100 transition whitespace-nowrap"
-                    >
-                      Koç Değiştir
-                    </button>
-                    <button
-                      onClick={() => handleCancel(p.id)}
-                      disabled={loading}
-                      className="rounded-lg bg-red-50 px-2.5 py-1.5 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition disabled:opacity-50 whitespace-nowrap"
-                    >
-                      İptal Et
-                    </button>
-                  </div>
-                )}
-              </td>
+    <>
+      <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white">
+        <table className="w-full text-sm">
+          <thead className="border-b border-gray-100 bg-gray-50">
+            <tr>
+              {["Öğrenci", "Koç", "Paket", "Tutar", "Durum", "Tarih", "İşlem"].map((h) => (
+                <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap">
+                  {h}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {sales.map((p) => (
+              <tr key={p.id} className={`transition-colors ${p.status === "cancelled" ? "opacity-50 bg-gray-50/50" : "hover:bg-gray-50/50"}`}>
+                <td className="px-4 py-3">
+                  <p className="font-medium text-gray-900 whitespace-nowrap">{p.student_name ?? "—"}</p>
+                  <p className="text-xs text-gray-400">{p.student_email}</p>
+                </td>
+                <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+                  {p.coach_name ?? <span className="text-gray-300 italic text-xs">Atanmamış</span>}
+                </td>
+                <td className="px-4 py-3">
+                  <p className="font-medium text-gray-800 whitespace-nowrap">{p.category} · {p.plan}</p>
+                  <p className="text-xs text-gray-400">{p.period}</p>
+                </td>
+                <td className="px-4 py-3 font-bold text-[#123A57] whitespace-nowrap">
+                  {p.price ? p.price.toLocaleString("tr-TR") + " ₺" : "—"}
+                </td>
+                <td className="px-4 py-3">
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap ${
+                    p.status === "active" ? "bg-emerald-50 text-emerald-700"
+                    : p.status === "cancelled" ? "bg-red-50 text-red-600"
+                    : "bg-gray-100 text-gray-500"
+                  }`}>
+                    {p.status === "active" ? "Aktif" : p.status === "cancelled" ? "İptal" : p.status}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">
+                  {fmt(p.created_at)}
+                </td>
+                <td className="px-4 py-3">
+                  {p.status !== "cancelled" && (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setModalPurchase(p)}
+                        className="rounded-lg bg-blue-50 px-2.5 py-1.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-100 transition whitespace-nowrap"
+                      >
+                        Koç Değiştir
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCancel(p)}
+                        disabled={cancellingId === p.id}
+                        className="rounded-lg bg-red-50 px-2.5 py-1.5 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition disabled:opacity-50 whitespace-nowrap"
+                      >
+                        {cancellingId === p.id ? "..." : "İptal Et"}
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {modalPurchase && (
+        <CoachChangeModal
+          purchase={modalPurchase}
+          coaches={coaches}
+          onClose={() => setModalPurchase(null)}
+        />
+      )}
+    </>
   );
 }

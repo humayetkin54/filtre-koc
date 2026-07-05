@@ -134,7 +134,7 @@ export default async function AdminPage() {
           ) : sales.length > 0 ? (
             <PurchasesTable
               sales={sales as Parameters<typeof PurchasesTable>[0]["sales"]}
-              coaches={allCoaches.filter(c => c.status === "approved").map(c => ({ id: c.id, name: c.name }))}
+              coaches={allCoaches.filter(c => c.status === "approved") as Parameters<typeof PurchasesTable>[0]["coaches"]}
             />
           ) : null}
         </section>

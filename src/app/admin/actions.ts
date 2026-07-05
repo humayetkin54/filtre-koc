@@ -25,6 +25,16 @@ export async function changePurchaseCoach(purchaseId: string, coachId: string, c
   revalidatePath("/admin");
 }
 
+export async function removeCoachFromPurchase(purchaseId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || !ADMIN_EMAILS.includes((user.email ?? "").toLowerCase())) return;
+
+  const admin = createAdminClient();
+  await admin.from("purchases").update({ coach_id: null, coach_name: null }).eq("id", purchaseId);
+  revalidatePath("/admin");
+}
+
 export async function updateCoachStatus(coachId: string, status: "approved" | "rejected") {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

@@ -42,6 +42,7 @@ export default async function RandevularimPage() {
     .eq("user_id", user.id)
     .eq("status", "active");
 
+  const hasUnassignedPurchase = (purchases ?? []).some(p => !p.coach_id);
   const coachIds = [...new Set((purchases ?? []).map((p) => p.coach_id).filter(Boolean))];
 
   const purchasedCoaches = coachIds.length > 0
@@ -77,6 +78,25 @@ export default async function RandevularimPage() {
       </div>
 
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8 space-y-10">
+
+        {/* Koçsuz satın alma uyarısı */}
+        {hasUnassignedPurchase && (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-6 py-5 flex items-start gap-4">
+            <span className="text-2xl">⚠️</span>
+            <div className="flex-1">
+              <p className="font-semibold text-amber-800">Koçunuz henüz atanmadı</p>
+              <p className="text-sm text-amber-700 mt-1">
+                Yöneticiniz size en kısa sürede bir koç atayacak. İsterseniz kendiniz de bir koç seçebilirsiniz.
+              </p>
+              <a
+                href="/koclar"
+                className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-700 transition"
+              >
+                Koç Seç →
+              </a>
+            </div>
+          </div>
+        )}
 
         {/* Satın alınan koçlar + randevu al */}
         {purchasedCoaches.length > 0 && (
