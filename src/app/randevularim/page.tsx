@@ -59,6 +59,7 @@ export default async function RandevularimPage() {
       id, date, time, note, status, created_at,
       coaches (name, university, avatar_initials, avatar_color, avatar_text_color, types)
     `)
+    .eq("user_id", user.id)
     .order("date", { ascending: true });
 
   const upcoming = appointments?.filter((a) => a.status !== "cancelled" && new Date(a.date) >= new Date(new Date().toDateString())) ?? [];
