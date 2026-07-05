@@ -18,14 +18,20 @@ export default function Navbar({
   isCoach = false,
   unseenCount = 0,
   isAdmin = false,
+  hasPurchase = false,
 }: {
   user: User | null;
   isCoach?: boolean;
   unseenCount?: number;
   isAdmin?: boolean;
+  hasPurchase?: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const links = isCoach ? navLinks.filter((l) => l.href === "/") : navLinks;
+  const links = isCoach
+    ? navLinks.filter((l) => l.href === "/")
+    : hasPurchase
+    ? navLinks.filter((l) => l.href !== "/koclar")
+    : navLinks;
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/80 backdrop-blur-md">

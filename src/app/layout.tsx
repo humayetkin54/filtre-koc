@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,6 +35,7 @@ export default async function RootLayout({
 
   let isCoach = false;
   let unseenCount = 0;
+  let hasPurchase = false;
   if (user) {
     const { data: coach } = await supabase
       .from("coaches")
@@ -43,6 +44,14 @@ export default async function RootLayout({
       .eq("status", "approved")
       .maybeSingle();
     isCoach = !!coach;
+
+    const admin = createAdminClient();
+    const { count: purchaseCount } = await admin
+      .from("purchases")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "active");
+    hasPurchase = (purchaseCount ?? 0) > 0;
 
     if (coach) {
       const { count } = await supabase
@@ -70,7 +79,7 @@ export default async function RootLayout({
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
           strategy="afterInteractive"
         />
-        <Navbar user={user} isCoach={isCoach} unseenCount={unseenCount} isAdmin={isAdmin} />
+        <Navbar user={user} isCoach={isCoach} unseenCount={unseenCount} isAdmin={isAdmin} hasPurchase={hasPurchase} />
         <main className="flex-1">{children}</main>
         <Footer />
         <WhatsAppButton />
