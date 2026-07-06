@@ -27,11 +27,10 @@ export default function Navbar({
   hasPurchase?: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  console.log("NAVBAR DEBUG:", { isAdmin, isCoach, hasPurchase });
-  const links = isCoach
+const links = isCoach
     ? navLinks.filter((l) => l.href === "/")
     : hasPurchase
-    ? navLinks.filter((l) => l.href !== "/koclar")
+    ? navLinks.filter((l) => l.href !== "/koclar" && l.href !== "/paketler")
     : navLinks;
 
   return (

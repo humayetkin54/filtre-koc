@@ -2,10 +2,46 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { categories, guarantees } from "./data";
 import { CategoryCard } from "./category-card";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 
-export default function PaketlerPage() {
+export default async function PaketlerPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let hasActivePurchase = false;
+  if (user) {
+    const admin = createAdminClient();
+    const { count } = await admin
+      .from("purchases")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "active");
+    hasActivePurchase = (count ?? 0) > 0;
+  }
+
   return (
     <div className="min-h-full bg-white">
+      {hasActivePurchase && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-4">
+          <div className="mx-auto max-w-3xl flex items-start gap-3">
+            <span className="text-xl mt-0.5">⚠️</span>
+            <div className="flex-1">
+              <p className="font-semibold text-amber-800">Zaten aktif bir paketiniz var</p>
+              <p className="text-sm text-amber-700 mt-0.5">
+                Mevcut paketiniz devam ederken yeni paket satın almanıza gerek yok. Koçunuzla çalışmaya devam edebilirsiniz.
+              </p>
+              <div className="mt-3 flex gap-3">
+                <Link href="/ogrenci-paneli" className="rounded-lg bg-amber-600 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-700 transition">
+                  Panelime Git
+                </Link>
+                <Link href="/randevularim" className="rounded-lg border border-amber-300 px-4 py-2 text-xs font-semibold text-amber-800 hover:bg-amber-100 transition">
+                  Randevularım
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Hero */}
       <section className="border-b border-gray-100 bg-gradient-to-br from-slate-900 via-[#1a1f5c] to-[#123A57] px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
