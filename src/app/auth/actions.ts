@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export async function signIn(formData: FormData) {
@@ -17,6 +17,17 @@ export async function signIn(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user?.user_metadata?.onboarding_completed) {
     redirect("/onboarding");
+  }
+
+  const admin = createAdminClient();
+  const { count } = await admin
+    .from("purchases")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user!.id)
+    .eq("status", "active");
+
+  if ((count ?? 0) > 0) {
+    redirect("/ogrenci-paneli");
   }
 
   redirect("/koclar");
