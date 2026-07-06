@@ -27,6 +27,7 @@ export default function Navbar({
   hasPurchase?: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  console.log("NAVBAR DEBUG:", { isAdmin, isCoach, hasPurchase });
   const links = isCoach
     ? navLinks.filter((l) => l.href === "/")
     : hasPurchase
@@ -78,6 +79,14 @@ export default function Navbar({
                       {unseenCount}
                     </span>
                   )}
+                </Link>
+              )}
+              {!isAdmin && !isCoach && hasPurchase && (
+                <Link
+                  href="/ogrenci-paneli"
+                  className="rounded-lg bg-[#eef9f9] px-4 py-2 text-sm font-semibold text-[#0E8FA3] transition-colors hover:bg-[#d5f2f5]"
+                >
+                  Panelim
                 </Link>
               )}
               {isCoach && !isAdmin && (
@@ -199,6 +208,15 @@ export default function Navbar({
                         {unseenCount}
                       </span>
                     )}
+                  </Link>
+                )}
+                {!isAdmin && !isCoach && hasPurchase && (
+                  <Link
+                    href="/ogrenci-paneli"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-lg bg-[#eef9f9] px-3 py-2.5 text-sm font-semibold text-[#0E8FA3] hover:bg-[#d5f2f5]"
+                  >
+                    Panelim
                   </Link>
                 )}
                 {isCoach && !isAdmin && (

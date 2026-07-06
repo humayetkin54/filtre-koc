@@ -63,9 +63,10 @@ export default async function RandevularimPage() {
     .eq("user_id", user.id)
     .order("date", { ascending: true });
 
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const upcoming = appointments?.filter((a) => a.status !== "cancelled" && new Date(a.date) >= new Date(new Date().toDateString())) ?? [];
   const past = appointments?.filter((a) => a.status !== "cancelled" && new Date(a.date) < new Date(new Date().toDateString())) ?? [];
-  const cancelled = appointments?.filter((a) => a.status === "cancelled") ?? [];
+  const cancelled = appointments?.filter((a) => a.status === "cancelled" && new Date(a.created_at) >= oneDayAgo) ?? [];
 
   return (
     <div className="min-h-full bg-gray-50">
