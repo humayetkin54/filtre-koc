@@ -82,6 +82,21 @@ export default async function DenemePage() {
               <input type="date" name="exam_date" required className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]" />
             </div>
           </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+              OBP <span className="font-normal text-gray-400">(Ortaöğretim Başarı Puanı, 0–100)</span>
+            </label>
+            <input
+              type="number"
+              name="obp"
+              min="0"
+              max="100"
+              step="0.01"
+              placeholder="Örn: 85.50"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]"
+            />
+            <p className="mt-1 text-[11px] text-gray-400">TYT seçildiğinde 2025 katsayılarıyla TYT puanın otomatik hesaplanır.</p>
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[["turkish_net", "Türkçe/Edebiyat"], ["math_net", "Matematik"], ["science_net", "Fen"], ["social_net", "Sosyal"]].map(([n, l]) => (
               <div key={n}>
@@ -106,7 +121,7 @@ export default async function DenemePage() {
           <table className="w-full text-sm">
             <thead className="border-b border-gray-100 bg-gray-50">
               <tr>
-                {["Tarih", "Sınav", "Türkçe", "Mat", "Fen", "Sosyal", "Toplam", ""].map(h => (
+                {["Tarih", "Sınav", "Türkçe", "Mat", "Fen", "Sosyal", "Toplam Net", "OBP", "TYT Puanı", ""].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400">{h}</th>
                 ))}
               </tr>
@@ -121,6 +136,8 @@ export default async function DenemePage() {
                   <td className="px-4 py-3 text-gray-600">{r.science_net?.toFixed(2)}</td>
                   <td className="px-4 py-3 text-gray-600">{r.social_net?.toFixed(2)}</td>
                   <td className="px-4 py-3 font-bold text-[#0E8FA3]">{r.net_total?.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-gray-500">{r.obp ?? "—"}</td>
+                  <td className="px-4 py-3 font-bold text-emerald-600">{r.tyt_score ? r.tyt_score.toFixed(2) : "—"}</td>
                   <td className="px-4 py-3">
                     <form action={deleteDenemeResult.bind(null, r.id)}>
                       <button type="submit" className="text-xs text-red-400 hover:text-red-600 transition">Sil</button>

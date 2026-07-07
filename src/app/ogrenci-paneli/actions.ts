@@ -20,6 +20,17 @@ export async function addDenemeResult(formData: FormData) {
   const math_net = parseFloat(formData.get("math_net") as string) || 0;
   const science_net = parseFloat(formData.get("science_net") as string) || 0;
   const social_net = parseFloat(formData.get("social_net") as string) || 0;
+  const obpRaw = formData.get("obp") as string;
+  const obp = obpRaw ? parseFloat(obpRaw) : null;
+  const exam_name = formData.get("exam_name") as string;
+
+  // 2025 TYT puan formülü (yalnızca TYT sınavı için)
+  let tyt_score: number | null = null;
+  if (exam_name === "TYT" && obp !== null) {
+    tyt_score = Math.round(
+      (100 + turkish_net * 3.3 + social_net * 3.3 + math_net * 3.3 + science_net * 3.3 + obp * 0.12) * 100
+    ) / 100;
+  }
 
   const { data: purchase } = await admin.from("purchases").select("coach_id").eq("user_id", user.id).eq("status", "active").maybeSingle();
 
@@ -27,10 +38,12 @@ export async function addDenemeResult(formData: FormData) {
     student_id: user.id,
     coach_id: purchase?.coach_id ?? null,
     exam_date: formData.get("exam_date") as string,
-    exam_name: formData.get("exam_name") as string,
+    exam_name,
     turkish_net, math_net, science_net, social_net,
     net_total: turkish_net + math_net + science_net + social_net,
     notes: (formData.get("notes") as string) || null,
+    obp,
+    tyt_score,
   });
 
   revalidatePath("/ogrenci-paneli/deneme");
