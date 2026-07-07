@@ -84,7 +84,7 @@ export default async function DenemePage() {
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-              OBP <span className="font-normal text-gray-400">(Ortaöğretim Başarı Puanı, 0–100)</span>
+              Diploma Notu <span className="font-normal text-gray-400">(0–100)</span>
             </label>
             <input
               type="number"
@@ -121,7 +121,7 @@ export default async function DenemePage() {
           <table className="w-full text-sm">
             <thead className="border-b border-gray-100 bg-gray-50">
               <tr>
-                {["Tarih", "Sınav", "Türkçe", "Mat", "Fen", "Sosyal", "Toplam Net", "OBP", "TYT Puanı", ""].map(h => (
+                {["Tarih", "Sınav", "Türkçe", "Mat", "Fen", "Sosyal", "Toplam Net", "Diploma Notu", "TYT Puanı", ""].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400">{h}</th>
                 ))}
               </tr>

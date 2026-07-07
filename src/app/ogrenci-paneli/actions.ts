@@ -34,7 +34,7 @@ export async function addDenemeResult(formData: FormData) {
 
   const { data: purchase } = await admin.from("purchases").select("coach_id").eq("user_id", user.id).eq("status", "active").maybeSingle();
 
-  await admin.from("deneme_results").insert({
+  const insertData: Record<string, unknown> = {
     student_id: user.id,
     coach_id: purchase?.coach_id ?? null,
     exam_date: formData.get("exam_date") as string,
@@ -42,9 +42,11 @@ export async function addDenemeResult(formData: FormData) {
     turkish_net, math_net, science_net, social_net,
     net_total: turkish_net + math_net + science_net + social_net,
     notes: (formData.get("notes") as string) || null,
-    obp,
-    tyt_score,
-  });
+  };
+  if (obp !== null) insertData.obp = obp;
+  if (tyt_score !== null) insertData.tyt_score = tyt_score;
+
+  await admin.from("deneme_results").insert(insertData);
 
   revalidatePath("/ogrenci-paneli/deneme");
 }
