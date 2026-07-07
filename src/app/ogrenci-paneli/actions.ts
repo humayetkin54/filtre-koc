@@ -28,7 +28,7 @@ export async function addDenemeResult(formData: FormData) {
   // Diploma notu 0-100 → OBP = diploma_notu × 5 (0-500 ölçeği) → AOBP = OBP × 0.12
   let tyt_score: number | null = null;
   if (exam_name === "TYT" && obp !== null) {
-    const tyt_base = 100 + turkish_net * 3.3 + social_net * 3.3 + math_net * 3.3 + science_net * 3.3;
+    const tyt_base = 100 + turkish_net * 3.4734 + social_net * 3.4734 + math_net * 3.4734 + science_net * 3.4734;
     const aobp = obp * 5 * 0.12; // diploma_notu → OBP → AOBP
     tyt_score = Math.round((tyt_base + aobp) * 100) / 100;
   }
