@@ -24,12 +24,13 @@ export async function addDenemeResult(formData: FormData) {
   const obp = obpRaw ? parseFloat(obpRaw) : null;
   const exam_name = formData.get("exam_name") as string;
 
-  // 2025 TYT puan formülü (yalnızca TYT sınavı için)
+  // 2025 Y-TYT puan formülü (okul puanı dahil, yalnızca TYT sınavı için)
+  // Diploma notu 0-100 → OBP = diploma_notu × 5 (0-500 ölçeği) → AOBP = OBP × 0.12
   let tyt_score: number | null = null;
   if (exam_name === "TYT" && obp !== null) {
-    tyt_score = Math.round(
-      (100 + turkish_net * 3.3 + social_net * 3.3 + math_net * 3.3 + science_net * 3.3 + obp * 0.12) * 100
-    ) / 100;
+    const tyt_base = 100 + turkish_net * 3.3 + social_net * 3.3 + math_net * 3.3 + science_net * 3.3;
+    const aobp = obp * 5 * 0.12; // diploma_notu → OBP → AOBP
+    tyt_score = Math.round((tyt_base + aobp) * 100) / 100;
   }
 
   const { data: purchase } = await admin.from("purchases").select("coach_id").eq("user_id", user.id).eq("status", "active").maybeSingle();

@@ -95,7 +95,7 @@ export default async function DenemePage() {
               placeholder="Örn: 85.50"
               className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]"
             />
-            <p className="mt-1 text-[11px] text-gray-400">TYT seçildiğinde 2025 katsayılarıyla TYT puanın otomatik hesaplanır.</p>
+            <p className="mt-1 text-[11px] text-gray-400">TYT seçildiğinde okul puanı dahil Y-TYT puanın otomatik hesaplanır.</p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[["turkish_net", "Türkçe/Edebiyat"], ["math_net", "Matematik"], ["science_net", "Fen"], ["social_net", "Sosyal"]].map(([n, l]) => (
@@ -121,7 +121,7 @@ export default async function DenemePage() {
           <table className="w-full text-sm">
             <thead className="border-b border-gray-100 bg-gray-50">
               <tr>
-                {["Tarih", "Sınav", "Türkçe", "Mat", "Fen", "Sosyal", "Toplam Net", "Diploma Notu", "TYT Puanı", ""].map(h => (
+                {["Tarih", "Sınav", "Türkçe", "Mat", "Fen", "Sosyal", "Toplam Net", "Diploma Notu", "Y-TYT Puanı", ""].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400">{h}</th>
                 ))}
               </tr>
