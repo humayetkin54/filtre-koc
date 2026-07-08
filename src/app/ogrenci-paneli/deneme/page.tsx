@@ -1,7 +1,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import { addDenemeResult, deleteDenemeResult } from "../actions";
-
-const EXAM_TYPES = ["TYT", "AYT (Sayısal)", "AYT (Sözel)", "AYT (Eşit Ağırlık)", "LGS", "KPSS"];
+import { deleteDenemeResult } from "../actions";
+import { DenemeForm } from "./deneme-form";
+import { EXAM_CONFIGS } from "./exam-config";
 
 function NetChart({ data }: { data: { date: string; net: number; name: string }[] }) {
   if (data.length < 2) return null;
@@ -69,50 +69,7 @@ export default async function DenemePage() {
       {/* Sonuç ekle */}
       <div className="rounded-2xl border border-gray-200 bg-white p-6">
         <h2 className="text-sm font-bold text-gray-700 mb-4">Yeni Sonuç Ekle</h2>
-        <form action={addDenemeResult} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Sınav Türü</label>
-              <select name="exam_name" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]">
-                {EXAM_TYPES.map(t => <option key={t}>{t}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Tarih</label>
-              <input type="date" name="exam_date" required className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]" />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-              Diploma Notu <span className="font-normal text-gray-400">(0–100)</span>
-            </label>
-            <input
-              type="number"
-              name="obp"
-              min="0"
-              max="100"
-              step="0.01"
-              placeholder="Örn: 85.50"
-              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]"
-            />
-            <p className="mt-1 text-[11px] text-gray-400">TYT seçildiğinde okul puanı dahil Y-TYT puanın otomatik hesaplanır.</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[["turkish_net", "Türkçe/Edebiyat"], ["math_net", "Matematik"], ["science_net", "Fen"], ["social_net", "Sosyal"]].map(([n, l]) => (
-              <div key={n}>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">{l}</label>
-                <input type="number" name={n} min="0" max="40" step="0.25" defaultValue="0" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]" />
-              </div>
-            ))}
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">Not (isteğe bağlı)</label>
-            <input type="text" name="notes" placeholder="Bu denemede dikkat ettiğin bir şey?" className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]" />
-          </div>
-          <button type="submit" className="rounded-xl bg-[#0E8FA3] px-6 py-2.5 text-sm font-bold text-white hover:bg-[#0c7689] transition">
-            Sonucu Kaydet
-          </button>
-        </form>
+        <DenemeForm />
       </div>
 
       {/* Liste */}
@@ -121,7 +78,7 @@ export default async function DenemePage() {
           <table className="w-full text-sm">
             <thead className="border-b border-gray-100 bg-gray-50">
               <tr>
-                {["Tarih", "Sınav", "Türkçe", "Mat", "Fen", "Sosyal", "Toplam Net", "Diploma Notu", "Y-TYT Puanı", ""].map(h => (
+                {["Tarih", "Sınav", "Türkçe", "Mat", "Fen", "Sosyal", "Toplam Net", "Diploma Notu", "Puan", ""].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400">{h}</th>
                 ))}
               </tr>
@@ -130,7 +87,7 @@ export default async function DenemePage() {
               {(results ?? []).map(r => (
                 <tr key={r.id} className="hover:bg-gray-50/50">
                   <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{new Date(r.exam_date).toLocaleDateString("tr-TR")}</td>
-                  <td className="px-4 py-3 font-medium text-gray-900">{r.exam_name}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900">{EXAM_CONFIGS[r.exam_name]?.label ?? r.exam_name}</td>
                   <td className="px-4 py-3 text-gray-600">{r.turkish_net?.toFixed(2)}</td>
                   <td className="px-4 py-3 text-gray-600">{r.math_net?.toFixed(2)}</td>
                   <td className="px-4 py-3 text-gray-600">{r.science_net?.toFixed(2)}</td>

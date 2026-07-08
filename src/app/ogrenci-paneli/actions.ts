@@ -3,6 +3,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { EXAM_CONFIGS, calculateScore } from "./deneme/exam-config";
 
 async function getStudentUser() {
   const supabase = await createClient();
@@ -16,22 +17,26 @@ export async function addDenemeResult(formData: FormData) {
   const { user } = await getStudentUser();
   const admin = createAdminClient();
 
-  const turkish_net = parseFloat(formData.get("turkish_net") as string) || 0;
-  const math_net = parseFloat(formData.get("math_net") as string) || 0;
-  const science_net = parseFloat(formData.get("science_net") as string) || 0;
-  const social_net = parseFloat(formData.get("social_net") as string) || 0;
+  const exam_name = formData.get("exam_name") as string;
+  const config = EXAM_CONFIGS[exam_name];
+  if (!config) return;
+
+  // net_* alanlarını topla
+  const nets: Record<string, number> = {};
+  for (const f of config.fields) {
+    nets[f.key] = parseFloat(formData.get(`net_${f.key}`) as string) || 0;
+  }
+  const net_total = Object.values(nets).reduce((a, b) => a + b, 0);
+
   const obpRaw = formData.get("obp") as string;
   const obp = obpRaw ? parseFloat(obpRaw) : null;
-  const exam_name = formData.get("exam_name") as string;
 
-  // 2025 Y-TYT puan formülü (okul puanı dahil, yalnızca TYT sınavı için)
-  // Diploma notu 0-100 → OBP = diploma_notu × 5 (0-500 ölçeği) → AOBP = OBP × 0.12
-  let tyt_score: number | null = null;
-  if (exam_name === "TYT" && obp !== null) {
-    const tyt_base = 100 + turkish_net * 3.4734 + social_net * 3.4734 + math_net * 3.4734 + science_net * 3.4734;
-    const aobp = obp * 5 * 0.12; // diploma_notu → OBP → AOBP
-    tyt_score = Math.round((tyt_base + aobp) * 100) / 100;
-  }
+  // 2025 katsayılarıyla puan: base + Σ(net × katsayı)
+  const rawScore = calculateScore(exam_name, nets);
+  // Okul puanı dahil yerleştirme puanı: puan + diploma_notu × 0.6 (OBP×0.12)
+  const tyt_score = rawScore !== null && obp !== null
+    ? Math.round((rawScore + obp * 0.6) * 100) / 100
+    : rawScore;
 
   const { data: purchase } = await admin.from("purchases").select("coach_id").eq("user_id", user.id).eq("status", "active").maybeSingle();
 
@@ -40,9 +45,13 @@ export async function addDenemeResult(formData: FormData) {
     coach_id: purchase?.coach_id ?? null,
     exam_date: formData.get("exam_date") as string,
     exam_name,
-    turkish_net, math_net, science_net, social_net,
-    net_total: turkish_net + math_net + science_net + social_net,
+    turkish_net: nets.turkce ?? 0,
+    math_net: nets.tmat ?? 0,
+    science_net: nets.fen ?? 0,
+    social_net: nets.sosyal ?? 0,
+    net_total,
     notes: (formData.get("notes") as string) || null,
+    nets,
   };
   if (obp !== null) insertData.obp = obp;
   if (tyt_score !== null) insertData.tyt_score = tyt_score;
