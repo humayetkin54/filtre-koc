@@ -1,7 +1,6 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import { deleteDenemeResult } from "../actions";
 import { DenemeForm } from "./deneme-form";
-import { EXAM_CONFIGS } from "./exam-config";
+import { ResultsTabs } from "./results-tabs";
 
 function NetChart({ data }: { data: { date: string; net: number; name: string }[] }) {
   if (data.length < 2) return null;
@@ -72,40 +71,8 @@ export default async function DenemePage() {
         <DenemeForm />
       </div>
 
-      {/* Liste */}
-      {(results ?? []).length > 0 && (
-        <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="border-b border-gray-100 bg-gray-50">
-              <tr>
-                {["Tarih", "Sınav", "Türkçe", "Mat", "Fen", "Sosyal", "Toplam Net", "Diploma Notu", "Puan", ""].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {(results ?? []).map(r => (
-                <tr key={r.id} className="hover:bg-gray-50/50">
-                  <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{new Date(r.exam_date).toLocaleDateString("tr-TR")}</td>
-                  <td className="px-4 py-3 font-medium text-gray-900">{EXAM_CONFIGS[r.exam_name]?.label ?? r.exam_name}</td>
-                  <td className="px-4 py-3 text-gray-600">{r.turkish_net?.toFixed(2)}</td>
-                  <td className="px-4 py-3 text-gray-600">{r.math_net?.toFixed(2)}</td>
-                  <td className="px-4 py-3 text-gray-600">{r.science_net?.toFixed(2)}</td>
-                  <td className="px-4 py-3 text-gray-600">{r.social_net?.toFixed(2)}</td>
-                  <td className="px-4 py-3 font-bold text-[#0E8FA3]">{r.net_total?.toFixed(2)}</td>
-                  <td className="px-4 py-3 text-gray-500">{r.obp ?? "—"}</td>
-                  <td className="px-4 py-3 font-bold text-emerald-600">{r.tyt_score ? r.tyt_score.toFixed(2) : "—"}</td>
-                  <td className="px-4 py-3">
-                    <form action={deleteDenemeResult.bind(null, r.id)}>
-                      <button type="submit" className="text-xs text-red-400 hover:text-red-600 transition">Sil</button>
-                    </form>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      {/* Sonuçlar — sınav türü sekmeleriyle */}
+      <ResultsTabs results={results ?? []} />
     </div>
   );
 }
