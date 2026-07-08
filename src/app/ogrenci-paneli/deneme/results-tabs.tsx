@@ -59,15 +59,34 @@ function groupFields(fields: ExamField[]) {
 }
 
 export function ResultsTabs({ results }: { results: DenemeResult[] }) {
-  const [activeTab, setActiveTab] = useState("TYT");
+  const [activeTab, setActiveTabState] = useState("TYT");
+  const [chartMode, setChartMode] = useState<"total" | "subject">("total");
+  const [selectedSubject, setSelectedSubject] = useState<string>("turkce");
   const [isPending, startTransition] = useTransition();
   const config = EXAM_CONFIGS[activeTab];
   const filtered = results.filter((r) => r.exam_name === activeTab);
   const grouped = groupFields(config.fields);
 
+  function setActiveTab(key: string) {
+    setActiveTabState(key);
+    setChartMode("total");
+    setSelectedSubject(EXAM_CONFIGS[key].fields[0].key);
+  }
+
   function handleDelete(id: string) {
     startTransition(() => deleteDenemeResult(id));
   }
+
+  const sortedByDate = [...filtered].sort(
+    (a, b) => new Date(a.exam_date).getTime() - new Date(b.exam_date).getTime()
+  );
+  const chartData =
+    chartMode === "total"
+      ? sortedByDate.map((r) => ({ date: r.exam_date, net: r.net_total ?? 0 }))
+      : sortedByDate
+          .filter((r) => r.nets?.[selectedSubject] !== undefined)
+          .map((r) => ({ date: r.exam_date, net: r.nets![selectedSubject] }));
+  const selectedField = config.fields.find((f) => f.key === selectedSubject);
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
@@ -99,14 +118,62 @@ export function ResultsTabs({ results }: { results: DenemeResult[] }) {
       {/* Seçili türün net grafiği */}
       {filtered.length >= 2 && (
         <div className="border-b border-gray-100 px-5 pt-5 pb-2">
+          {/* Grafik modu: Toplam Net | Dersler */}
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <button
+              type="button"
+              onClick={() => setChartMode("total")}
+              className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                chartMode === "total"
+                  ? "bg-[#123A57] text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              Toplam Net Grafiği
+            </button>
+            <button
+              type="button"
+              onClick={() => setChartMode("subject")}
+              className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
+                chartMode === "subject"
+                  ? "bg-[#123A57] text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              Dersler
+            </button>
+          </div>
+
+          {/* Ders seçimi */}
+          {chartMode === "subject" && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {config.fields.map((f) => (
+                <button
+                  key={f.key}
+                  type="button"
+                  onClick={() => setSelectedSubject(f.key)}
+                  className={`rounded-full px-3 py-1 text-[11px] font-semibold transition ${
+                    selectedSubject === f.key
+                      ? "bg-[#0E8FA3] text-white"
+                      : "bg-white border border-gray-200 text-gray-600 hover:border-[#0E8FA3] hover:text-[#0E8FA3]"
+                  }`}
+                >
+                  {f.group ? `${f.group} ${f.label}` : f.label}
+                </button>
+              ))}
+            </div>
+          )}
+
           <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
-            {TAB_LABELS[activeTab]} Toplam Net Grafiği
+            {chartMode === "total"
+              ? `${TAB_LABELS[activeTab]} Toplam Net Grafiği`
+              : `${selectedField?.group ? selectedField.group + " " : ""}${selectedField?.label ?? ""} Net Değişimi`}
           </h3>
-          <NetChart
-            data={[...filtered]
-              .sort((a, b) => new Date(a.exam_date).getTime() - new Date(b.exam_date).getTime())
-              .map((r) => ({ date: r.exam_date, net: r.net_total ?? 0 }))}
-          />
+          {chartData.length >= 2 ? (
+            <NetChart data={chartData} />
+          ) : (
+            <p className="pb-4 text-xs text-gray-400">Bu ders için yeterli veri yok (en az 2 deneme gerekli).</p>
+          )}
         </div>
       )}
 
