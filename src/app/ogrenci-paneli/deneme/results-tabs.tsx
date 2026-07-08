@@ -17,6 +17,36 @@ interface DenemeResult {
 
 const TAB_LABELS: Record<string, string> = { TYT: "TYT", SAY: "SAY", EA: "EA", SOZ: "SÖZ", DIL: "DİL" };
 
+function NetChart({ data }: { data: { date: string; net: number }[] }) {
+  if (data.length < 2) return null;
+  const maxNet = Math.max(...data.map((d) => d.net), 1);
+  const w = 600, h = 200, pad = 40;
+  const points = data.map((d, i) => ({
+    x: pad + (i / (data.length - 1)) * (w - pad * 2),
+    y: h - pad - (d.net / maxNet) * (h - pad * 2),
+    ...d,
+  }));
+  const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
+      {[0, 0.25, 0.5, 0.75, 1].map((t) => (
+        <line key={t} x1={pad} x2={w - pad} y1={pad + t * (h - pad * 2)} y2={pad + t * (h - pad * 2)} stroke="#f0f0f0" strokeWidth={1} />
+      ))}
+      <path d={pathD} fill="none" stroke="#0E8FA3" strokeWidth={2.5} strokeLinejoin="round" />
+      {points.map((p, i) => (
+        <g key={i}>
+          <circle cx={p.x} cy={p.y} r={5} fill="#0E8FA3" />
+          <text x={p.x} y={p.y - 10} textAnchor="middle" fontSize={10} fill="#374151">{p.net.toFixed(1)}</text>
+          <text x={p.x} y={h - 8} textAnchor="middle" fontSize={9} fill="#9ca3af">
+            {new Date(p.date).toLocaleDateString("tr-TR", { month: "short", day: "numeric" })}
+          </text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 function groupFields(fields: ExamField[]) {
   const groups: { name: string | null; fields: ExamField[] }[] = [];
   for (const f of fields) {
@@ -65,6 +95,20 @@ export function ResultsTabs({ results }: { results: DenemeResult[] }) {
           );
         })}
       </div>
+
+      {/* Seçili türün net grafiği */}
+      {filtered.length >= 2 && (
+        <div className="border-b border-gray-100 px-5 pt-5 pb-2">
+          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+            {TAB_LABELS[activeTab]} Toplam Net Grafiği
+          </h3>
+          <NetChart
+            data={[...filtered]
+              .sort((a, b) => new Date(a.exam_date).getTime() - new Date(b.exam_date).getTime())
+              .map((r) => ({ date: r.exam_date, net: r.net_total ?? 0 }))}
+          />
+        </div>
+      )}
 
       {filtered.length === 0 ? (
         <div className="px-6 py-12 text-center">
