@@ -111,6 +111,7 @@ export default async function StudentDetailPage({
           messages={messages ?? []}
           appointments={appointments ?? []}
           coachNotes={coachNotes ?? []}
+          unreadMessages={(messages ?? []).filter(m => m.sender_role === "student" && !m.read_at).length}
         />
       </div>
     </div>

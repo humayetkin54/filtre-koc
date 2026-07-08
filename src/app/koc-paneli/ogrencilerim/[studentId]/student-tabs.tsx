@@ -11,6 +11,7 @@ import {
   saveCoachNote,
   deleteCoachNote,
   updateAppointmentStatus,
+  markStudentMessagesRead,
 } from "../../actions";
 
 /* ── Tipler ── */
@@ -98,6 +99,7 @@ export function StudentTabs({
   messages,
   appointments,
   coachNotes,
+  unreadMessages = 0,
 }: {
   studentId: string;
   denemeler: DenemeResult[];
@@ -106,11 +108,22 @@ export function StudentTabs({
   messages: MessageItem[];
   appointments: AppointmentItem[];
   coachNotes: CoachNote[];
+  unreadMessages?: number;
 }) {
-  const [tab, setTab] = useState<string>("deneme");
+  const [tab, setTabState] = useState<string>("deneme");
   const [isPending, startTransition] = useTransition();
   const [noteText, setNoteText] = useState("");
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
+  const [unreadHidden, setUnreadHidden] = useState(false);
+  const unreadCount = unreadHidden ? 0 : unreadMessages;
+
+  function setTab(key: string) {
+    setTabState(key);
+    if (key === "mesaj" && unreadCount > 0) {
+      setUnreadHidden(true);
+      startTransition(() => markStudentMessagesRead(studentId));
+    }
+  }
 
   const grid: Record<number, Record<string, ScheduleEntry>> = {};
   for (const e of schedule) {
@@ -139,13 +152,18 @@ export function StudentTabs({
             key={t.key}
             type="button"
             onClick={() => setTab(t.key)}
-            className={`rounded-xl px-4 py-2 text-sm font-bold transition ${
+            className={`relative rounded-xl px-4 py-2 text-sm font-bold transition ${
               tab === t.key
                 ? "bg-[#123A57] text-white"
                 : "bg-white border border-gray-200 text-gray-600 hover:border-[#0E8FA3] hover:text-[#0E8FA3]"
             }`}
           >
             {t.label}
+            {t.key === "mesaj" && unreadCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+                {unreadCount}
+              </span>
+            )}
           </button>
         ))}
       </div>

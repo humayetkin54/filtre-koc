@@ -108,6 +108,23 @@ export async function saveCoachNote(formData: FormData) {
   revalidatePath(`/koc-paneli/ogrencilerim/${studentId}`);
 }
 
+/* ── MESAJLARI OKUNDU İŞARETLE (koç, öğrenci mesajlarını okudu) ── */
+export async function markStudentMessagesRead(studentId: string) {
+  const ctx = await getCoachForStudent(studentId);
+  if (!ctx) return;
+
+  await ctx.admin
+    .from("messages")
+    .update({ read_at: new Date().toISOString() })
+    .eq("coach_id", ctx.coach.id)
+    .eq("student_id", studentId)
+    .eq("sender_role", "student")
+    .is("read_at", null);
+
+  revalidatePath("/koc-paneli/ogrencilerim");
+  revalidatePath(`/koc-paneli/ogrencilerim/${studentId}`);
+}
+
 export async function deleteCoachNote(id: string, studentId: string) {
   const ctx = await getCoachForStudent(studentId);
   if (!ctx) return;
