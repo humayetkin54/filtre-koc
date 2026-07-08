@@ -43,7 +43,7 @@ export default async function StudentDetailPage({
     { data: homework },
     { data: messages },
     { data: appointments },
-    { data: noteRow },
+    { data: coachNotes },
   ] = await Promise.all([
     admin.from("goals").select("*").eq("student_id", studentId).maybeSingle(),
     admin.from("deneme_results").select("*").eq("student_id", studentId).order("exam_date", { ascending: false }),
@@ -51,7 +51,7 @@ export default async function StudentDetailPage({
     admin.from("homework").select("*").eq("student_id", studentId).order("created_at", { ascending: false }),
     admin.from("messages").select("*").eq("student_id", studentId).eq("coach_id", coach.id).order("created_at", { ascending: true }),
     admin.from("appointments").select("id, date, time, status, note").eq("user_id", studentId).eq("coach_id", coach.id).order("date", { ascending: false }),
-    admin.from("coach_notes").select("content").eq("coach_id", coach.id).eq("student_id", studentId).maybeSingle(),
+    admin.from("coach_notes").select("id, content, created_at").eq("coach_id", coach.id).eq("student_id", studentId).order("created_at", { ascending: false }),
   ]);
 
   const initials = (purchase.student_name ?? purchase.student_email ?? "?")
@@ -110,7 +110,7 @@ export default async function StudentDetailPage({
           homework={homework ?? []}
           messages={messages ?? []}
           appointments={appointments ?? []}
-          coachNote={noteRow?.content ?? ""}
+          coachNotes={coachNotes ?? []}
         />
       </div>
     </div>

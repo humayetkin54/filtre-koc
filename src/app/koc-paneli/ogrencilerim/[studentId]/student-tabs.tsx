@@ -9,6 +9,7 @@ import {
   addHomework,
   deleteHomework,
   saveCoachNote,
+  deleteCoachNote,
   updateAppointmentStatus,
 } from "../../actions";
 
@@ -56,6 +57,12 @@ interface AppointmentItem {
   note: string | null;
 }
 
+interface CoachNote {
+  id: string;
+  content: string;
+  created_at: string;
+}
+
 const DAYS = [
   { key: 1, label: "Pazartesi" }, { key: 2, label: "Salı" }, { key: 3, label: "Çarşamba" },
   { key: 4, label: "Perşembe" }, { key: 5, label: "Cuma" }, { key: 6, label: "Cumartesi" }, { key: 0, label: "Pazar" },
@@ -90,7 +97,7 @@ export function StudentTabs({
   homework,
   messages,
   appointments,
-  coachNote,
+  coachNotes,
 }: {
   studentId: string;
   denemeler: DenemeResult[];
@@ -98,10 +105,12 @@ export function StudentTabs({
   homework: HomeworkItem[];
   messages: MessageItem[];
   appointments: AppointmentItem[];
-  coachNote: string;
+  coachNotes: CoachNote[];
 }) {
   const [tab, setTab] = useState<string>("deneme");
   const [isPending, startTransition] = useTransition();
+  const [noteText, setNoteText] = useState("");
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
 
   const grid: Record<number, Record<string, ScheduleEntry>> = {};
   for (const e of schedule) {
@@ -414,26 +423,89 @@ export function StudentTabs({
 
       {/* ── KOÇ NOTLARI ── */}
       {tab === "not" && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <h3 className="text-sm font-bold text-gray-700">Özel Notlarım</h3>
-            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
-              🔒 Sadece sen görürsün
-            </span>
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <h3 className="text-sm font-bold text-gray-700">
+                {selectedNoteId ? "Not Detayı" : "Yeni Not"}
+              </h3>
+              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+                🔒 Sadece sen görürsün
+              </span>
+              {selectedNoteId && (
+                <button
+                  type="button"
+                  onClick={() => { setSelectedNoteId(null); setNoteText(""); }}
+                  className="ml-auto rounded-lg bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 hover:bg-gray-200 transition"
+                >
+                  + Yeni Not Yaz
+                </button>
+              )}
+            </div>
+            <form
+              action={(fd) => startTransition(async () => {
+                await saveCoachNote(fd);
+                setNoteText("");
+                setSelectedNoteId(null);
+              })}
+              className="space-y-3"
+            >
+              <input type="hidden" name="student_id" value={studentId} />
+              <textarea
+                name="content"
+                rows={6}
+                value={noteText}
+                onChange={(e) => { setNoteText(e.target.value); setSelectedNoteId(null); }}
+                placeholder="Öğrenci hakkında notların... (velisiyle görüşme, motivasyon durumu, dikkat edilecekler)"
+                className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3] resize-none"
+              />
+              <button
+                type="submit"
+                disabled={isPending || !noteText.trim()}
+                className="rounded-xl bg-[#0E8FA3] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#0c7689] transition disabled:opacity-50"
+              >
+                {isPending ? "Kaydediliyor..." : "Notu Kaydet"}
+              </button>
+            </form>
           </div>
-          <form action={(fd) => startTransition(() => saveCoachNote(fd))} className="space-y-3">
-            <input type="hidden" name="student_id" value={studentId} />
-            <textarea
-              name="content"
-              rows={8}
-              defaultValue={coachNote}
-              placeholder="Öğrenci hakkında notların... (velisiyle görüşme, motivasyon durumu, dikkat edilecekler)"
-              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3] resize-none"
-            />
-            <button type="submit" disabled={isPending} className="rounded-xl bg-[#0E8FA3] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#0c7689] transition disabled:opacity-50">
-              {isPending ? "Kaydediliyor..." : "Notu Kaydet"}
-            </button>
-          </form>
+
+          {/* Kayıtlı notlar listesi */}
+          {coachNotes.length > 0 && (
+            <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
+              <p className="px-5 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide border-b border-gray-100 bg-gray-50/50">
+                Kayıtlı Notlar ({coachNotes.length})
+              </p>
+              <div className="divide-y divide-gray-50">
+                {coachNotes.map((n) => (
+                  <div
+                    key={n.id}
+                    className={`flex items-center gap-3 px-5 py-3 cursor-pointer transition-colors ${
+                      selectedNoteId === n.id ? "bg-[#eef9f9]" : "hover:bg-gray-50"
+                    }`}
+                    onClick={() => { setSelectedNoteId(n.id); setNoteText(n.content); }}
+                  >
+                    <span className="shrink-0 text-[11px] font-semibold text-gray-400 whitespace-nowrap">
+                      {new Date(n.created_at).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" })}{" "}
+                      {new Date(n.created_at).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                    <p className="flex-1 min-w-0 truncate text-sm text-gray-700">{n.content}</p>
+                    <button
+                      type="button"
+                      disabled={isPending}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startTransition(() => deleteCoachNote(n.id, studentId));
+                        if (selectedNoteId === n.id) { setSelectedNoteId(null); setNoteText(""); }
+                      }}
+                      className="shrink-0 text-xs text-red-400 hover:text-red-600 transition disabled:opacity-50"
+                    >
+                      Sil
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

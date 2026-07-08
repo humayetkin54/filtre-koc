@@ -90,18 +90,29 @@ export async function deleteHomework(id: string, studentId: string) {
   revalidatePath("/ogrenci-paneli/odevler");
 }
 
-/* ── KOÇ ÖZEL NOTU (öğrenci görmez) ── */
+/* ── KOÇ ÖZEL NOTLARI (öğrenci görmez) ── */
 export async function saveCoachNote(formData: FormData) {
   const studentId = formData.get("student_id") as string;
   const ctx = await getCoachForStudent(studentId);
   if (!ctx) return;
 
-  await ctx.admin.from("coach_notes").upsert({
+  const content = ((formData.get("content") as string) || "").trim();
+  if (!content) return;
+
+  await ctx.admin.from("coach_notes").insert({
     coach_id: ctx.coach.id,
     student_id: studentId,
-    content: (formData.get("content") as string) || "",
-    updated_at: new Date().toISOString(),
-  }, { onConflict: "coach_id,student_id" });
+    content,
+  });
+
+  revalidatePath(`/koc-paneli/ogrencilerim/${studentId}`);
+}
+
+export async function deleteCoachNote(id: string, studentId: string) {
+  const ctx = await getCoachForStudent(studentId);
+  if (!ctx) return;
+
+  await ctx.admin.from("coach_notes").delete().eq("id", id).eq("coach_id", ctx.coach.id);
 
   revalidatePath(`/koc-paneli/ogrencilerim/${studentId}`);
 }
