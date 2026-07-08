@@ -58,7 +58,7 @@ function groupFields(fields: ExamField[]) {
   return groups;
 }
 
-export function ResultsTabs({ results }: { results: DenemeResult[] }) {
+export function ResultsTabs({ results, readOnly = false }: { results: DenemeResult[]; readOnly?: boolean }) {
   const [activeTab, setActiveTabState] = useState("TYT");
   const [chartMode, setChartMode] = useState<"total" | "subject">("total");
   const [selectedSubject, setSelectedSubject] = useState<string>("turkce");
@@ -204,14 +204,16 @@ export function ResultsTabs({ results }: { results: DenemeResult[] }) {
                       {TAB_LABELS[activeTab]} Puanı: {r.tyt_score.toFixed(2)}
                     </span>
                   )}
-                  <button
-                    type="button"
-                    disabled={isPending}
-                    onClick={() => handleDelete(r.id)}
-                    className="text-xs text-red-400 hover:text-red-600 transition disabled:opacity-50"
-                  >
-                    Sil
-                  </button>
+                  {!readOnly && (
+                    <button
+                      type="button"
+                      disabled={isPending}
+                      onClick={() => handleDelete(r.id)}
+                      className="text-xs text-red-400 hover:text-red-600 transition disabled:opacity-50"
+                    >
+                      Sil
+                    </button>
+                  )}
                 </div>
               </div>
 
