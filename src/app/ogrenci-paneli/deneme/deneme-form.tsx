@@ -56,26 +56,44 @@ export function DenemeForm() {
         </p>
       </div>
 
-      <div>
-        <p className="text-xs font-semibold text-gray-600 mb-2">Netler <span className="font-normal text-gray-400">(2025 katsayılarıyla puan hesaplanır)</span></p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {config.fields.map((f) => (
-            <div key={f.key}>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                {f.label} <span className="font-normal text-gray-400">/{f.max}</span>
-              </label>
-              <input
-                type="number"
-                name={`net_${f.key}`}
-                min={-Math.ceil(f.max / 4)}
-                max={f.max}
-                step="0.25"
-                defaultValue="0"
-                className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]"
-              />
+      <div className="space-y-4">
+        <p className="text-xs font-semibold text-gray-600">Netler <span className="font-normal text-gray-400">(2025 katsayılarıyla puan hesaplanır)</span></p>
+        {(() => {
+          const groups: { name: string | null; fields: typeof config.fields }[] = [];
+          for (const f of config.fields) {
+            const name = f.group ?? null;
+            const last = groups[groups.length - 1];
+            if (last && last.name === name) last.fields.push(f);
+            else groups.push({ name, fields: [f] });
+          }
+          return groups.map((g, gi) => (
+            <div key={gi}>
+              {g.name && (
+                <span className="mb-2 inline-block rounded-md bg-[#123A57] px-2 py-1 text-[10px] font-bold text-white uppercase tracking-wide">
+                  {g.name} Bölümü
+                </span>
+              )}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {g.fields.map((f) => (
+                  <div key={f.key}>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                      {f.label} <span className="font-normal text-gray-400">/{f.max}</span>
+                    </label>
+                    <input
+                      type="number"
+                      name={`net_${f.key}`}
+                      min={-Math.ceil(f.max / 4)}
+                      max={f.max}
+                      step="0.25"
+                      defaultValue="0"
+                      className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#0E8FA3]"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
+          ));
+        })()}
       </div>
 
       <div>
