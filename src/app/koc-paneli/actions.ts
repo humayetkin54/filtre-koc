@@ -90,6 +90,40 @@ export async function deleteHomework(id: string, studentId: string) {
   revalidatePath("/ogrenci-paneli/odevler");
 }
 
+/* ── AI PROGRAM ÖNERİSİNİ UYGULA ── */
+export async function applyAiProgram(scanId: string, studentId: string) {
+  const ctx = await getCoachForStudent(studentId);
+  if (!ctx) return;
+
+  const { data: scan } = await ctx.admin
+    .from("exam_scans")
+    .select("program_suggestion")
+    .eq("id", scanId)
+    .eq("student_id", studentId)
+    .maybeSingle();
+
+  const entries = (scan?.program_suggestion ?? []) as {
+    gun: number; saat: string; ders: string; konu: string;
+  }[];
+  if (entries.length === 0) return;
+
+  // Önce mevcut programı temizle, AI önerisini uygula
+  await ctx.admin.from("study_schedule").delete().eq("student_id", studentId);
+  await ctx.admin.from("study_schedule").insert(
+    entries.map((e) => ({
+      student_id: studentId,
+      coach_id: ctx.coach.id,
+      day_of_week: e.gun,
+      time_slot: e.saat,
+      subject: e.ders,
+      topic: e.konu || null,
+    }))
+  );
+
+  revalidatePath(`/koc-paneli/ogrencilerim/${studentId}`);
+  revalidatePath("/ogrenci-paneli/program");
+}
+
 /* ── KOÇ ÖZEL NOTLARI (öğrenci görmez) ── */
 export async function saveCoachNote(formData: FormData) {
   const studentId = formData.get("student_id") as string;

@@ -15,9 +15,17 @@ export default async function DenemePage() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-gray-200 bg-white p-6">
-        <h1 className="text-xl font-bold text-gray-900 mb-1">📝 Deneme Sonuçları</h1>
-        <p className="text-sm text-gray-500">Deneme sınavı netlerini girerek gelişimini takip et.</p>
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900 mb-1">📝 Deneme Sonuçları</h1>
+          <p className="text-sm text-gray-500">Deneme sınavı netlerini girerek gelişimini takip et.</p>
+        </div>
+        <a
+          href="/ogrenci-paneli/ai-analiz/yukle"
+          className="rounded-xl border-2 border-[#0E8FA3] px-4 py-2.5 text-sm font-bold text-[#0E8FA3] hover:bg-[#eef9f9] transition"
+        >
+          📸 Deneme Sınavı Sorularını Çek
+        </a>
       </div>
 
       {/* Sonuç ekle */}

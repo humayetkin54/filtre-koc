@@ -44,6 +44,7 @@ export default async function StudentDetailPage({
     { data: messages },
     { data: appointments },
     { data: coachNotes },
+    { data: aiScans },
   ] = await Promise.all([
     admin.from("goals").select("*").eq("student_id", studentId).maybeSingle(),
     admin.from("deneme_results").select("*").eq("student_id", studentId).order("exam_date", { ascending: false }),
@@ -52,6 +53,7 @@ export default async function StudentDetailPage({
     admin.from("messages").select("*").eq("student_id", studentId).eq("coach_id", coach.id).order("created_at", { ascending: true }),
     admin.from("appointments").select("id, date, time, status, note").eq("user_id", studentId).eq("coach_id", coach.id).order("date", { ascending: false }),
     admin.from("coach_notes").select("id, content, created_at").eq("coach_id", coach.id).eq("student_id", studentId).order("created_at", { ascending: false }),
+    admin.from("exam_scans").select("id, exam_name, exam_date, analysis_text, program_suggestion").eq("student_id", studentId).eq("status", "done").order("exam_date", { ascending: false }).limit(1),
   ]);
 
   const initials = (purchase.student_name ?? purchase.student_email ?? "?")
@@ -112,6 +114,7 @@ export default async function StudentDetailPage({
           appointments={appointments ?? []}
           coachNotes={coachNotes ?? []}
           unreadMessages={(messages ?? []).filter(m => m.sender_role === "student" && !m.read_at).length}
+          aiScan={aiScans?.[0] ?? null}
         />
       </div>
     </div>

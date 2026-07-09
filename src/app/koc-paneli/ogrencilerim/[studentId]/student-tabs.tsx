@@ -12,6 +12,7 @@ import {
   deleteCoachNote,
   updateAppointmentStatus,
   markStudentMessagesRead,
+  applyAiProgram,
 } from "../../actions";
 
 /* ── Tipler ── */
@@ -64,6 +65,14 @@ interface CoachNote {
   created_at: string;
 }
 
+interface AiScan {
+  id: string;
+  exam_name: string;
+  exam_date: string;
+  analysis_text: string | null;
+  program_suggestion: { gun: number; saat: string; ders: string; konu: string }[] | null;
+}
+
 const DAYS = [
   { key: 1, label: "Pazartesi" }, { key: 2, label: "Salı" }, { key: 3, label: "Çarşamba" },
   { key: 4, label: "Perşembe" }, { key: 5, label: "Cuma" }, { key: 6, label: "Cumartesi" }, { key: 0, label: "Pazar" },
@@ -100,6 +109,7 @@ export function StudentTabs({
   appointments,
   coachNotes,
   unreadMessages = 0,
+  aiScan = null,
 }: {
   studentId: string;
   denemeler: DenemeResult[];
@@ -109,6 +119,7 @@ export function StudentTabs({
   appointments: AppointmentItem[];
   coachNotes: CoachNote[];
   unreadMessages?: number;
+  aiScan?: AiScan | null;
 }) {
   const [tab, setTabState] = useState<string>("deneme");
   const [isPending, startTransition] = useTransition();
@@ -180,6 +191,43 @@ export function StudentTabs({
       {/* ── DERS PROGRAMI ── */}
       {tab === "program" && (
         <div className="space-y-4">
+          {/* AI program önerisi */}
+          {aiScan && (aiScan.program_suggestion ?? []).length > 0 && (
+            <div className="rounded-2xl border-2 border-[#0E8FA3]/30 bg-[#eef9f9] p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
+                <h3 className="text-sm font-bold text-[#123A57]">
+                  🤖 AI Program Önerisi
+                  <span className="ml-2 font-normal text-xs text-gray-500">
+                    ({new Date(aiScan.exam_date).toLocaleDateString("tr-TR")} tarihli {aiScan.exam_name} denemesinden)
+                  </span>
+                </h3>
+                <button
+                  type="button"
+                  disabled={isPending}
+                  onClick={() => {
+                    if (confirm("Mevcut program silinip AI önerisi uygulanacak. Onaylıyor musun?")) {
+                      startTransition(() => applyAiProgram(aiScan.id, studentId));
+                    }
+                  }}
+                  className="rounded-xl bg-[#0E8FA3] px-4 py-2 text-xs font-bold text-white hover:bg-[#0c7689] transition disabled:opacity-50"
+                >
+                  {isPending ? "Uygulanıyor..." : "✓ Programa Uygula"}
+                </button>
+              </div>
+              {aiScan.analysis_text && (
+                <p className="text-xs text-gray-600 mb-3 italic">&ldquo;{aiScan.analysis_text}&rdquo;</p>
+              )}
+              <div className="flex flex-wrap gap-1.5">
+                {(aiScan.program_suggestion ?? []).map((p, i) => (
+                  <span key={i} className="rounded-lg bg-white border border-[#0E8FA3]/20 px-2 py-1 text-[11px] text-gray-700">
+                    <span className="font-bold">{DAYS.find(d => d.key === p.gun)?.label ?? p.gun}</span> {p.saat} · {p.ders}
+                    {p.konu && <span className="text-gray-400"> ({p.konu})</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Yeni ders ekle */}
           <div className="rounded-2xl border border-gray-200 bg-white p-5">
             <h3 className="text-sm font-bold text-gray-700 mb-3">Programa Ders Ekle</h3>
