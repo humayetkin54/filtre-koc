@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { analyzeExamScan } from "../actions";
+import { useRouter } from "next/navigation";
+import { startExamScan, analyzeScanBatch, finalizeExamScan } from "../actions";
 
 const MAX_PHOTOS = 41;
+const BATCH_SIZE = 8; // Vercel istek limiti (4.5MB) altında kalmak için grup boyutu
 
 const EXAM_TYPES = [
   { key: "TYT", label: "TYT" },
@@ -37,10 +39,11 @@ async function compressImage(file: File, maxDim = 1400, quality = 0.72): Promise
 }
 
 export function UploadForm() {
+  const router = useRouter();
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [phase, setPhase] = useState<"idle" | "compress" | "analyze">("idle");
+  const [progress, setProgress] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
@@ -62,31 +65,51 @@ export function UploadForm() {
         return;
       }
 
+      const examName = formData.get("exam_name") as string;
+      const examDate = formData.get("exam_date") as string;
+
       // 1) Fotoğrafları sıkıştır
-      setPhase("compress");
+      setProgress("Fotoğraflar hazırlanıyor...");
       const compressed: File[] = [];
       for (const f of files) {
         compressed.push(await compressImage(f));
       }
 
-      const totalMB = compressed.reduce((a, f) => a + f.size, 0) / (1024 * 1024);
-      if (totalMB > 18) {
-        setPhase("idle");
-        setError(`Fotoğrafların toplam boyutu çok büyük (${totalMB.toFixed(0)}MB). Daha az sayfayla deneyin veya iki ayrı analiz yapın.`);
+      // 2) Tarama kaydı başlat
+      const start = await startExamScan(examName, examDate, compressed.length);
+      if ("error" in start || !start.id) {
+        setProgress(null);
+        setError(("error" in start && start.error) || "Kayıt oluşturulamadı.");
         return;
       }
 
-      // 2) Sıkıştırılmış dosyalarla gönder
-      setPhase("analyze");
-      const fd = new FormData();
-      fd.set("exam_name", formData.get("exam_name") as string);
-      fd.set("exam_date", formData.get("exam_date") as string);
-      for (const f of compressed) fd.append("photos", f);
+      // 3) Gruplar halinde gönder (Vercel istek limiti nedeniyle)
+      const totalBatches = Math.ceil(compressed.length / BATCH_SIZE);
+      for (let b = 0; b < totalBatches; b++) {
+        const chunk = compressed.slice(b * BATCH_SIZE, (b + 1) * BATCH_SIZE);
+        setProgress(`Sayfalar analiz ediliyor... (${Math.min((b + 1) * BATCH_SIZE, compressed.length)}/${compressed.length})`);
 
-      const result = await analyzeExamScan(fd);
-      setPhase("idle");
-      if (result?.error) setError(result.error);
-      // Başarılıysa action redirect eder
+        const fd = new FormData();
+        for (const f of chunk) fd.append("photos", f);
+
+        const res = await analyzeScanBatch(start.id, fd);
+        if (res?.error) {
+          setProgress(null);
+          setError(res.error);
+          return;
+        }
+      }
+
+      // 4) Analiz özeti + program önerisi üret
+      setProgress("Analiz özeti ve program önerisi hazırlanıyor...");
+      const fin = await finalizeExamScan(start.id);
+      setProgress(null);
+      if (fin?.error) {
+        setError(fin.error);
+        return;
+      }
+
+      router.push(`/ogrenci-paneli/ai-analiz?scan=${start.id}`);
     });
   }
 
@@ -154,7 +177,7 @@ export function UploadForm() {
               <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" className="opacity-25" />
               <path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
             </svg>
-            {phase === "compress" ? "Fotoğraflar hazırlanıyor..." : "Yapay zekâ analiz ediyor... (1-2 dk sürebilir)"}
+            {progress ?? "İşleniyor..."}
           </span>
         ) : (
           "🤖 Soruları Çek ve Analiz Et"
