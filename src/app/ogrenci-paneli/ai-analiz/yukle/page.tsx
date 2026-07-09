@@ -1,7 +1,7 @@
 import { UploadForm } from "./upload-form";
 
-// Gemini analizi uzun sürebilir — Vercel fonksiyon süresini artır
-export const maxDuration = 60;
+// Gemini analizi uzun sürebilir (41 sayfaya kadar) — Vercel fonksiyon süresini artır
+export const maxDuration = 300;
 
 export default function YuklePage() {
   return (
@@ -19,7 +19,7 @@ export default function YuklePage() {
         <p className="font-bold">📌 İyi sonuç için ipuçları:</p>
         <p>• Fotoğrafları iyi ışıkta, sayfaya dik açıyla çek</p>
         <p>• + ve − işaretleri soru numarasının yanında net görünsün</p>
-        <p>• Bir seferde en fazla 15 fotoğraf yükleyebilirsin</p>
+        <p>• Bir seferde en fazla 41 sayfa yükleyebilirsin (fotoğraflar otomatik sıkıştırılır)</p>
       </div>
 
       <UploadForm />

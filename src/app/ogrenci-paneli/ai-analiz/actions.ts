@@ -39,7 +39,7 @@ export async function analyzeExamScan(formData: FormData) {
   if (!examName || !examDate) return { error: "Sınav türü ve tarih zorunlu." };
   const validFiles = files.filter((f) => f && f.size > 0);
   if (validFiles.length === 0) return { error: "En az 1 fotoğraf yükleyin." };
-  if (validFiles.length > 15) return { error: "En fazla 15 fotoğraf yüklenebilir." };
+  if (validFiles.length > 41) return { error: "En fazla 41 fotoğraf yüklenebilir." };
 
   // Fotoğrafları base64'e çevir
   const images: GeminiImage[] = [];
