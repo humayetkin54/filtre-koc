@@ -118,8 +118,8 @@ Kurallar:
     return { ok: true, count: newQuestions.length };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
-    await admin.from("exam_scans").update({ status: "error", error_message: msg }).eq("id", scanId);
-    return { error: "Analiz hatası: " + msg };
+    // Kaydı 'error' yapma — istemci aynı grubu yeniden deneyecek
+    return { error: "Analiz hatası: " + msg, retriable: true };
   }
 }
 

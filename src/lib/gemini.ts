@@ -38,7 +38,12 @@ export async function callGeminiWithImages(
   });
 
   let lastError = "";
+  // Vercel fonksiyon süre limitine (60 sn olabilir) takılmamak için toplam bütçe: 45 sn
+  const deadline = Date.now() + 45_000;
   for (const model of MODEL_CHAIN) {
+    const remaining = deadline - Date.now();
+    if (remaining < 8_000) break; // kalan süre yetmez — istemci yeniden denesin
+
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
     let res: Response;
     try {
@@ -46,8 +51,7 @@ export async function callGeminiWithImages(
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body,
-        // Tek modelde 40 sn'den fazla bekleme — sıradakine geç (Vercel süre limiti içinde kal)
-        signal: AbortSignal.timeout(40_000),
+        signal: AbortSignal.timeout(Math.min(30_000, remaining)),
       });
     } catch (e) {
       lastError = `${model}: zaman aşımı / bağlantı hatası (${e instanceof Error ? e.message : ""})`;

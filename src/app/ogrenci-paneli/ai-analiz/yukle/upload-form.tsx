@@ -6,21 +6,29 @@ import { startExamScan, analyzeScanBatch, finalizeExamScan } from "../actions";
 
 const MAX_PHOTOS = 41;
 const MAX_BATCH_BYTES = 2.5 * 1024 * 1024; // Vercel istek limiti 4.5MB — güvenli pay ile 2.5MB
-const MAX_BATCH_COUNT = 5;
+const MAX_BATCH_COUNT = 3; // küçük gruplar = hızlı istekler = süre limitine takılmaz
 
-// Sunucu çağrısı çökerse (zaman aşımı, ağ hatası) sayfayı düşürme; 1 kez tekrar dene
-async function callWithRetry<T>(fn: () => Promise<T>, onRetry: () => void): Promise<T | { error: string }> {
-  try {
-    return await fn();
-  } catch {
-    onRetry();
-    await new Promise((r) => setTimeout(r, 4000));
+// Sunucu çağrısı çökerse veya geçici hata dönerse aynı işlemi 3 kez dene
+async function callWithRetry<T extends { error?: string }>(
+  fn: () => Promise<T>,
+  onRetry: (attempt: number) => void,
+  attempts = 3
+): Promise<T | { error: string }> {
+  let lastErr = "Sunucuya ulaşılamadı (zaman aşımı olabilir). İnternetini kontrol edip tekrar dene.";
+  for (let i = 0; i < attempts; i++) {
     try {
-      return await fn();
+      const res = await fn();
+      if (!res?.error) return res;
+      lastErr = res.error;
     } catch {
-      return { error: "Sunucuya ulaşılamadı (zaman aşımı olabilir). İnternetini kontrol edip tekrar dene." };
+      // istek tamamen düştü (zaman aşımı / ağ) — tekrar dene
+    }
+    if (i < attempts - 1) {
+      onRetry(i + 2);
+      await new Promise((r) => setTimeout(r, 3500));
     }
   }
+  return { error: lastErr };
 }
 
 const EXAM_TYPES = [
@@ -123,9 +131,9 @@ export function UploadForm() {
       // 2) Tarama kaydı başlat
       const start = await callWithRetry(
         () => startExamScan(examName, examDate, compressed.length),
-        () => setProgress("Bağlantı sorunu — tekrar deneniyor...")
+        (n) => setProgress(`Bağlantı sorunu — tekrar deneniyor (${n}/3)...`)
       );
-      if ("error" in start || !start.id) {
+      if ("error" in start || !("id" in start) || !start.id) {
         setProgress(null);
         setError(("error" in start && start.error) || "Kayıt oluşturulamadı.");
         return;
@@ -151,7 +159,7 @@ export function UploadForm() {
 
         const res = await callWithRetry(
           () => analyzeScanBatch(start.id, fd),
-          () => setProgress(`${label} — bağlantı sorunu, tekrar deneniyor...`)
+          (n) => setProgress(`${label} — tekrar deneniyor (${n}/3)...`)
         );
         if (res && "error" in res && res.error) {
           setProgress(null);
@@ -164,7 +172,7 @@ export function UploadForm() {
       setProgress("Analiz özeti ve program önerisi hazırlanıyor...");
       const fin = await callWithRetry(
         () => finalizeExamScan(start.id),
-        () => setProgress("Analiz özeti — bağlantı sorunu, tekrar deneniyor...")
+        (n) => setProgress(`Analiz özeti — tekrar deneniyor (${n}/3)...`)
       );
       setProgress(null);
       if (fin && "error" in fin && fin.error) {
