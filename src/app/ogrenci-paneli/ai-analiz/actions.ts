@@ -78,7 +78,7 @@ export async function analyzeScanBatch(scanId: string, formData: FormData) {
     .eq("id", scanId)
     .eq("student_id", user.id)
     .maybeSingle();
-  if (!scan || scan.status !== "analyzing") return { error: "Geçersiz tarama kaydı." };
+  if (!scan || !["analyzing", "error"].includes(scan.status)) return { error: "Geçersiz tarama kaydı." };
 
   const files = (formData.getAll("photos") as File[]).filter((f) => f && f.size > 0);
   if (files.length === 0) return { error: "Fotoğraf eksik." };
@@ -134,7 +134,8 @@ export async function finalizeExamScan(scanId: string) {
     .eq("id", scanId)
     .eq("student_id", user.id)
     .maybeSingle();
-  if (!scan || scan.status !== "analyzing") return { error: "Geçersiz tarama kaydı." };
+  // 'error' durumundan da yeniden denenebilsin (geçici Gemini hatası sonrası)
+  if (!scan || !["analyzing", "error"].includes(scan.status)) return { error: "Geçersiz tarama kaydı." };
 
   const questions = (scan.questions ?? []) as ScanQuestion[];
   if (questions.length === 0) {
@@ -188,6 +189,7 @@ Kurallar:
         status: "done",
         analysis_text: parsed.analiz ?? "",
         program_suggestion: parsed.haftalik_program ?? [],
+        error_message: null,
       })
       .eq("id", scanId);
   } catch (e) {
