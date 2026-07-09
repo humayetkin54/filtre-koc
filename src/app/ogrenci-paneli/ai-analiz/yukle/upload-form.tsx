@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { startExamScan, analyzeScanBatch, finalizeExamScan } from "../actions";
 
 const MAX_PHOTOS = 41;
-const BATCH_SIZE = 8; // Vercel istek limiti (4.5MB) altında kalmak için grup boyutu
+const MAX_BATCH_BYTES = 3 * 1024 * 1024; // Vercel istek limiti 4.5MB — güvenli pay ile 3MB
+const MAX_BATCH_COUNT = 8;
 
 const EXAM_TYPES = [
   { key: "TYT", label: "TYT" },
@@ -16,7 +17,7 @@ const EXAM_TYPES = [
 ];
 
 // Fotoğrafı tarayıcıda küçült — 41 sayfa yüklenebilsin diye
-async function compressImage(file: File, maxDim = 1400, quality = 0.72): Promise<File> {
+async function compressOnce(file: File, maxDim: number, quality: number): Promise<File | null> {
   try {
     const bitmap = await createImageBitmap(file);
     const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
@@ -26,16 +27,45 @@ async function compressImage(file: File, maxDim = 1400, quality = 0.72): Promise
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext("2d");
-    if (!ctx) return file;
+    if (!ctx) return null;
     ctx.drawImage(bitmap, 0, 0, w, h);
     const blob = await new Promise<Blob | null>((res) =>
       canvas.toBlob((b) => res(b), "image/jpeg", quality)
     );
-    if (!blob) return file;
+    if (!blob) return null;
     return new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" });
   } catch {
-    return file; // sıkıştırma başarısızsa orijinali kullan
+    return null;
   }
+}
+
+async function compressImage(file: File): Promise<File> {
+  // İlk deneme: 1400px, %70 kalite
+  let out = await compressOnce(file, 1400, 0.7);
+  // Hâlâ büyükse: 1100px, %55 kalite
+  if (out && out.size > 500 * 1024) {
+    const smaller = await compressOnce(file, 1100, 0.55);
+    if (smaller) out = smaller;
+  }
+  return out ?? file;
+}
+
+// Fotoğrafları hem adet hem toplam boyut sınırına göre grupla
+function buildBatches(files: File[]): File[][] {
+  const batches: File[][] = [];
+  let current: File[] = [];
+  let currentSize = 0;
+  for (const f of files) {
+    if (current.length > 0 && (currentSize + f.size > MAX_BATCH_BYTES || current.length >= MAX_BATCH_COUNT)) {
+      batches.push(current);
+      current = [];
+      currentSize = 0;
+    }
+    current.push(f);
+    currentSize += f.size;
+  }
+  if (current.length > 0) batches.push(current);
+  return batches;
 }
 
 export function UploadForm() {
@@ -83,11 +113,19 @@ export function UploadForm() {
         return;
       }
 
-      // 3) Gruplar halinde gönder (Vercel istek limiti nedeniyle)
-      const totalBatches = Math.ceil(compressed.length / BATCH_SIZE);
-      for (let b = 0; b < totalBatches; b++) {
-        const chunk = compressed.slice(b * BATCH_SIZE, (b + 1) * BATCH_SIZE);
-        setProgress(`Sayfalar analiz ediliyor... (${Math.min((b + 1) * BATCH_SIZE, compressed.length)}/${compressed.length})`);
+      // 3) Gruplar halinde gönder (Vercel istek limiti nedeniyle — boyuta göre dinamik)
+      const tooBig = compressed.find((f) => f.size > MAX_BATCH_BYTES);
+      if (tooBig) {
+        setProgress(null);
+        setError(`"${tooBig.name}" sıkıştırmaya rağmen çok büyük. O sayfayı tekrar, daha uzaktan çekip dene.`);
+        return;
+      }
+
+      const batches = buildBatches(compressed);
+      let donePages = 0;
+      for (const chunk of batches) {
+        donePages += chunk.length;
+        setProgress(`Sayfalar analiz ediliyor... (${donePages}/${compressed.length})`);
 
         const fd = new FormData();
         for (const f of chunk) fd.append("photos", f);
