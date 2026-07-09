@@ -1,10 +1,11 @@
 // Google Gemini API — REST üzerinden görsel + metin analizi
 // Birincil model yoğun/emekliyse sıradaki modele otomatik geçer
 
+// Test edilmiş, hızlı model ilk sırada; yoğunluk durumunda sıradakine geçilir
 const MODEL_CHAIN = [
-  process.env.GEMINI_MODEL ?? "gemini-flash-latest",
-  "gemini-3.1-flash-lite",
+  process.env.GEMINI_MODEL ?? "gemini-3.1-flash-lite",
   "gemini-2.0-flash",
+  "gemini-flash-latest",
 ];
 
 export interface GeminiImage {
@@ -45,8 +46,8 @@ export async function callGeminiWithImages(
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body,
-        // Tek modelde 75 sn'den fazla bekleme — sıradakine geç
-        signal: AbortSignal.timeout(75_000),
+        // Tek modelde 40 sn'den fazla bekleme — sıradakine geç (Vercel süre limiti içinde kal)
+        signal: AbortSignal.timeout(40_000),
       });
     } catch (e) {
       lastError = `${model}: zaman aşımı / bağlantı hatası (${e instanceof Error ? e.message : ""})`;
