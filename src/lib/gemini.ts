@@ -1,7 +1,11 @@
 // Google Gemini API — REST üzerinden görsel + metin analizi
-// Model: gemini-2.5-flash (ücretsiz katman: ~günde 1500 istek)
+// Birincil model yoğun/emekliyse sıradaki modele otomatik geçer
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+const MODEL_CHAIN = [
+  process.env.GEMINI_MODEL ?? "gemini-flash-latest",
+  "gemini-3.1-flash-lite",
+  "gemini-2.0-flash",
+];
 
 export interface GeminiImage {
   mimeType: string;
@@ -15,36 +19,47 @@ export async function callGeminiWithImages(
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY tanımlı değil");
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            ...images.map((img) => ({
-              inline_data: { mime_type: img.mimeType, data: img.base64 },
-            })),
-            { text: prompt },
-          ],
-        },
-      ],
-      generationConfig: {
-        responseMimeType: "application/json",
-        maxOutputTokens: 8192,
+  const body = JSON.stringify({
+    contents: [
+      {
+        parts: [
+          ...images.map((img) => ({
+            inline_data: { mime_type: img.mimeType, data: img.base64 },
+          })),
+          { text: prompt },
+        ],
       },
-    }),
+    ],
+    generationConfig: {
+      responseMimeType: "application/json",
+      maxOutputTokens: 8192,
+    },
   });
 
-  if (!res.ok) {
+  let lastError = "";
+  for (const model of MODEL_CHAIN) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts
+        ?.map((p: { text?: string }) => p.text ?? "")
+        .join("");
+      if (!text) throw new Error("Gemini boş yanıt döndürdü");
+      return text;
+    }
+
     const errText = await res.text();
-    throw new Error(`Gemini API hatası (${res.status}): ${errText.slice(0, 300)}`);
+    lastError = `${model} (${res.status}): ${errText.slice(0, 200)}`;
+
+    // 404 (model kalktı), 429 (kota), 503 (yoğunluk) → sıradaki modeli dene
+    if (![404, 429, 503].includes(res.status)) break;
   }
 
-  const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error("Gemini boş yanıt döndürdü");
-  return text;
+  throw new Error(`Gemini API hatası — ${lastError}`);
 }
