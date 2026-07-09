@@ -5,8 +5,23 @@ import { useRouter } from "next/navigation";
 import { startExamScan, analyzeScanBatch, finalizeExamScan } from "../actions";
 
 const MAX_PHOTOS = 41;
-const MAX_BATCH_BYTES = 3 * 1024 * 1024; // Vercel istek limiti 4.5MB — güvenli pay ile 3MB
-const MAX_BATCH_COUNT = 8;
+const MAX_BATCH_BYTES = 2.5 * 1024 * 1024; // Vercel istek limiti 4.5MB — güvenli pay ile 2.5MB
+const MAX_BATCH_COUNT = 5;
+
+// Sunucu çağrısı çökerse (zaman aşımı, ağ hatası) sayfayı düşürme; 1 kez tekrar dene
+async function callWithRetry<T>(fn: () => Promise<T>, onRetry: () => void): Promise<T | { error: string }> {
+  try {
+    return await fn();
+  } catch {
+    onRetry();
+    await new Promise((r) => setTimeout(r, 4000));
+    try {
+      return await fn();
+    } catch {
+      return { error: "Sunucuya ulaşılamadı (zaman aşımı olabilir). İnternetini kontrol edip tekrar dene." };
+    }
+  }
+}
 
 const EXAM_TYPES = [
   { key: "TYT", label: "TYT" },
@@ -106,7 +121,10 @@ export function UploadForm() {
       }
 
       // 2) Tarama kaydı başlat
-      const start = await startExamScan(examName, examDate, compressed.length);
+      const start = await callWithRetry(
+        () => startExamScan(examName, examDate, compressed.length),
+        () => setProgress("Bağlantı sorunu — tekrar deneniyor...")
+      );
       if ("error" in start || !start.id) {
         setProgress(null);
         setError(("error" in start && start.error) || "Kayıt oluşturulamadı.");
@@ -125,13 +143,17 @@ export function UploadForm() {
       let donePages = 0;
       for (const chunk of batches) {
         donePages += chunk.length;
-        setProgress(`Sayfalar analiz ediliyor... (${donePages}/${compressed.length})`);
+        const label = `Sayfalar analiz ediliyor... (${donePages}/${compressed.length})`;
+        setProgress(label);
 
         const fd = new FormData();
         for (const f of chunk) fd.append("photos", f);
 
-        const res = await analyzeScanBatch(start.id, fd);
-        if (res?.error) {
+        const res = await callWithRetry(
+          () => analyzeScanBatch(start.id, fd),
+          () => setProgress(`${label} — bağlantı sorunu, tekrar deneniyor...`)
+        );
+        if (res && "error" in res && res.error) {
           setProgress(null);
           setError(res.error);
           return;
@@ -140,9 +162,12 @@ export function UploadForm() {
 
       // 4) Analiz özeti + program önerisi üret
       setProgress("Analiz özeti ve program önerisi hazırlanıyor...");
-      const fin = await finalizeExamScan(start.id);
+      const fin = await callWithRetry(
+        () => finalizeExamScan(start.id),
+        () => setProgress("Analiz özeti — bağlantı sorunu, tekrar deneniyor...")
+      );
       setProgress(null);
-      if (fin?.error) {
+      if (fin && "error" in fin && fin.error) {
         setError(fin.error);
         return;
       }
