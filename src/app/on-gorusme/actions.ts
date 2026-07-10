@@ -40,6 +40,6 @@ async function notifyAdmin(name: string, grade: string, area: string, phone: str
     from: "Rekor Zeka <onboarding@resend.dev>",
     to: NOTIFY_EMAIL,
     subject: "Yeni ücretsiz ön görüşme talebi",
-    html: `<p>Yeni bir ön görüşme talebi geldi:</p><ul><li><strong>Ad Soyad:</strong> ${name}</li><li><strong>Sınıf:</strong> ${grade}</li><li><strong>Alan:</strong> ${area}</li><li><strong>Telefon:</strong> ${phone}</li></ul><p>Tüm talepleri görmek için <a href="https://filtre-koc.vercel.app/admin">admin paneline</a> gidin.</p>`,
+    html: `<p>Yeni bir ön görüşme talebi geldi:</p><ul><li><strong>Ad Soyad:</strong> ${name}</li><li><strong>Sınıf:</strong> ${grade}</li><li><strong>Alan:</strong> ${area}</li><li><strong>Telefon:</strong> ${phone}</li></ul><p>Tüm talepleri görmek için <a href="https://www.rekorzeka.com/admin">admin paneline</a> gidin.</p>`,
   });
 }
