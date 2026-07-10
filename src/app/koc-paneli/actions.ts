@@ -179,19 +179,95 @@ export async function updateAppointmentStatus(
   // Koçun kendi randevusu mu kontrol et
   const { data: coach } = await supabase
     .from("coaches")
-    .select("id")
+    .select("id, name, email, user_id")
     .eq("user_id", user.id)
     .single();
 
   if (!coach) return;
 
-  await supabase
+  const admin = createAdminClient();
+
+  // Onaylanınca görüşme linki üret
+  let meetingLink: string | null = null;
+  if (status === "confirmed") {
+    meetingLink = `https://meet.jit.si/RekorZeka-${appointmentId.replace(/-/g, "").slice(0, 20)}`;
+  }
+
+  await admin
     .from("appointments")
-    .update({ status })
+    .update(status === "confirmed" ? { status, meeting_link: meetingLink } : { status })
     .eq("id", appointmentId)
     .eq("coach_id", coach.id);
 
+  // Onay e-postaları (hata olursa akışı bozmasın)
+  if (status === "confirmed" && meetingLink) {
+    try {
+      const { sendEmail, appointmentEmailHtml } = await import("@/lib/email");
+
+      const { data: appt } = await admin
+        .from("appointments")
+        .select("date, time, user_id, student_name, student_email")
+        .eq("id", appointmentId)
+        .maybeSingle();
+
+      if (appt) {
+        const dateStr = new Date(appt.date).toLocaleDateString("tr-TR", {
+          weekday: "long", day: "numeric", month: "long", year: "numeric",
+        });
+
+        // Öğrenci e-postası: randevu kaydında yoksa auth'tan al
+        let studentEmail = appt.student_email as string | null;
+        let studentName = (appt.student_name as string | null) ?? "Öğrenci";
+        if (!studentEmail && appt.user_id) {
+          const { data: au } = await admin.auth.admin.getUserById(appt.user_id);
+          studentEmail = au?.user?.email ?? null;
+          studentName = (au?.user?.user_metadata?.full_name as string) ?? studentName;
+        }
+
+        // Koç e-postası: coaches.email yoksa auth'tan al
+        let coachEmail = coach.email as string | null;
+        if (!coachEmail && coach.user_id) {
+          const { data: cu } = await admin.auth.admin.getUserById(coach.user_id);
+          coachEmail = cu?.user?.email ?? null;
+        }
+
+        if (studentEmail) {
+          await sendEmail({
+            to: [{ email: studentEmail, name: studentName }],
+            subject: `Randevunuz onaylandı — ${dateStr} ${appt.time}`,
+            html: appointmentEmailHtml({
+              recipientName: studentName,
+              otherPartyLabel: "Koçunuz",
+              otherPartyName: coach.name,
+              dateStr,
+              time: appt.time,
+              meetingLink,
+            }),
+          });
+        }
+
+        if (coachEmail) {
+          await sendEmail({
+            to: [{ email: coachEmail, name: coach.name }],
+            subject: `Randevu onaylandı — ${dateStr} ${appt.time}`,
+            html: appointmentEmailHtml({
+              recipientName: coach.name,
+              otherPartyLabel: "Öğrenciniz",
+              otherPartyName: studentName,
+              dateStr,
+              time: appt.time,
+              meetingLink,
+            }),
+          });
+        }
+      }
+    } catch (e) {
+      console.error("[randevu e-posta] hata:", e instanceof Error ? e.message : e);
+    }
+  }
+
   revalidatePath("/koc-paneli");
+  revalidatePath("/randevularim");
 }
 
 export async function saveAvailability(

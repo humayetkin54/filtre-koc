@@ -51,7 +51,7 @@ export default async function StudentDetailPage({
     admin.from("study_schedule").select("*").eq("student_id", studentId),
     admin.from("homework").select("*").eq("student_id", studentId).order("created_at", { ascending: false }),
     admin.from("messages").select("*").eq("student_id", studentId).eq("coach_id", coach.id).order("created_at", { ascending: true }),
-    admin.from("appointments").select("id, date, time, status, note").eq("user_id", studentId).eq("coach_id", coach.id).order("date", { ascending: false }),
+    admin.from("appointments").select("id, date, time, status, note, meeting_link").eq("user_id", studentId).eq("coach_id", coach.id).order("date", { ascending: false }),
     admin.from("coach_notes").select("id, content, created_at").eq("coach_id", coach.id).eq("student_id", studentId).order("created_at", { ascending: false }),
     admin.from("exam_scans").select("id, exam_name, exam_date, analysis_text, program_suggestion").eq("student_id", studentId).eq("status", "done").order("exam_date", { ascending: false }).limit(1),
   ]);

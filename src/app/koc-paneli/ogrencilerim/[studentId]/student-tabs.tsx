@@ -57,6 +57,7 @@ interface AppointmentItem {
   time: string;
   status: string;
   note: string | null;
+  meeting_link?: string | null;
 }
 
 interface CoachNote {
@@ -460,6 +461,16 @@ export function StudentTabs({
                     {a.note && <p className="text-xs text-gray-400 italic mt-0.5">&ldquo;{a.note}&rdquo;</p>}
                   </div>
                   <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${statusStyle}`}>{statusLabel}</span>
+                  {a.status === "confirmed" && !isPast && a.meeting_link && (
+                    <a
+                      href={a.meeting_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg bg-[#0E8FA3] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#0c7689] transition"
+                    >
+                      🎥 Bağlan
+                    </a>
+                  )}
                   {a.status === "pending" && !isPast && (
                     <div className="flex gap-2">
                       <button

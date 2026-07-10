@@ -21,6 +21,7 @@ interface Appointment {
   user_id: string;
   student_name: string | null;
   student_email: string | null;
+  meeting_link: string | null;
 }
 
 export default async function KocPaneliPage() {
@@ -54,7 +55,7 @@ export default async function KocPaneliPage() {
 
   const { data: appointments } = await supabase
     .from("appointments")
-    .select("id, date, time, note, status, created_at, user_id, student_name, student_email")
+    .select("id, date, time, note, status, created_at, user_id, student_name, student_email, meeting_link")
     .eq("coach_id", coach.id)
     .order("date", { ascending: true });
 
@@ -252,7 +253,17 @@ function AppointmentCard({
       )}
 
       {showActions && a.status === "confirmed" && (
-        <div className="mt-4">
+        <div className="mt-4 flex flex-wrap gap-2">
+          {a.meeting_link && (
+            <a
+              href={a.meeting_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg bg-[#0E8FA3] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0c7689]"
+            >
+              🎥 Görüşmeye Bağlan
+            </a>
+          )}
           <form action={cancelAction}>
             <button
               type="submit"

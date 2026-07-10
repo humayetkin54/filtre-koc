@@ -17,6 +17,7 @@ interface Appointment {
   note: string | null;
   status: AppointmentStatus;
   created_at: string;
+  meeting_link: string | null;
   coaches: {
     name: string;
     university: string;
@@ -57,7 +58,7 @@ export default async function RandevularimPage() {
   const { data: appointments } = await supabase
     .from("appointments")
     .select(`
-      id, date, time, note, status, created_at,
+      id, date, time, note, status, created_at, meeting_link,
       coaches (name, university, avatar_initials, avatar_color, avatar_text_color, types)
     `)
     .eq("user_id", user.id)
@@ -187,6 +188,17 @@ function AppointmentCard({ appointment: a, muted = false }: { appointment: Appoi
             <span key={t} className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">{t}</span>
           ))}
         </div>
+
+        {a.status === "confirmed" && a.meeting_link && !muted && (
+          <a
+            href={a.meeting_link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-[#0E8FA3] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0c7689]"
+          >
+            🎥 Görüşmeye Bağlan
+          </a>
+        )}
       </div>
     </div>
   );
