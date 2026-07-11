@@ -32,6 +32,40 @@ export async function sendEmail(args: SendArgs): Promise<{ ok: boolean; skipped?
   return sendViaBrevo(validTo, args.subject, args.html, senderEmail);
 }
 
+export function appointmentEmailHtml({
+  recipientName,
+  otherPartyLabel,
+  otherPartyName,
+  dateStr,
+  time,
+  meetingLink,
+}: {
+  recipientName: string;
+  otherPartyLabel: string; // "Koçunuz" | "Öğrenciniz"
+  otherPartyName: string;
+  dateStr: string;
+  time: string;
+  meetingLink: string;
+}) {
+  return `
+  <div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;padding:24px;background:#f8fafc;border-radius:16px">
+    <h2 style="color:#123A57;margin:0 0 4px">🎉 Randevunuz Onaylandı</h2>
+    <p style="color:#475569;font-size:14px;margin:0 0 20px">Merhaba ${recipientName},</p>
+    <div style="background:#ffffff;border-radius:12px;padding:20px;border:1px solid #e2e8f0">
+      <p style="margin:0 0 8px;color:#334155;font-size:14px"><strong>${otherPartyLabel}:</strong> ${otherPartyName}</p>
+      <p style="margin:0 0 8px;color:#334155;font-size:14px"><strong>📅 Tarih:</strong> ${dateStr}</p>
+      <p style="margin:0 0 16px;color:#334155;font-size:14px"><strong>🕐 Saat:</strong> ${time}</p>
+      <a href="${meetingLink}" style="display:inline-block;background:#0E8FA3;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:10px;font-size:14px">
+        🎥 Görüşmeye Bağlan
+      </a>
+      <p style="margin:14px 0 0;color:#94a3b8;font-size:12px">
+        Randevu saatinde yukarıdaki bağlantıya tıklamanız yeterli — uygulama kurmanıza gerek yok, tarayıcıda açılır.
+      </p>
+    </div>
+    <p style="color:#94a3b8;font-size:12px;margin:16px 0 0">Rekor Zeka · rekorzeka.com koçluk platformu</p>
+  </div>`;
+}
+
 /* ── Brevo ── */
 async function sendViaBrevo(
   to: EmailRecipient[],
