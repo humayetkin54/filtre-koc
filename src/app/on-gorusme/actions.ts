@@ -1,7 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
-import { Resend } from "resend";
+import { sendEmail } from "@/lib/email";
 
 const NOTIFY_EMAIL = "humayetkin@gmail.com";
 
@@ -33,12 +33,8 @@ export async function submitIntroRequest(formData: FormData) {
 }
 
 async function notifyAdmin(name: string, grade: string, area: string, phone: string) {
-  if (!process.env.RESEND_API_KEY) return;
-
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  await resend.emails.send({
-    from: "Rekor Zeka <onboarding@resend.dev>",
-    to: NOTIFY_EMAIL,
+  await sendEmail({
+    to: [{ email: NOTIFY_EMAIL }],
     subject: "Yeni ücretsiz ön görüşme talebi",
     html: `<p>Yeni bir ön görüşme talebi geldi:</p><ul><li><strong>Ad Soyad:</strong> ${name}</li><li><strong>Sınıf:</strong> ${grade}</li><li><strong>Alan:</strong> ${area}</li><li><strong>Telefon:</strong> ${phone}</li></ul><p>Tüm talepleri görmek için <a href="https://www.rekorzeka.com/admin">admin paneline</a> gidin.</p>`,
   });

@@ -40,8 +40,6 @@ export async function startCoaching(coachId: string, coachName: string) {
   revalidatePath("/randevularim");
   redirect("/randevularim");
 }
-import { Resend } from "resend";
-
 export async function bookAppointment(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -97,16 +95,15 @@ async function notifyCoach(coachId: string, studentName: string, date: string, t
 
   const { data: coachUser } = await admin.auth.admin.getUserById(coach.user_id);
   const coachEmail = coachUser?.user?.email;
-  if (!coachEmail || !process.env.RESEND_API_KEY) return;
+  if (!coachEmail) return;
 
   const dateStr = new Date(date).toLocaleDateString("tr-TR", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  await resend.emails.send({
-    from: "Rekor Zeka <onboarding@resend.dev>",
-    to: coachEmail,
+  const { sendEmail } = await import("@/lib/email");
+  await sendEmail({
+    to: [{ email: coachEmail, name: coach.name }],
     subject: "Yeni randevu talebiniz var",
     html: `<p>Merhaba ${coach.name},</p><p><strong>${studentName}</strong> sizden <strong>${dateStr} ${time}</strong> için randevu talep etti.</p><p>Talebi onaylamak veya iptal etmek için <a href="https://www.rekorzeka.com/koc-paneli">koç panelinize</a> gidin.</p>`,
   });
