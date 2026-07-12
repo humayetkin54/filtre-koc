@@ -4,9 +4,9 @@ import Link from "next/link";
 
 const NAV = [
   { href: "/ogrenci-paneli", label: "Genel Bakış", icon: "📊", exact: true },
-  { href: "/ogrenci-paneli/ai-asistan", label: "AI Asistan", icon: "🤖" },
+  { href: "/ogrenci-paneli/ai-asistan", label: "RekorZeka AI Asistan", icon: "🤖" },
+  { href: "/ogrenci-paneli/ai-analiz", label: "Deneme AI Analiz", icon: "📊" },
   { href: "/ogrenci-paneli/deneme", label: "Deneme Sonuçları", icon: "📝" },
-  { href: "/ogrenci-paneli/ai-analiz", label: "AI Analiz", icon: "📊" },
   { href: "/ogrenci-paneli/program", label: "Ders Programı", icon: "📅" },
   { href: "/ogrenci-paneli/odevler", label: "Ödevlerim", icon: "✅" },
   { href: "/ogrenci-paneli/hedefler", label: "Hedeflerim", icon: "🎯" },
