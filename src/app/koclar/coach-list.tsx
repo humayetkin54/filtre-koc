@@ -64,13 +64,8 @@ function CoachCard({
           </h2>
         </Link>
 
-        {/* Puan rozeti + yıldız */}
+        {/* Yıldız */}
         <div className="mt-2 flex items-center justify-center gap-2 flex-wrap">
-          {coach.net_increase && (
-            <span className="rounded-md bg-[#123A57] px-2.5 py-0.5 text-xs font-bold text-white tracking-wide">
-              {coach.net_increase}
-            </span>
-          )}
           <StarRating rating={coach.rating} count={coach.rating_count} />
         </div>
 

@@ -97,16 +97,6 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
                 </span>
               </div>
 
-              {/* Puan rozeti */}
-              {c.net_increase && (
-                <div className="mt-3 inline-flex flex-col items-center rounded-xl border border-gray-200 px-5 py-2.5 sm:items-start">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
-                    {c.types[0]} SIRASI
-                  </p>
-                  <p className="text-2xl font-bold text-[#0E8FA3]">{c.net_increase}</p>
-                </div>
-              )}
-
               {/* Üniversite */}
               <div className="mt-3 space-y-0.5">
                 <p className="font-bold text-gray-800">{c.university}</p>
@@ -293,9 +283,6 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
                   </div>
                   <div>
                     <p className="font-bold text-gray-900 text-sm leading-tight">{s.name}</p>
-                    {s.net_increase && (
-                      <p className="mt-0.5 text-xs text-gray-400">{s.net_increase}</p>
-                    )}
                   </div>
                   <Link
                     href={`/koclar/${s.id}`}
