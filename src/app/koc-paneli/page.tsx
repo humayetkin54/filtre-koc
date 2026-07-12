@@ -1,6 +1,6 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { updateAppointmentStatus } from "./actions";
+import { updateAppointmentStatus, deleteAppointment } from "./actions";
 import { AvailabilityEditor } from "./availability-editor";
 
 const statusConfig = {
@@ -206,6 +206,7 @@ function AppointmentCard({
 
   const confirmAction = updateAppointmentStatus.bind(null, a.id, "confirmed");
   const cancelAction = updateAppointmentStatus.bind(null, a.id, "cancelled");
+  const deleteAction = deleteAppointment.bind(null, a.id);
 
   return (
     <div className={`rounded-2xl border bg-white p-5 transition-opacity ${muted ? "opacity-60" : ""}`}>
@@ -265,12 +266,12 @@ function AppointmentCard({
               🎥 Görüşmeye Bağlan
             </a>
           )}
-          <form action={cancelAction}>
+          <form action={deleteAction}>
             <button
               type="submit"
               className="rounded-lg bg-red-50 px-4 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-100"
             >
-              İptal et
+              Sil
             </button>
           </form>
         </div>

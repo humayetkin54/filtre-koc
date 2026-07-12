@@ -270,6 +270,31 @@ export async function updateAppointmentStatus(
   revalidatePath("/randevularim");
 }
 
+/* ── RANDEVUYU TAMAMEN SİL (yalnızca koç) ── */
+export async function deleteAppointment(appointmentId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const admin = createAdminClient();
+  const { data: coach } = await admin
+    .from("coaches")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!coach) return;
+
+  // Yalnızca kendi randevusunu silebilir
+  await admin
+    .from("appointments")
+    .delete()
+    .eq("id", appointmentId)
+    .eq("coach_id", coach.id);
+
+  revalidatePath("/koc-paneli");
+  revalidatePath("/randevularim");
+}
+
 export async function saveAvailability(
   coachId: string,
   schedule: Record<string, string[]>
