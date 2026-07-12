@@ -1,6 +1,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { ChatUI } from "./chat-ui";
-import { DAILY_LIMIT, getDailyUsage } from "./actions";
+import { getDailyUsage } from "./actions";
+import { DAILY_LIMIT } from "./constants";
 
 export const maxDuration = 60;
 

@@ -4,8 +4,7 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { callGeminiChat, type ChatTurn } from "@/lib/gemini";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-export const DAILY_LIMIT = 20;
+import { DAILY_LIMIT } from "./constants";
 
 const SYSTEM_PROMPT = `Sen "Rekor Zeka AI Asistan"sın — Türkiye'deki YKS, LGS ve KPSS öğrencilerine yardımcı olan samimi, motive edici bir sınav koçu asistanısın.
 
