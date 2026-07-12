@@ -6,7 +6,7 @@ import { startExamScan, analyzeScanBatch, finalizeExamScan } from "../actions";
 
 const MAX_PHOTOS = 50;
 const MAX_BATCH_BYTES = 2.5 * 1024 * 1024; // Vercel istek limiti 4.5MB — güvenli pay ile 2.5MB
-const MAX_BATCH_COUNT = 3; // küçük gruplar = hızlı istekler = süre limitine takılmaz
+const MAX_BATCH_COUNT = 6; // grup başına ~6 sayfa: daha az istek, RPM baskısı düşük, süre marjı rahat
 
 // Sunucu çağrısı çökerse veya geçici hata dönerse aynı işlemi 3 kez dene
 async function callWithRetry<T extends { error?: string }>(
