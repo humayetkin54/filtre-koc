@@ -40,7 +40,7 @@ export async function startExamScan(examName: string, examDate: string, photoCou
   const admin = createAdminClient();
 
   if (!examName || !examDate) return { error: "Sınav türü ve tarih zorunlu." };
-  if (photoCount < 1 || photoCount > 41) return { error: "1-41 arası fotoğraf yükleyebilirsin." };
+  if (photoCount < 1 || photoCount > 50) return { error: "1-50 arası fotoğraf yükleyebilirsin." };
 
   const { data: purchase } = await admin
     .from("purchases")

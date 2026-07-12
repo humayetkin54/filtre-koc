@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { startExamScan, analyzeScanBatch, finalizeExamScan } from "../actions";
 
-const MAX_PHOTOS = 41;
+const MAX_PHOTOS = 50;
 const MAX_BATCH_BYTES = 2.5 * 1024 * 1024; // Vercel istek limiti 4.5MB — güvenli pay ile 2.5MB
 const MAX_BATCH_COUNT = 3; // küçük gruplar = hızlı istekler = süre limitine takılmaz
 
@@ -39,7 +39,7 @@ const EXAM_TYPES = [
   { key: "DIL", label: "YDT Dil (DİL)" },
 ];
 
-// Fotoğrafı tarayıcıda küçült — 41 sayfa yüklenebilsin diye
+// Fotoğrafı tarayıcıda küçült — 50 sayfa yüklenebilsin diye
 async function compressOnce(file: File, maxDim: number, quality: number): Promise<File | null> {
   try {
     const bitmap = await createImageBitmap(file);
