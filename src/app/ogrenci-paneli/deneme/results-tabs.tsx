@@ -191,9 +191,24 @@ export function ResultsTabs({ results, readOnly = false }: { results: DenemeResu
                   📅 {new Date(r.exam_date).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[#eef9f9] px-3 py-1 text-xs font-bold text-[#0E8FA3]">
-                    Toplam Net: {r.net_total?.toFixed(2)}
-                  </span>
+                  {(() => {
+                    const hasNets = r.nets && Object.keys(r.nets).length > 0;
+                    if (!hasNets) {
+                      return (
+                        <span className="rounded-full bg-[#eef9f9] px-3 py-1 text-xs font-bold text-[#0E8FA3]">
+                          Toplam Net: {r.net_total?.toFixed(2)}
+                        </span>
+                      );
+                    }
+                    return grouped.map((g, gi) => {
+                      const sum = g.fields.reduce((acc, f) => acc + (r.nets?.[f.key] ?? 0), 0);
+                      return (
+                        <span key={gi} className="rounded-full bg-[#eef9f9] px-3 py-1 text-xs font-bold text-[#0E8FA3]">
+                          {g.name ?? "Toplam"} Net: {sum.toFixed(2)}
+                        </span>
+                      );
+                    });
+                  })()}
                   {r.obp != null && (
                     <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
                       Diploma: {r.obp}
