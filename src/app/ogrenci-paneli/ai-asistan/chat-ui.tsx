@@ -58,7 +58,7 @@ export function ChatUI({
     const text = input.trim();
     if (!text && !photo) return;
     if (left <= 0) {
-      setError(`Günlük ${dailyLimit} mesaj hakkını doldurdun. Yarın tekrar deneyebilirsin.`);
+      setError(`Günlük mesaj limitiniz doldu (${dailyLimit}/${dailyLimit}). Hakkınız yarın yenilenecek.`);
       return;
     }
     setError(null);
@@ -221,6 +221,12 @@ export function ChatUI({
 
         {/* Girdi */}
         <div className="border-t border-gray-100 p-3">
+          {left <= 0 && (
+            <div className="mb-2 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-800">
+              <span className="text-base">⏳</span>
+              Günlük mesaj limitiniz doldu ({dailyLimit}/{dailyLimit}). Hakkınız yarın yenilenecek.
+            </div>
+          )}
           {error && <p className="mb-2 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">{error}</p>}
           {photoPreview && (
             <div className="mb-2 flex items-center gap-2">
@@ -251,9 +257,6 @@ export function ChatUI({
               ↑
             </button>
           </div>
-          {left <= 0 && (
-            <p className="mt-2 text-center text-xs text-gray-400">Günlük {dailyLimit} mesaj hakkın doldu — yarın yenilenecek.</p>
-          )}
         </div>
       </div>
     </div>

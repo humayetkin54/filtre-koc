@@ -5,7 +5,7 @@ import { callGeminiChat, type ChatTurn } from "@/lib/gemini";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export const DAILY_LIMIT = 5;
+export const DAILY_LIMIT = 20;
 
 const SYSTEM_PROMPT = `Sen "Rekor Zeka AI Asistan"sın — Türkiye'deki YKS, LGS ve KPSS öğrencilerine yardımcı olan samimi, motive edici bir sınav koçu asistanısın.
 
@@ -72,7 +72,7 @@ export async function sendChatMessage(formData: FormData): Promise<
   // Günlük limit
   const used = await getDailyUsage(user.id);
   if (used >= DAILY_LIMIT) {
-    return { error: `Günlük ${DAILY_LIMIT} mesaj hakkını doldurdun. Yarın tekrar deneyebilirsin.` };
+    return { error: `Günlük mesaj limitiniz doldu (${DAILY_LIMIT}/${DAILY_LIMIT}). Hakkınız yarın yenilenecek.` };
   }
 
   const text = ((formData.get("message") as string) || "").trim();
