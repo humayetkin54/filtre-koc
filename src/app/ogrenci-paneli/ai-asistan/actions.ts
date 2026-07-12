@@ -80,17 +80,7 @@ export async function sendChatMessage(formData: FormData): Promise<
   const hasImage = imageFile && imageFile.size > 0;
   if (!text && !hasImage) return { error: "Bir mesaj yaz veya fotoğraf ekle." };
 
-  let chatId = (formData.get("chat_id") as string) || "";
-
-  // Sohbet yoksa oluştur
-  if (!chatId) {
-    const { data } = await admin
-      .from("ai_chats")
-      .insert({ student_id: user.id, title: (text || "Görsel soru").slice(0, 40) })
-      .select("id")
-      .single();
-    chatId = data!.id;
-  }
+  const chatId = (formData.get("chat_id") as string) || "";
 
   // Görsel hazırla
   let image: { mimeType: string; base64: string } | undefined;
@@ -100,54 +90,76 @@ export async function sendChatMessage(formData: FormData): Promise<
     image = { mimeType: imageFile!.type || "image/jpeg", base64: buf.toString("base64") };
   }
 
-  // Önceki mesajları çek (bağlam), son 20
-  const { data: prev } = await admin
-    .from("ai_messages")
-    .select("role, content")
-    .eq("chat_id", chatId)
-    .order("created_at", { ascending: true })
-    .limit(20);
-
-  const history: ChatTurn[] = (prev ?? []).map((m) => ({
-    role: m.role === "assistant" ? "model" : "user",
-    text: m.content,
-  }));
+  // Önceki mesajları çek (bağlam), son 20 — sohbet varsa
+  let history: ChatTurn[] = [];
+  if (chatId) {
+    const { data: prev } = await admin
+      .from("ai_messages")
+      .select("role, content")
+      .eq("chat_id", chatId)
+      .order("created_at", { ascending: true })
+      .limit(20);
+    history = (prev ?? []).map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      text: m.content,
+    }));
+  }
+  const isFirstMessage = history.length === 0;
   history.push({
     role: "user",
     text: text || "Bu sorunun çözümünü adım adım açıklar mısın?",
     image,
   });
 
-  // Kullanıcı mesajını kaydet
-  await admin.from("ai_messages").insert({
-    chat_id: chatId,
-    student_id: user.id,
-    role: "user",
-    content: text || (hasImage ? "📷 Görsel soru gönderildi" : ""),
-    has_image: !!hasImage,
-  });
-
-  // Gemini yanıtı
-  let reply: string;
-  try {
-    reply = await callGeminiChat(history, SYSTEM_PROMPT);
-  } catch (e) {
-    reply = "Üzgünüm, şu an yanıt veremiyorum. Birazdan tekrar dener misin?";
-    console.error("[ai-asistan] Gemini hatası:", e instanceof Error ? e.message : e);
+  // Gemini yanıtı — ÖNCE al (başarılı olursa kaydet), anlık yoğunlukta 2 deneme.
+  // Tümü başarısızsa mesaj hakkından DÜŞMEZ (kayıt yapılmaz).
+  let reply = "";
+  let gotReply = false;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      reply = await callGeminiChat(history, SYSTEM_PROMPT);
+      gotReply = true;
+      break;
+    } catch (e) {
+      console.error(`[ai-asistan] Gemini deneme ${attempt + 1} hata:`, e instanceof Error ? e.message : e);
+      if (attempt < 1) await new Promise((r) => setTimeout(r, 2500));
+    }
+  }
+  if (!gotReply) {
+    return { error: "Şu an yoğunluk var, birkaç saniye sonra tekrar dener misin? (Mesaj hakkın düşmedi.)" };
   }
 
-  await admin.from("ai_messages").insert({
-    chat_id: chatId,
-    student_id: user.id,
-    role: "assistant",
-    content: reply,
-  });
+  // Başarılı → sohbet yoksa oluştur, iki mesajı da kaydet
+  let finalChatId = chatId;
+  if (!finalChatId) {
+    const { data } = await admin
+      .from("ai_chats")
+      .insert({ student_id: user.id, title: (text || "Görsel soru").slice(0, 40) })
+      .select("id")
+      .single();
+    finalChatId = data!.id;
+  }
 
-  // İlk mesajsa sohbet başlığını güncelle
-  if (history.length <= 1 && text) {
-    await admin.from("ai_chats").update({ title: text.slice(0, 40) }).eq("id", chatId);
+  await admin.from("ai_messages").insert([
+    {
+      chat_id: finalChatId,
+      student_id: user.id,
+      role: "user",
+      content: text || (hasImage ? "📷 Görsel soru gönderildi" : ""),
+      has_image: !!hasImage,
+    },
+    {
+      chat_id: finalChatId,
+      student_id: user.id,
+      role: "assistant",
+      content: reply,
+    },
+  ]);
+
+  if (isFirstMessage && text) {
+    await admin.from("ai_chats").update({ title: text.slice(0, 40) }).eq("id", finalChatId);
   }
 
   revalidatePath("/ogrenci-paneli/ai-asistan");
-  return { ok: true, chatId, reply, remaining: Math.max(0, DAILY_LIMIT - used - 1) };
+  return { ok: true, chatId: finalChatId, reply, remaining: Math.max(0, DAILY_LIMIT - used - 1) };
 }
