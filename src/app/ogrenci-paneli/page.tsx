@@ -1,5 +1,6 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { WelcomeModal } from "./welcome-modal";
 
 export default async function OgrenciPaneliPage() {
   const supabase = await createClient();
@@ -34,6 +35,7 @@ export default async function OgrenciPaneliPage() {
 
   return (
     <div className="space-y-6">
+      <WelcomeModal />
       {/* Hoşgeldin */}
       <div className="rounded-2xl bg-gradient-to-br from-[#123A57] to-[#0E8FA3] p-6 text-white">
         <p className="text-sm font-medium text-white/70">Hoş geldin</p>

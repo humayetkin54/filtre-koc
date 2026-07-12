@@ -13,13 +13,17 @@ export interface GeminiImage {
   base64: string;
 }
 
+// Çok turlu sohbet mesajı (DB rolü 'assistant' → Gemini 'model')
+export interface ChatTurn {
+  role: "user" | "model";
+  text: string;
+  image?: GeminiImage;
+}
+
 export async function callGeminiWithImages(
   images: GeminiImage[],
   prompt: string
 ): Promise<string> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error("GEMINI_API_KEY tanımlı değil");
-
   const body = JSON.stringify({
     contents: [
       {
@@ -36,6 +40,33 @@ export async function callGeminiWithImages(
       maxOutputTokens: 8192,
     },
   });
+  return geminiGenerate(body);
+}
+
+// Sohbet asistanı — geçmiş + isteğe bağlı görsel, düz metin yanıt
+export async function callGeminiChat(
+  history: ChatTurn[],
+  systemInstruction: string
+): Promise<string> {
+  const body = JSON.stringify({
+    systemInstruction: { parts: [{ text: systemInstruction }] },
+    contents: history.map((m) => ({
+      role: m.role,
+      parts: [
+        ...(m.image
+          ? [{ inline_data: { mime_type: m.image.mimeType, data: m.image.base64 } }]
+          : []),
+        { text: m.text },
+      ],
+    })),
+    generationConfig: { maxOutputTokens: 4096 },
+  });
+  return geminiGenerate(body);
+}
+
+async function geminiGenerate(body: string): Promise<string> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error("GEMINI_API_KEY tanımlı değil");
 
   let lastError = "";
   // Vercel fonksiyon süre limitine (60 sn olabilir) takılmamak için toplam bütçe: 45 sn
