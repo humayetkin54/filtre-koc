@@ -54,7 +54,7 @@ export default async function RootLayout({
     hasPurchase = (purchaseCount ?? 0) > 0;
 
     if (coach) {
-      const { count } = await supabase
+      const { count } = await admin
         .from("appointments")
         .select("id", { count: "exact", head: true })
         .eq("coach_id", coach.id)

@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { updateAppointmentStatus } from "./actions";
 import { AvailabilityEditor } from "./availability-editor";
@@ -53,7 +53,8 @@ export default async function KocPaneliPage() {
     );
   }
 
-  const { data: appointments } = await supabase
+  const admin = createAdminClient();
+  const { data: appointments } = await admin
     .from("appointments")
     .select("id, date, time, note, status, created_at, user_id, student_name, student_email, meeting_link")
     .eq("coach_id", coach.id)
@@ -61,7 +62,7 @@ export default async function KocPaneliPage() {
 
   const appts = (appointments ?? []) as Appointment[];
 
-  await supabase
+  await admin
     .from("appointments")
     .update({ seen_by_coach: true })
     .eq("coach_id", coach.id)

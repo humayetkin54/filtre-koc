@@ -54,8 +54,8 @@ export default async function RandevularimPage() {
       ).data ?? []
     : [];
 
-  // Randevular
-  const { data: appointments } = await supabase
+  // Randevular (admin client — RLS bypass, kullanıcı kendi id'siyle filtreli)
+  const { data: appointments } = await admin
     .from("appointments")
     .select(`
       id, date, time, note, status, created_at, meeting_link,
