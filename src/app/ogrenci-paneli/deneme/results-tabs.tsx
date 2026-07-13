@@ -17,33 +17,64 @@ interface DenemeResult {
 
 const TAB_LABELS: Record<string, string> = { TYT: "TYT", SAY: "SAY", EA: "EA", SOZ: "SÖZ", DIL: "DİL" };
 
-function NetChart({ data }: { data: { date: string; net: number }[] }) {
-  if (data.length < 2) return null;
-  const maxNet = Math.max(...data.map((d) => d.net), 1);
+const SERIES_COLORS = ["#0E8FA3", "#E2600F", "#7c3aed"];
+
+interface ChartSeries {
+  label: string;
+  color: string;
+  data: { date: string; net: number }[];
+}
+
+function NetChart({ series }: { series: ChartSeries[] }) {
+  const valid = series.filter((s) => s.data.length >= 1);
+  if (valid.length === 0) return null;
+
+  const maxNet = Math.max(...valid.flatMap((s) => s.data.map((d) => d.net)), 1);
+  const n = Math.max(...valid.map((s) => s.data.length));
   const w = 600, h = 200, pad = 40;
-  const points = data.map((d, i) => ({
-    x: pad + (i / (data.length - 1)) * (w - pad * 2),
-    y: h - pad - (d.net / maxNet) * (h - pad * 2),
-    ...d,
-  }));
-  const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+  const xFor = (i: number) => (n <= 1 ? w / 2 : pad + (i / (n - 1)) * (w - pad * 2));
+  const yFor = (net: number) => h - pad - (net / maxNet) * (h - pad * 2);
+  const dates = valid[0].data.map((d) => d.date);
+  const multi = series.length > 1;
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
-      {[0, 0.25, 0.5, 0.75, 1].map((t) => (
-        <line key={t} x1={pad} x2={w - pad} y1={pad + t * (h - pad * 2)} y2={pad + t * (h - pad * 2)} stroke="#f0f0f0" strokeWidth={1} />
-      ))}
-      <path d={pathD} fill="none" stroke="#0E8FA3" strokeWidth={2.5} strokeLinejoin="round" />
-      {points.map((p, i) => (
-        <g key={i}>
-          <circle cx={p.x} cy={p.y} r={5} fill="#0E8FA3" />
-          <text x={p.x} y={p.y - 10} textAnchor="middle" fontSize={10} fill="#374151">{p.net.toFixed(1)}</text>
-          <text x={p.x} y={h - 8} textAnchor="middle" fontSize={9} fill="#9ca3af">
-            {new Date(p.date).toLocaleDateString("tr-TR", { month: "short", day: "numeric" })}
+    <div>
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
+        {[0, 0.25, 0.5, 0.75, 1].map((t) => (
+          <line key={t} x1={pad} x2={w - pad} y1={pad + t * (h - pad * 2)} y2={pad + t * (h - pad * 2)} stroke="#f0f0f0" strokeWidth={1} />
+        ))}
+        {valid.map((s, si) => {
+          const pts = s.data.map((d, i) => ({ x: xFor(i), y: yFor(d.net), net: d.net }));
+          const pathD = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+          return (
+            <g key={si}>
+              <path d={pathD} fill="none" stroke={s.color} strokeWidth={2.5} strokeLinejoin="round" />
+              {pts.map((p, i) => (
+                <g key={i}>
+                  <circle cx={p.x} cy={p.y} r={4.5} fill={s.color} />
+                  <text x={p.x} y={p.y - 9} textAnchor="middle" fontSize={10} fontWeight="bold" fill={s.color}>{p.net.toFixed(1)}</text>
+                </g>
+              ))}
+            </g>
+          );
+        })}
+        {dates.map((d, i) => (
+          <text key={i} x={xFor(i)} y={h - 8} textAnchor="middle" fontSize={9} fill="#9ca3af">
+            {new Date(d).toLocaleDateString("tr-TR", { month: "short", day: "numeric" })}
           </text>
-        </g>
-      ))}
-    </svg>
+        ))}
+      </svg>
+      {multi && (
+        <div className="flex flex-wrap justify-center gap-5 pt-1 pb-3">
+          {valid.map((s) => (
+            <span key={s.label} className="flex items-center gap-1.5 text-xs font-semibold text-gray-600">
+              <span className="inline-block h-2.5 w-5 rounded-full" style={{ backgroundColor: s.color }} />
+              {s.label} Net
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -80,13 +111,34 @@ export function ResultsTabs({ results, readOnly = false }: { results: DenemeResu
   const sortedByDate = [...filtered].sort(
     (a, b) => new Date(a.exam_date).getTime() - new Date(b.exam_date).getTime()
   );
-  const chartData =
-    chartMode === "total"
-      ? sortedByDate.map((r) => ({ date: r.exam_date, net: r.net_total ?? 0 }))
-      : sortedByDate
-          .filter((r) => r.nets?.[selectedSubject] !== undefined)
-          .map((r) => ({ date: r.exam_date, net: r.nets![selectedSubject] }));
   const selectedField = config.fields.find((f) => f.key === selectedSubject);
+
+  // Grafik serileri: Toplam modunda TYT tek çizgi, SAY/EA/SÖZ/DİL'de TYT + AYT ayrı çizgi
+  let chartSeries: ChartSeries[];
+  if (chartMode === "subject") {
+    chartSeries = [{
+      label: selectedField?.label ?? "",
+      color: "#0E8FA3",
+      data: sortedByDate
+        .filter((r) => r.nets?.[selectedSubject] !== undefined)
+        .map((r) => ({ date: r.exam_date, net: r.nets![selectedSubject] })),
+    }];
+  } else if (grouped.length > 1) {
+    chartSeries = grouped.map((g, gi) => ({
+      label: g.name ?? "Toplam",
+      color: SERIES_COLORS[gi % SERIES_COLORS.length],
+      data: sortedByDate
+        .filter((r) => r.nets && Object.keys(r.nets).length > 0)
+        .map((r) => ({ date: r.exam_date, net: g.fields.reduce((s, f) => s + (r.nets?.[f.key] ?? 0), 0) })),
+    }));
+  } else {
+    chartSeries = [{
+      label: "Toplam",
+      color: "#0E8FA3",
+      data: sortedByDate.map((r) => ({ date: r.exam_date, net: r.net_total ?? 0 })),
+    }];
+  }
+  const chartMaxLen = Math.max(0, ...chartSeries.map((s) => s.data.length));
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
@@ -169,10 +221,10 @@ export function ResultsTabs({ results, readOnly = false }: { results: DenemeResu
               ? `${TAB_LABELS[activeTab]} Toplam Net Grafiği`
               : `${selectedField?.group ? selectedField.group + " " : ""}${selectedField?.label ?? ""} Net Değişimi`}
           </h3>
-          {chartData.length >= 2 ? (
-            <NetChart data={chartData} />
+          {chartMaxLen >= 2 ? (
+            <NetChart series={chartSeries} />
           ) : (
-            <p className="pb-4 text-xs text-gray-400">Bu ders için yeterli veri yok (en az 2 deneme gerekli).</p>
+            <p className="pb-4 text-xs text-gray-400">Bu grafik için yeterli veri yok (en az 2 deneme gerekli).</p>
           )}
         </div>
       )}
