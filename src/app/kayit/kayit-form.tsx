@@ -83,13 +83,20 @@ export default function KayitForm() {
           <option value="11. Sınıf">11. Sınıf</option>
           <option value="12. Sınıf (YKS)">12. Sınıf (YKS)</option>
           <option value="Mezun">Mezun</option>
+          <option value="Veli">Veli (öğrenci velisiyim)</option>
         </select>
       </div>
-      <div style={{ display: grade ? "block" : "none" }}>
+      {grade === "Veli" && (
+        <p className="rounded-xl border border-[#d5f2f5] bg-[#eef9f9] px-4 py-3 text-xs text-[#0E8FA3]">
+          Veli hesabıyla, öğrencinizin sizi profilinden eklemesi durumunda gelişimini
+          Veli Paneli&apos;nden takip edebilirsiniz.
+        </p>
+      )}
+      <div style={{ display: examGroup ? "block" : "none" }}>
         <label className="mb-1.5 block text-sm font-medium text-gray-700">
           Destek almak istediğim sınav
         </label>
-        <select name="exam_type" required={!!grade} className={selectClass}>
+        <select name="exam_type" required={!!examGroup} className={selectClass}>
           <option value="">Sınav türünü seç</option>
           {examOptions.map((o) => (
             <option key={o.value} value={o.value}>{o.label}</option>

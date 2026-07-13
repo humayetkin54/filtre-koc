@@ -10,6 +10,10 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Veli hesabı: öğrenci onboarding'ine girmeden veli paneline
+      if (data.user?.user_metadata?.grade === "Veli") {
+        return NextResponse.redirect(`${origin}/veli-paneli`);
+      }
       const onboardingDone = data.user?.user_metadata?.onboarding_completed;
       const destination = onboardingDone ? next : "/onboarding";
       return NextResponse.redirect(`${origin}${destination}`);

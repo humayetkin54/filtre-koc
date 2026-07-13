@@ -15,6 +15,12 @@ export async function signIn(formData: FormData) {
   }
 
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Veli hesabı: öğrenci onboarding'ine girmeden doğrudan veli paneline
+  if (user?.user_metadata?.grade === "Veli") {
+    redirect("/veli-paneli");
+  }
+
   if (!user?.user_metadata?.onboarding_completed) {
     redirect("/onboarding");
   }
