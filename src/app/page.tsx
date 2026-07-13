@@ -3,7 +3,15 @@ import { IntroPopup } from './intro-popup'
 
 const stats = [
   { num: '%100', lbl: 'PDR / Psikoloji Koordinasyonu' },
+  { num: '7/24', lbl: 'Yapay Zeka Destekli Asistan' },
   { num: '14', lbl: 'Gün Koşulsuz İade Garantisi' },
+]
+
+const heroChips = [
+  '🤖 AI Soru Çözümü',
+  '📸 Deneme Kitapçığı AI Analizi',
+  '👁️ Hızlı Okuma Merkezi',
+  '👨‍👩‍👧 Veli Takip Sistemi',
 ]
 
 const yolHaritasi = [
@@ -72,15 +80,22 @@ export default function HomePage() {
             <span className="text-[#E2600F]">uzmanıyla</span>{' '}
             yönet
           </h1>
-          <p className="text-lg text-gray-500 max-w-xl mb-10 leading-relaxed">
-            Sıradan tavsiyeleri ve ezbere programları unutun. Öğrencinin mizaç özelliklerini, bilişsel süreçlerini ve sınav kaygısını yöneten, diploma güvenceli PDR koordinatörleri liderliğinde çalışın. Sadece çalışmayı değil, kazanma psikolojisini öğrenin.
+          <p className="text-lg text-gray-500 max-w-xl mb-8 leading-relaxed">
+            Sıradan tavsiyeleri ve ezbere programları unutun. Diploma güvenceli PDR koordinatörleri liderliğinde, yapay zeka destekli analiz araçlarıyla çalışın. Sadece çalışmayı değil, kazanma psikolojisini öğrenin.
           </p>
+          <div className="flex gap-2 flex-wrap mb-10">
+            {heroChips.map(c => (
+              <span key={c} className="rounded-full border border-white/60 bg-white/70 px-3.5 py-1.5 text-xs font-semibold text-[#123A57] backdrop-blur-sm">
+                {c}
+              </span>
+            ))}
+          </div>
           <div className="flex gap-4 flex-wrap">
             <Link href="/on-gorusme" className="btn-primary px-8 py-4 text-base">
               Ücretsiz Uzman Görüşmesi Al →
             </Link>
-            <a href="#nasil-calisir" className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-8 py-4 rounded-xl text-base transition-all">
-              Bilimsel Metodumuz
+            <a href="#ozellikler" className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-8 py-4 rounded-xl text-base transition-all">
+              Özellikleri Keşfet
             </a>
           </div>
           <div className="flex gap-12 mt-16 flex-wrap">
@@ -88,6 +103,95 @@ export default function HomePage() {
               <div key={s.lbl}>
                 <div className="font-bold text-4xl tracking-tight text-gray-900">{s.num}</div>
                 <div className="text-xs text-gray-400 font-medium uppercase tracking-wider mt-1">{s.lbl}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PLATFORM ÖZELLİKLERİ */}
+      <section id="ozellikler" className="py-24 px-[5%] bg-white">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-xs font-semibold tracking-widest uppercase text-[#0E8FA3] mb-3">Platform Özellikleri</p>
+          <h2 className="font-bold text-4xl tracking-tight text-gray-900 mb-4">Sadece koçluk değil,<br className="sm:hidden" /> yeni nesil teknoloji</h2>
+          <p className="text-gray-500 max-w-xl mb-12">Koçunun birebir ilgisine, yapay zeka destekli araçlar eşlik eder. Hepsi tek panelde, tüm paketlere dahil.</p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-5">
+            {/* Deneme AI Analiz — büyük kart */}
+            <div className="lg:col-span-3 rounded-2xl p-7 text-white" style={{ background: 'linear-gradient(135deg, #123A57 0%, #0E8FA3 100%)' }}>
+              <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold tracking-widest uppercase mb-4">📸 Deneme AI Analiz</span>
+              <h3 className="font-bold text-2xl mb-2">Kitapçığını fotoğrafla,<br />yapay zeka analiz etsin</h3>
+              <p className="text-sm text-white/80 leading-relaxed mb-6">Deneme kitapçığının fotoğraflarını yükle; yapay zeka doğru-yanlışlarından zayıf konularını tespit etsin, koçun tek tıkla haftalık programına dönüştürsün.</p>
+              <div className="flex items-center gap-2 text-xs font-semibold flex-wrap">
+                <span className="rounded-lg bg-white/15 px-3 py-2">📸 Fotoğrafla</span>
+                <span className="text-white/50">→</span>
+                <span className="rounded-lg bg-white/15 px-3 py-2">🤖 Zayıf konu tespiti</span>
+                <span className="text-white/50">→</span>
+                <span className="rounded-lg bg-white/15 px-3 py-2">📅 Haftalık program</span>
+              </div>
+            </div>
+
+            {/* AI Asistan — büyük kart */}
+            <div className="lg:col-span-3 rounded-2xl border border-gray-200 bg-gray-50 p-7">
+              <span className="inline-block rounded-full bg-[#eef9f9] px-3 py-1 text-[11px] font-bold tracking-widest uppercase text-[#0E8FA3] mb-4">🤖 RekorZeka AI Asistan</span>
+              <h3 className="font-bold text-2xl text-gray-900 mb-2">7/24 yanında bir<br />yapay zeka koçu</h3>
+              <p className="text-sm text-gray-500 leading-relaxed mb-6">Takıldığın sorunun fotoğrafını gönder, adım adım çözümünü al. Çalışma planı, konu anlatımı ve motivasyon — gece yarısı bile.</p>
+              <div className="space-y-2">
+                <div className="ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-[#0E8FA3] px-4 py-2.5 text-xs text-white">Bu soruyu çözemedim, yardım eder misin? 📷</div>
+                <div className="max-w-[80%] rounded-2xl rounded-bl-md bg-white border border-gray-200 px-4 py-2.5 text-xs text-gray-600">Tabii! Adım adım çözelim: önce verilenleri yazalım… 🤖</div>
+              </div>
+            </div>
+
+            {/* Hızlı Okuma */}
+            <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6">
+              <div className="text-2xl mb-3">👁️</div>
+              <h3 className="font-bold text-gray-900 mb-1.5">Hızlı Okuma Merkezi</h3>
+              <p className="text-xs text-gray-500 leading-relaxed mb-4">WPM hız testi, takistoskop ve göz egzersizleriyle okuma hızını katla. Paragraf sorularında kazandığın her dakika, fazladan çözülen soru demek.</p>
+              <div className="flex items-end gap-2">
+                <span className="font-bold text-3xl text-[#0E8FA3]">320</span>
+                <span className="text-xs text-gray-400 mb-1">WPM</span>
+                <span className="ml-auto rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-600">18 başarı rozeti 🏅</span>
+              </div>
+            </div>
+
+            {/* Net Takibi */}
+            <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6">
+              <div className="text-2xl mb-3">📊</div>
+              <h3 className="font-bold text-gray-900 mb-1.5">Net Takibi & Grafikler</h3>
+              <p className="text-xs text-gray-500 leading-relaxed mb-4">Her deneme sonucun TYT/AYT ayrımıyla grafiğe dönüşür; gelişimini sen de koçun da anlık görür.</p>
+              <svg viewBox="0 0 200 60" className="w-full">
+                <polyline points="10,45 60,38 110,30 160,18 190,12" fill="none" stroke="#0E8FA3" strokeWidth="3" strokeLinecap="round" />
+                <polyline points="10,52 60,48 110,42 160,35 190,28" fill="none" stroke="#E2600F" strokeWidth="3" strokeLinecap="round" strokeDasharray="6 4" />
+                <circle cx="190" cy="12" r="4" fill="#0E8FA3" />
+                <circle cx="190" cy="28" r="4" fill="#E2600F" />
+              </svg>
+            </div>
+
+            {/* Veli Takip */}
+            <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6">
+              <div className="text-2xl mb-3">👨‍👩‍👧</div>
+              <h3 className="font-bold text-gray-900 mb-1.5">Veli Takip Sistemi</h3>
+              <p className="text-xs text-gray-500 leading-relaxed mb-4">Öğrencinin izniyle veliler; koç, ödev durumu ve deneme gelişimini kendi panelinden şeffafça takip eder.</p>
+              <div className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
+                <span className="text-xs font-semibold text-gray-600">Veli takibi</span>
+                <span className="inline-flex h-5 w-9 items-center rounded-full bg-[#0E8FA3]"><span className="ml-auto mr-0.5 h-4 w-4 rounded-full bg-white" /></span>
+              </div>
+            </div>
+          </div>
+
+          {/* Alt şerit: diğer araçlar */}
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {[
+              { icon: '🎥', title: 'Online Görüşme', desc: 'Randevu onaylanır, görüşme linki otomatik oluşur — tek tıkla bağlan.' },
+              { icon: '💬', title: 'Koçla Mesajlaşma', desc: 'Sorunu panelden yaz, koçun bildirimle görsün; kesintisiz iletişim.' },
+              { icon: '📅', title: 'Program & Ödev Takibi', desc: 'Haftalık ders programın ve ödevlerin tek ekranda, tik tik ilerle.' },
+            ].map(f => (
+              <div key={f.title} className="flex items-start gap-4 rounded-2xl border border-gray-100 bg-gray-50 p-5">
+                <span className="text-2xl">{f.icon}</span>
+                <div>
+                  <h4 className="font-semibold text-gray-900 text-sm mb-1">{f.title}</h4>
+                  <p className="text-xs text-gray-500 leading-relaxed">{f.desc}</p>
+                </div>
               </div>
             ))}
           </div>
