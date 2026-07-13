@@ -147,12 +147,14 @@ export function CoachList({
   coaches,
   purchasedCoachIds = [],
   hasPurchase = false,
+  initialTip,
 }: {
   coaches: Coach[];
   purchasedCoachIds?: string[];
   hasPurchase?: boolean;
+  initialTip?: FilterType;
 }) {
-  const [filter, setFilter] = useState<FilterType>("all");
+  const [filter, setFilter] = useState<FilterType>(initialTip ?? "all");
   const [search, setSearch] = useState("");
 
   const filteredCoaches = useMemo(() => {

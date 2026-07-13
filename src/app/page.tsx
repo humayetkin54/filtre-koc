@@ -4,6 +4,7 @@ import { IntroPopup } from './intro-popup'
 const stats = [
   { num: '%100', lbl: 'PDR / Psikoloji Koordinasyonu' },
   { num: '7/24', lbl: 'Yapay Zeka Destekli Asistan' },
+  { num: '3x', lbl: 'Okuma Hızı Artış Hedefi' },
   { num: '7', lbl: 'Gün Koşulsuz İade Garantisi' },
 ]
 
@@ -76,9 +77,8 @@ export default function HomePage() {
             YENİ NESİL · PDR DESTEKLİ · SEÇKİN AKADEMİK KOÇLUK PLATFORMU
           </div>
           <h1 className="font-bold text-5xl md:text-7xl tracking-tight text-[#1e293b] max-w-3xl mb-6 leading-tight">
-            Sınav maratonunu{' '}
-            <span className="text-[#E2600F]">uzmanıyla</span>{' '}
-            yönet
+            Derece yapan koçlar ve yapay zeka ile{' '}
+            <span className="text-[#E2600F]">netlerini katla</span>
           </h1>
           <p className="text-lg text-gray-500 max-w-xl mb-8 leading-relaxed">
             Sıradan tavsiyeleri ve ezbere programları unutun. Diploma güvenceli PDR koordinatörleri liderliğinde, yapay zeka destekli analiz araçlarıyla çalışın. Sadece çalışmayı değil, kazanma psikolojisini öğrenin.
@@ -90,14 +90,23 @@ export default function HomePage() {
               </span>
             ))}
           </div>
-          <div className="flex gap-4 flex-wrap">
+          <div className="flex gap-3 flex-wrap items-center">
             <Link href="/on-gorusme" className="btn-primary px-8 py-4 text-base">
               Ücretsiz Uzman Görüşmesi Al →
             </Link>
-            <a href="#ozellikler" className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-8 py-4 rounded-xl text-base transition-all">
-              Özellikleri Keşfet
-            </a>
+            <Link href="/koclar?tip=YKS" className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-6 py-3.5 rounded-xl text-base transition-all">
+              YKS Koçunu Seç
+            </Link>
+            <Link href="/koclar?tip=LGS" className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-6 py-3.5 rounded-xl text-base transition-all">
+              LGS Koçunu Seç
+            </Link>
+            <Link href={`/koclar?tip=${encodeURIComponent('KPSS/AGS')}`} className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-6 py-3.5 rounded-xl text-base transition-all">
+              KPSS/AGS Koçu
+            </Link>
           </div>
+          <a href="#ozellikler" className="mt-5 inline-block text-sm font-semibold text-[#0E8FA3] hover:underline">
+            ↓ Platform özelliklerini keşfet
+          </a>
           <div className="flex gap-12 mt-16 flex-wrap">
             {stats.map(s => (
               <div key={s.lbl}>

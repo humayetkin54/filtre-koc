@@ -1,8 +1,17 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { CoachList } from "./coach-list";
-import type { Coach } from "./types";
+import type { Coach, FilterType } from "./types";
 
-export default async function KoclarPage() {
+export default async function KoclarPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tip?: string }>;
+}) {
+  const { tip } = await searchParams;
+  const initialTip = ["YKS", "LGS", "KPSS/AGS", "DGS"].includes(tip ?? "")
+    ? (tip as FilterType)
+    : undefined;
+
   const supabase = await createClient();
   const admin = createAdminClient();
 
@@ -51,6 +60,7 @@ export default async function KoclarPage() {
       coaches={coaches as Coach[]}
       purchasedCoachIds={purchasedCoachIds}
       hasPurchase={hasPurchase}
+      initialTip={initialTip}
     />
   );
 }
