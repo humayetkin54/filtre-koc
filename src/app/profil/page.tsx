@@ -1,6 +1,7 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { updateProfile } from "./actions";
+import { VeliTakipToggle } from "./veli-takip-toggle";
 
 export default async function ProfilPage({
   searchParams,
@@ -13,6 +14,16 @@ export default async function ProfilPage({
   if (!user) redirect("/giris");
 
   const params = await searchParams;
+
+  // Aktif paket + veli takip durumu
+  const admin = createAdminClient();
+  const { count: activeCount } = await admin
+    .from("purchases")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("status", "active");
+  const hasPackage = (activeCount ?? 0) > 0;
+  const veliTakipOn = user.user_metadata?.veli_takip_enabled === true;
 
   return (
     <div className="min-h-full bg-gray-50">
@@ -143,6 +154,9 @@ export default async function ProfilPage({
             </div>
           </dl>
         </div>
+
+        {/* Veli Takip Sistemi */}
+        <VeliTakipToggle initial={veliTakipOn} hasPackage={hasPackage} />
 
       </div>
     </div>
