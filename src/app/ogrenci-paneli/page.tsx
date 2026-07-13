@@ -1,6 +1,29 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { WelcomeModal } from "./welcome-modal";
+import { EXAM_CONFIGS } from "./deneme/exam-config";
+
+const SHORT_EXAM: Record<string, string> = { TYT: "TYT", SAY: "SAY", EA: "EA", SOZ: "SÖZ", DIL: "DİL" };
+
+// Son deneme kartı: TYT ise toplam net, SAY/EA/SÖZ/DİL ise TYT+AYT ayrı
+function lastDenemeInfo(d: { exam_name: string; net_total: number | null; nets: Record<string, number> | null } | undefined) {
+  if (!d) return { value: "Henüz girilmedi", sub: undefined as string | undefined };
+  const config = EXAM_CONFIGS[d.exam_name];
+  const label = SHORT_EXAM[d.exam_name] ?? d.exam_name;
+
+  if (config && d.nets && Object.keys(d.nets).length > 0) {
+    const groups: Record<string, number> = {};
+    for (const f of config.fields) {
+      const g = f.group ?? "Toplam";
+      groups[g] = (groups[g] ?? 0) + (d.nets[f.key] ?? 0);
+    }
+    const entries = Object.entries(groups);
+    if (entries.length > 1) {
+      return { value: entries.map(([g, s]) => `${g} ${s.toFixed(1)}`).join(" · "), sub: label };
+    }
+  }
+  return { value: d.net_total != null ? `${d.net_total.toFixed(1)} net` : "—", sub: label };
+}
 
 export default async function OgrenciPaneliPage() {
   const supabase = await createClient();
@@ -15,7 +38,7 @@ export default async function OgrenciPaneliPage() {
     { count: unreadCount },
   ] = await Promise.all([
     admin.from("purchases").select("coach_name, coach_id, category, plan, created_at").eq("user_id", user!.id).eq("status", "active"),
-    admin.from("deneme_results").select("net_total, exam_name, exam_date").eq("student_id", user!.id).order("exam_date", { ascending: false }).limit(5),
+    admin.from("deneme_results").select("net_total, exam_name, exam_date, nets").eq("student_id", user!.id).order("exam_date", { ascending: false }).limit(5),
     admin.from("homework").select("id, status").eq("student_id", user!.id),
     admin.from("goals").select("target_university, target_department, target_exam, target_score").eq("student_id", user!.id).maybeSingle(),
     admin.from("messages").select("id", { count: "exact", head: true }).eq("student_id", user!.id).eq("sender_role", "coach").is("read_at", null),
@@ -23,11 +46,12 @@ export default async function OgrenciPaneliPage() {
 
   const purchase = purchases?.[0];
   const lastDeneme = denemes?.[0];
+  const denemeInfo = lastDenemeInfo(lastDeneme);
   const pendingHw = (homework ?? []).filter(h => h.status === "pending").length;
   const totalHw = (homework ?? []).length;
 
   const cards = [
-    { icon: "📝", label: "Son Deneme", value: lastDeneme ? `${lastDeneme.net_total?.toFixed(1)} net` : "Henüz girilmedi", sub: lastDeneme?.exam_name, href: "/ogrenci-paneli/deneme", color: "bg-blue-50 text-blue-700" },
+    { icon: "📝", label: "Son Deneme", value: denemeInfo.value, sub: denemeInfo.sub, href: "/ogrenci-paneli/deneme", color: "bg-blue-50 text-blue-700" },
     { icon: "✅", label: "Ödevler", value: `${pendingHw} bekliyor`, sub: `${totalHw} toplam ödev`, href: "/ogrenci-paneli/odevler", color: "bg-amber-50 text-amber-700" },
     { icon: "🎯", label: "Hedefim", value: goals?.target_university ?? "Belirlenmedi", sub: goals?.target_department, href: "/ogrenci-paneli/hedefler", color: "bg-emerald-50 text-emerald-700" },
     { icon: "💬", label: "Mesajlar", value: (unreadCount ?? 0) > 0 ? `${unreadCount} yeni mesaj` : "Yeni mesaj yok", sub: "Koçundan", href: "/ogrenci-paneli/mesajlar", color: (unreadCount ?? 0) > 0 ? "bg-red-50 text-red-600" : "bg-gray-50 text-gray-600" },
