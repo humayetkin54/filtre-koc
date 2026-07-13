@@ -141,7 +141,7 @@ export default function CheckoutFlow() {
           </div>
 
           <div className="rounded-xl bg-gray-50 border border-gray-100 p-4 space-y-1.5">
-            {["14 gün iade garantisi", "Koç değiştirme hakkı", "Doğrulanmış koç"].map((g) => (
+            {["7 gün koşulsuz iade garantisi", "Koç değiştirme hakkı", "Doğrulanmış koç"].map((g) => (
               <div key={g} className="flex items-center gap-2 text-xs text-gray-500">
                 <span className="text-emerald-500 font-bold">✓</span> {g}
               </div>

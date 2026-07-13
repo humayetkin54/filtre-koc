@@ -28,7 +28,7 @@ const steps = [
 const faqs = [
   {
     q: "Koçu beğenmezsem ne olur?",
-    a: "14 gün içinde soru sormadan tam iade yapıyoruz. Sonrasında da dilediğin zaman ücretsiz koç değiştirebilirsin.",
+    a: "7 gün içinde soru sormadan tam iade yapıyoruz. Uzun paketlerde (3-6 ay, sınava kadar) iptal edersen yalnızca kullandığın aylar için ödersin, kalanı iade edilir. Sonrasında da dilediğin zaman ücretsiz koç değiştirebilirsin.",
   },
   {
     q: "Görüşmeler ne zaman yapılıyor?",

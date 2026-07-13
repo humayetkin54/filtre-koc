@@ -52,7 +52,7 @@ export default async function PaketlerPage() {
             Paketler
           </h1>
           <p className="mt-4 text-lg text-white/70">
-            Tüm paketlerde 14 gün iade garantisi ve doğrulanmış koçlar.
+            Tüm paketlerde 7 gün koşulsuz iade garantisi ve doğrulanmış koçlar.
           </p>
           <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white">
             💳 Tüm paketlerde 12 aya varan taksit imkânı

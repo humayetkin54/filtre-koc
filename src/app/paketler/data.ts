@@ -115,8 +115,8 @@ export const categories = [
 ];
 
 export const guarantees = [
-  "14 gün iade garantisi",
+  "7 gün koşulsuz iade garantisi",
+  "Uzun paketlerde kullandığın ay kadar öde — iptalde kalan aylar iade",
   "Koç değiştirme hakkı",
   "Doğrulanmış koçlar",
-  "Aylık performans puanı",
 ];

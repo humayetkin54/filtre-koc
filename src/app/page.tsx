@@ -4,7 +4,7 @@ import { IntroPopup } from './intro-popup'
 const stats = [
   { num: '%100', lbl: 'PDR / Psikoloji Koordinasyonu' },
   { num: '7/24', lbl: 'Yapay Zeka Destekli Asistan' },
-  { num: '14', lbl: 'Gün Koşulsuz İade Garantisi' },
+  { num: '7', lbl: 'Gün Koşulsuz İade Garantisi' },
 ]
 
 const heroChips = [
@@ -55,7 +55,7 @@ const kocTipleri = [
 ]
 
 const garantiler = [
-  { icon: '🛡️', title: '14 gün iade garantisi', desc: 'İlk 14 gün içinde memnun kalmazsan, soru sormadan tam iade.' },
+  { icon: '🛡️', title: '7 gün koşulsuz iade', desc: 'İlk 7 gün içinde memnun kalmazsan, soru sormadan tam iade. Uzun paketlerde iptalde kullanılmayan aylar iade edilir.' },
   { icon: '👥', title: 'Max 8 öğrenci / koç', desc: 'Her koça en fazla 8 öğrenci — tam ilgi garantisi.' },
   { icon: '🔄', title: 'Koç değiştirme hakkı', desc: 'Uyum sağlayamazsan dilediğinde ücretsiz koç değiştirebilirsin.' },
   { icon: '⭐', title: 'Aylık performans puanı', desc: 'Düşük puan alan koç platformdan çıkarılır.' },

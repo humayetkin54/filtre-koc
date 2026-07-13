@@ -32,7 +32,7 @@ export default async function DestekPage() {
 
           {[
             { icon: "💳", title: "Satın alma ve ödeme", desc: "Paket ücretleri, ödeme yöntemleri, fatura" },
-            { icon: "🔄", title: "Paket iptali / iade", desc: "14 gün içinde koşulsuz iade" },
+            { icon: "🔄", title: "Paket iptali / iade", desc: "7 gün içinde koşulsuz iade" },
             { icon: "👨‍🏫", title: "Koç değişikliği", desc: "Ücretsiz koç değiştirme hakkı" },
             { icon: "🔐", title: "Hesap ve şifre", desc: "Giriş sorunları, e-posta değişikliği" },
             { icon: "📅", title: "Randevu sorunları", desc: "Randevu iptali veya yeniden planlama" },
