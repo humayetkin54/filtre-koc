@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { PASSAGES, wordCount, type Passage } from "./passages";
+import { BADGES, type ExerciseKind, type ExerciseStats } from "./badges";
 
 // ---- localStorage ilerleme ----
 const LS_KEY = "rekorzeka_wpm_history";
@@ -21,10 +22,28 @@ function saveResult(r: Result) {
   localStorage.setItem(LS_KEY, JSON.stringify(list.slice(-50)));
 }
 
-type Tab = "test" | "takistoskop" | "gelisim";
+// ---- egzersiz sayaçları (rozetler için) ----
+const STATS_KEY = "rekorzeka_exercise_stats";
+const EMPTY_STATS: ExerciseStats = { takistoskop: 0, golgeleme: 0, blok: 0, schulte: 0 };
+
+function loadStats(): ExerciseStats {
+  if (typeof window === "undefined") return { ...EMPTY_STATS };
+  try {
+    return { ...EMPTY_STATS, ...JSON.parse(localStorage.getItem(STATS_KEY) || "{}") };
+  } catch {
+    return { ...EMPTY_STATS };
+  }
+}
+function bumpExercise(kind: ExerciseKind) {
+  const s = loadStats();
+  s[kind] += 1;
+  localStorage.setItem(STATS_KEY, JSON.stringify(s));
+}
+
+type Tab = "ozet" | "test" | "takistoskop" | "golgeleme" | "blok" | "gozacisi" | "gelisim";
 
 export function HizliOkumaClient() {
-  const [tab, setTab] = useState<Tab>("test");
+  const [tab, setTab] = useState<Tab>("ozet");
 
   return (
     <div className="space-y-6">
@@ -39,8 +58,12 @@ export function HizliOkumaClient() {
       {/* Sekmeler */}
       <div className="flex flex-wrap gap-2">
         {([
+          { id: "ozet", label: "Özet", icon: "🏠" },
           { id: "test", label: "Okuma Hızı Testi", icon: "⏱️" },
-          { id: "takistoskop", label: "Takistoskop Egzersizi", icon: "👁️" },
+          { id: "takistoskop", label: "Takistoskop", icon: "👁️" },
+          { id: "golgeleme", label: "Gölgeleme (Pacer)", icon: "🎯" },
+          { id: "blok", label: "Blok Okuma", icon: "🔲" },
+          { id: "gozacisi", label: "Göz Açısı", icon: "🔢" },
           { id: "gelisim", label: "Gelişimim", icon: "📈" },
         ] as const).map((t) => (
           <button
@@ -58,9 +81,266 @@ export function HizliOkumaClient() {
         ))}
       </div>
 
+      {tab === "ozet" && <Dashboard goTo={setTab} />}
       {tab === "test" && <ReadingTest />}
       {tab === "takistoskop" && <Takistoskop />}
+      {tab === "golgeleme" && (
+        <PacerReader
+          title="Gölgeleme & Ritmik Göz"
+          desc="Metnin üzerinde kayan vurguyu gözünle takip et. Geri dönmeden, sabit bir ritimde ilerlemek gözünü eğitir ve gereksiz geri sıçramaları azaltır. Vurgu hızını rahat takip edebildiğin en üst seviyeye çek."
+          minWindow={1}
+          maxWindow={2}
+          defaultWindow={1}
+          kind="golgeleme"
+        />
+      )}
+      {tab === "blok" && (
+        <PacerReader
+          title="Blok Okuma"
+          desc="Kelimeleri tek tek değil, 2-3'lü bloklar hâlinde algıla. Vurgulanan blok bir çırpıda kavranmalı — bu, gözünün bir bakışta daha fazla kelime görmesini sağlar ve okuma hızını katlar."
+          minWindow={2}
+          maxWindow={4}
+          defaultWindow={3}
+          kind="blok"
+        />
+      )}
+      {tab === "gozacisi" && <SchulteTable />}
       {tab === "gelisim" && <Gelisim />}
+    </div>
+  );
+}
+
+// ==================== ÖZET (DASHBOARD) ====================
+const EXERCISE_META: { kind: ExerciseKind; icon: string; label: string }[] = [
+  { kind: "takistoskop", icon: "👁️", label: "Takistoskop" },
+  { kind: "golgeleme", icon: "🎯", label: "Gölgeleme" },
+  { kind: "blok", icon: "🔲", label: "Blok Okuma" },
+  { kind: "schulte", icon: "🔢", label: "Göz Açısı (Schulte)" },
+];
+
+function Dashboard({ goTo }: { goTo: (t: Tab) => void }) {
+  const [history, setHistory] = useState<Result[]>([]);
+  const [stats, setStats] = useState<ExerciseStats>({ takistoskop: 0, golgeleme: 0, blok: 0, schulte: 0 });
+  const [schulteBest, setSchulteBest] = useState<number | null>(null);
+  const [showAllBadges, setShowAllBadges] = useState(false);
+
+  useEffect(() => {
+    setHistory(loadHistory());
+    setStats(loadStats());
+    const b = localStorage.getItem(SCHULTE_KEY);
+    if (b) setSchulteBest(Number(b));
+  }, []);
+
+  const badgeInput = { history, stats, schulteBest };
+  const earned = BADGES.filter((b) => b.earned(badgeInput));
+  const totalTur = stats.takistoskop + stats.golgeleme + stats.blok + stats.schulte;
+
+  const actions: { tab: Tab; icon: string; label: string }[] = [
+    { tab: "test", icon: "⚡", label: "Hız Testi" },
+    { tab: "takistoskop", icon: "👁️", label: "Takistoskop" },
+    { tab: "golgeleme", icon: "🎯", label: "Gölgeleme" },
+    { tab: "blok", icon: "🔲", label: "Blok Okuma" },
+    { tab: "gozacisi", icon: "🔢", label: "Göz Açısı" },
+    { tab: "gelisim", icon: "📈", label: "Gelişimim" },
+  ];
+
+  // Rozet şeridi: kazanılanlar önde, 6 tane göster
+  const strip = [...BADGES].sort((a, b) => Number(b.earned(badgeInput)) - Number(a.earned(badgeInput))).slice(0, 6);
+
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-4 lg:grid-cols-3">
+        {/* Sol sütun */}
+        <div className="space-y-4 lg:col-span-2">
+          {/* İlerleme Özeti */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <h2 className="font-bold text-gray-900">İlerleme Özeti</h2>
+            <p className="mt-0.5 text-sm text-gray-400">Son 5 hız testi sonucunun özeti.</p>
+            <div className="mt-4">
+              {history.length === 0 ? (
+                <div className="flex h-44 flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50/50 text-center">
+                  <span className="text-3xl">📊</span>
+                  <p className="mt-2 text-sm font-semibold text-gray-500">Henüz test sonucun yok</p>
+                  <p className="text-xs text-gray-400">İlk hız testini çöz, grafiğin burada oluşsun.</p>
+                </div>
+              ) : (
+                <ProgressChart data={history.slice(-5)} />
+              )}
+            </div>
+            <div className="mt-4 flex gap-2">
+              <button onClick={() => goTo("test")} className="rounded-xl bg-[#0E8FA3] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#0c7d8f]">
+                ⚡ Hız Testi Yap
+              </button>
+              <button onClick={() => goTo("gelisim")} className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+                🕐 Son Sonuçlar
+              </button>
+            </div>
+          </div>
+
+          {/* Egzersiz İlerlemen */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <h2 className="font-bold text-gray-900">Egzersiz İlerlemen</h2>
+            <p className="mt-0.5 text-sm text-gray-400">Egzersiz başına tamamladığın tur sayısı.</p>
+            {totalTur === 0 ? (
+              <div className="mt-4 flex items-center gap-3 rounded-xl bg-gray-50 px-4 py-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#123A57] text-white">✏️</span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-700">Henüz egzersiz tamamlamadın</p>
+                  <p className="text-xs text-gray-400">Hızlı Aksiyonlar&apos;dan bir egzersiz seçip başla.</p>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                {EXERCISE_META.map((e) => (
+                  <div key={e.kind} className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
+                    <span className="text-sm font-semibold text-gray-700">
+                      <span className="mr-2">{e.icon}</span>{e.label}
+                    </span>
+                    <span className="text-sm font-bold text-[#0E8FA3]">
+                      {stats[e.kind]} tur
+                      {e.kind === "schulte" && schulteBest != null && (
+                        <span className="ml-1 font-medium text-gray-400">· en iyi {schulteBest.toFixed(1)}s</span>
+                      )}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Sağ sütun */}
+        <div className="space-y-4">
+          {/* Hızlı Aksiyonlar */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <h2 className="font-bold text-gray-900">Hızlı Aksiyonlar</h2>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {actions.map((a) => (
+                <button
+                  key={a.tab}
+                  onClick={() => goTo(a.tab)}
+                  className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2.5 text-left text-xs font-semibold text-gray-600 transition hover:border-[#0E8FA3] hover:text-[#0E8FA3]"
+                >
+                  <span className="text-base">{a.icon}</span>
+                  {a.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Rozetlerim */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <div className="flex items-center justify-between">
+              <h2 className="font-bold text-gray-900">Rozetlerim</h2>
+              <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-600">
+                🏆 {earned.length}/{BADGES.length}
+              </span>
+            </div>
+            <p className="mt-0.5 text-sm text-gray-400">Kazandığın başarı rozetleri burada sergilenir.</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {strip.map((b) => {
+                const has = b.earned(badgeInput);
+                return (
+                  <span
+                    key={b.id}
+                    title={`${b.title} — ${b.desc}`}
+                    className={`flex h-11 w-11 items-center justify-center rounded-full text-xl ${
+                      has ? "bg-amber-50 ring-2 ring-amber-300" : "bg-gray-100 opacity-40 grayscale"
+                    }`}
+                  >
+                    {b.icon}
+                  </span>
+                );
+              })}
+            </div>
+            <button
+              onClick={() => setShowAllBadges((v) => !v)}
+              className="mt-4 w-full rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-600"
+            >
+              🏅 {showAllBadges ? "Rozetleri Gizle" : "Tüm Rozetleri Gör"}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Tüm rozetler */}
+      {showAllBadges && (
+        <div className="rounded-2xl border border-gray-200 bg-white p-5">
+          <h2 className="font-bold text-gray-900">Tüm Rozetler</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {BADGES.map((b) => {
+              const has = b.earned(badgeInput);
+              return (
+                <div
+                  key={b.id}
+                  className={`flex items-center gap-3 rounded-xl border px-4 py-3 ${
+                    has ? "border-amber-200 bg-amber-50/60" : "border-gray-100 bg-gray-50/50"
+                  }`}
+                >
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xl ${has ? "bg-amber-100" : "bg-gray-100 opacity-40 grayscale"}`}>
+                    {b.icon}
+                  </span>
+                  <div className="min-w-0">
+                    <p className={`text-sm font-bold ${has ? "text-amber-700" : "text-gray-500"}`}>
+                      {b.title} {has && "✓"}
+                    </p>
+                    <p className="text-xs text-gray-400">{b.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Son 5 test grafiği: WPM (teal, sol eksen) + Anlama % (turuncu, sağ eksen)
+function ProgressChart({ data }: { data: Result[] }) {
+  const w = 560, h = 190, padL = 40, padR = 40, padT = 16, padB = 30;
+  const innerW = w - padL - padR;
+  const innerH = h - padT - padB;
+  const maxWpm = Math.max(100, Math.ceil(Math.max(...data.map((d) => d.wpm)) * 1.15 / 50) * 50);
+  const denom = Math.max(data.length - 1, 1);
+  const x = (i: number) => (data.length === 1 ? padL + innerW / 2 : padL + (i * innerW) / denom);
+  const yW = (v: number) => padT + (1 - v / maxWpm) * innerH;
+  const yC = (v: number) => padT + (1 - v / 100) * innerH;
+
+  const wpmPts = data.map((d, i) => `${x(i)},${yW(d.wpm)}`).join(" ");
+  const compPts = data.map((d, i) => `${x(i)},${yC(d.comprehension)}`).join(" ");
+
+  return (
+    <div>
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
+        {/* yatay kılavuz çizgileri */}
+        {[0.25, 0.5, 0.75, 1].map((f) => (
+          <line key={f} x1={padL} x2={w - padR} y1={padT + innerH * (1 - f)} y2={padT + innerH * (1 - f)} stroke="#f1f5f9" strokeWidth={1} />
+        ))}
+        {/* eksen etiketleri */}
+        <text x={8} y={padT + 4} fontSize={10} fill="#94a3b8">{maxWpm}</text>
+        <text x={8} y={padT + innerH + 4} fontSize={10} fill="#94a3b8">0</text>
+        <text x={w - padR + 6} y={padT + 4} fontSize={10} fill="#fdba74">100</text>
+        <text x={w - padR + 6} y={padT + innerH + 4} fontSize={10} fill="#fdba74">0</text>
+        {/* çizgiler */}
+        {data.length > 1 && <polyline points={wpmPts} fill="none" stroke="#0E8FA3" strokeWidth={2.5} strokeLinejoin="round" />}
+        {data.length > 1 && <polyline points={compPts} fill="none" stroke="#E2600F" strokeWidth={2} strokeDasharray="5 4" strokeLinejoin="round" />}
+        {/* noktalar + WPM etiketleri + tarih */}
+        {data.map((d, i) => (
+          <g key={i}>
+            <circle cx={x(i)} cy={yW(d.wpm)} r={4} fill="#0E8FA3" />
+            <circle cx={x(i)} cy={yC(d.comprehension)} r={3.5} fill="#E2600F" />
+            <text x={x(i)} y={yW(d.wpm) - 8} fontSize={10} fontWeight={700} fill="#0E8FA3" textAnchor="middle">{d.wpm}</text>
+            <text x={x(i)} y={h - 8} fontSize={9} fill="#94a3b8" textAnchor="middle">
+              {new Date(d.date).toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit" })}
+            </text>
+          </g>
+        ))}
+      </svg>
+      <div className="mt-1 flex justify-center gap-5 text-xs text-gray-500">
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#0E8FA3]" /> WPM</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#E2600F]" /> Anlama %</span>
+      </div>
     </div>
   );
 }
@@ -285,6 +565,7 @@ function Takistoskop() {
     if (!running) return;
     if (index >= chunks.length) {
       setRunning(false);
+      bumpExercise("takistoskop"); // tur bitti → rozet sayacı
       return;
     }
     const msPerChunk = (60000 / wpm) * chunkSize;
@@ -382,6 +663,241 @@ function Takistoskop() {
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ==================== GÖLGELEME / BLOK OKUMA (PACER) ====================
+function PacerReader({
+  title, desc, minWindow, maxWindow, defaultWindow, kind,
+}: { title: string; desc: string; minWindow: number; maxWindow: number; defaultWindow: number; kind: ExerciseKind }) {
+  const [passage, setPassage] = useState<Passage>(PASSAGES[0]);
+  const [windowSize, setWindowSize] = useState(defaultWindow);
+  const [wpm, setWpm] = useState(250);
+  const [running, setRunning] = useState(false);
+  const [index, setIndex] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const words = useMemo(() => passage.text.trim().split(/\s+/).filter(Boolean), [passage]);
+
+  useEffect(() => {
+    if (!running) return;
+    if (index >= words.length) {
+      setRunning(false);
+      bumpExercise(kind); // tur bitti → rozet sayacı
+      return;
+    }
+    const msPerStep = (60000 / wpm) * windowSize;
+    timerRef.current = setTimeout(() => setIndex((i) => i + windowSize), msPerStep);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [running, index, words.length, wpm, windowSize, kind]);
+
+  function startPause() {
+    if (index >= words.length) setIndex(0);
+    setRunning((r) => !r);
+  }
+  function restart() { setRunning(false); setIndex(0); }
+
+  const done = index >= words.length;
+  const windowOpts: number[] = [];
+  for (let n = minWindow; n <= maxWindow; n++) windowOpts.push(n);
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-gray-200 bg-white p-4 text-sm text-gray-600">
+        <strong className="text-gray-800">{title}.</strong> {desc}
+      </div>
+
+      {/* Metin + kayan vurgu */}
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 text-[17px] leading-[2.3] text-gray-300">
+        {words.map((w, i) => {
+          const active = !done && i >= index && i < index + windowSize;
+          return (
+            <span key={i} className={active ? "rounded bg-[#0E8FA3] px-1 py-0.5 font-medium text-white" : ""}>
+              {w}{" "}
+            </span>
+          );
+        })}
+      </div>
+
+      {/* Kontroller */}
+      <div className="grid gap-4 rounded-2xl border border-gray-200 bg-white p-5 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-gray-500">
+            Hız: <span className="text-[#0E8FA3]">{wpm} WPM</span>
+          </label>
+          <input
+            type="range" min={100} max={600} step={25} value={wpm}
+            onChange={(e) => setWpm(Number(e.target.value))}
+            className="w-full accent-[#0E8FA3]"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-gray-500">Blok boyutu (kelime)</label>
+          <div className="flex gap-2">
+            {windowOpts.map((n) => (
+              <button
+                key={n}
+                onClick={() => { setWindowSize(n); restart(); }}
+                className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
+                  windowSize === n ? "bg-[#0E8FA3] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-xs font-semibold text-gray-500">Metin</label>
+          <select
+            value={passage.id}
+            onChange={(e) => { const p = PASSAGES.find((x) => x.id === e.target.value)!; setPassage(p); restart(); }}
+            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700"
+          >
+            {PASSAGES.map((p) => (
+              <option key={p.id} value={p.id}>{p.title} ({wordCount(p.text)} kelime)</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex gap-2 sm:col-span-2">
+          <button onClick={startPause} className="flex-1 rounded-xl bg-[#0E8FA3] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#0c7d8f]">
+            {running ? "⏸ Duraklat" : done ? "↻ Baştan" : index > 0 ? "▶ Devam" : "▶ Başlat"}
+          </button>
+          <button onClick={restart} className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+            Sıfırla
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==================== GÖZ AÇISI (SCHULTE TABLOSU) ====================
+const SCHULTE_KEY = "rekorzeka_schulte_best";
+
+function SchulteTable() {
+  const [grid, setGrid] = useState<number[]>([]);
+  const [next, setNext] = useState(1);
+  const [running, setRunning] = useState(false);
+  const [startTs, setStartTs] = useState(0);
+  const [now, setNow] = useState(0);
+  const [best, setBest] = useState<number | null>(null);
+  const [wrong, setWrong] = useState<number | null>(null);
+
+  useEffect(() => {
+    const b = localStorage.getItem(SCHULTE_KEY);
+    if (b) setBest(Number(b));
+  }, []);
+
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setNow(Date.now()), 100);
+    return () => clearInterval(id);
+  }, [running]);
+
+  function start() {
+    const nums = Array.from({ length: 25 }, (_, i) => i + 1);
+    for (let i = nums.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [nums[i], nums[j]] = [nums[j], nums[i]];
+    }
+    setGrid(nums);
+    setNext(1);
+    setStartTs(Date.now());
+    setNow(Date.now());
+    setRunning(true);
+  }
+
+  function click(n: number) {
+    if (!running) return;
+    if (n === next) {
+      if (n === 25) {
+        const elapsed = (Date.now() - startTs) / 1000;
+        setRunning(false);
+        setNext(26);
+        bumpExercise("schulte"); // tablo bitti → rozet sayacı
+        if (best === null || elapsed < best) {
+          setBest(elapsed);
+          localStorage.setItem(SCHULTE_KEY, String(elapsed));
+        }
+      } else {
+        setNext((v) => v + 1);
+      }
+    } else {
+      setWrong(n);
+      setTimeout(() => setWrong(null), 300);
+    }
+  }
+
+  const elapsed = running ? (now - startTs) / 1000 : 0;
+  const finished = next === 26;
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-gray-200 bg-white p-4 text-sm text-gray-600">
+        <strong className="text-gray-800">Göz Açısı (Çevresel Görüş).</strong> Ortadaki turuncu noktaya sabit bak ve sayıları
+        <strong> 1&apos;den 25&apos;e kadar sırayla</strong> gözünü fazla oynatmadan bul. Bu egzersiz bir bakışta gördüğün alanı
+        (görüş açısını) genişletir — böylece okurken daha az duraklarsın.
+      </div>
+
+      {/* Üst bilgi */}
+      <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-gray-200 bg-white p-4">
+        <div className="text-sm">
+          <span className="text-gray-400">Sıradaki: </span>
+          <span className="text-lg font-bold text-[#0E8FA3]">{finished ? "✓" : next}</span>
+        </div>
+        <div className="text-sm">
+          <span className="text-gray-400">Süre: </span>
+          <span className="font-bold text-gray-800">{elapsed.toFixed(1)}s</span>
+        </div>
+        <div className="text-sm">
+          <span className="text-gray-400">En iyi: </span>
+          <span className="font-bold text-[#E2600F]">{best != null ? `${best.toFixed(1)}s` : "—"}</span>
+        </div>
+        <button onClick={start} className="ml-auto rounded-xl bg-[#0E8FA3] px-5 py-2 text-sm font-semibold text-white hover:bg-[#0c7d8f]">
+          {grid.length === 0 ? "▶ Başlat" : "↻ Yeni tablo"}
+        </button>
+      </div>
+
+      {finished && (
+        <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+          Tamamlandı! Süren: {((now - startTs) / 1000 || best || 0).toFixed(1)}s. Düzenli çalışırsan süren kısalır ve görüş açın genişler.
+        </div>
+      )}
+
+      {/* Tablo */}
+      {grid.length > 0 && (
+        <div className="relative mx-auto w-fit rounded-2xl border border-gray-200 bg-white p-4">
+          <div className="grid grid-cols-5 gap-2">
+            {grid.map((n) => {
+              const passed = n < next;
+              const isWrong = wrong === n;
+              return (
+                <button
+                  key={n}
+                  onClick={() => click(n)}
+                  className={`flex h-14 w-14 items-center justify-center rounded-lg text-lg font-bold transition-colors sm:h-16 sm:w-16 ${
+                    isWrong ? "bg-rose-500 text-white"
+                    : passed ? "bg-[#eef9f9] text-[#0E8FA3]/40"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {n}
+                </button>
+              );
+            })}
+          </div>
+          {/* Merkez sabitleme noktası */}
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#E2600F] ring-4 ring-[#E2600F]/20" />
+        </div>
+      )}
+
+      {grid.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center text-sm text-gray-400">
+          &quot;Başlat&quot;a bas — 5×5&apos;lik tablo çıkacak, sayıları sırayla bulmaya çalış.
+        </div>
+      )}
     </div>
   );
 }

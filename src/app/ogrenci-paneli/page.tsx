@@ -63,7 +63,7 @@ export default async function OgrenciPaneliPage() {
       {/* Hoşgeldin */}
       <div className="rounded-2xl bg-gradient-to-br from-[#123A57] to-[#0E8FA3] p-6 text-white">
         <p className="text-sm font-medium text-white/70">Hoş geldin</p>
-        <h1 className="mt-0.5 text-2xl font-bold">{user?.user_metadata?.full_name ?? user?.email}</h1>
+        <h1 className="mt-0.5 text-2xl font-bold">{user?.user_metadata?.full_name ?? user?.email} 👋</h1>
         {purchase && (
           <div className="mt-3 flex items-center gap-3">
             <div className="rounded-xl bg-white/10 px-3 py-1.5 text-xs font-semibold">
@@ -76,6 +76,45 @@ export default async function OgrenciPaneliPage() {
             )}
           </div>
         )}
+      </div>
+
+      {/* Ana geçiş kartları */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        {[
+          {
+            title: "Koçluk Sistemi",
+            desc: "Birebir öğrenci takibi, ödevlendirme ve rehberlik hizmeti.",
+            icon: "🎓",
+            btn: "Koçluk Panelim",
+            href: "/ogrenci-paneli/program",
+            grad: "from-violet-500 to-purple-600",
+          },
+          {
+            title: "Deneme Merkezi",
+            desc: "Deneme sonuçların, AI analiz ve net takibi bir arada.",
+            icon: "📝",
+            btn: "Denemelerim",
+            href: "/ogrenci-paneli/deneme",
+            grad: "from-[#0E8FA3] to-[#0b6d84]",
+          },
+          {
+            title: "Hızlı Okuma",
+            desc: "WPM testi, takistoskop ve göz egzersizleriyle okuma hızını katla.",
+            icon: "👁️",
+            btn: "Hızlı Okumaya Başla",
+            href: "/ogrenci-paneli/hizli-okuma",
+            grad: "from-emerald-500 to-green-600",
+          },
+        ].map(c => (
+          <div key={c.href} className={`flex flex-col rounded-2xl bg-gradient-to-br ${c.grad} p-6 text-white shadow-sm`}>
+            <div className="mb-3 text-3xl">{c.icon}</div>
+            <h3 className="text-lg font-bold">{c.title}</h3>
+            <p className="mt-1 flex-1 text-sm leading-relaxed text-white/85">{c.desc}</p>
+            <Link href={c.href} className="mt-5 rounded-xl bg-white/95 px-4 py-2.5 text-center text-sm font-semibold text-gray-800 transition hover:bg-white">
+              {c.btn} →
+            </Link>
+          </div>
+        ))}
       </div>
 
       {/* Özet kartlar */}
