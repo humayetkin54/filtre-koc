@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { categories, guarantees } from "./data";
-import { CategoryCard } from "./category-card";
+import { guarantees } from "./data";
+import { PlansGrid } from "./plans-grid";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 export default async function PaketlerPage() {
@@ -54,16 +54,17 @@ export default async function PaketlerPage() {
           <p className="mt-4 text-lg text-white/70">
             Tüm paketlerde 14 gün iade garantisi ve doğrulanmış koçlar.
           </p>
+          <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white">
+            💳 Tüm paketlerde 12 aya varan taksit imkânı
+          </span>
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Plan kartları */}
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <Suspense fallback={null}>
-          <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
-            {categories.map((cat) => (
-              <CategoryCard key={cat.tag} cat={cat} />
-            ))}
+          <div className="mx-auto max-w-7xl">
+            <PlansGrid />
           </div>
         </Suspense>
       </section>

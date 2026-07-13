@@ -1,7 +1,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { ChatUI } from "./chat-ui";
 import { getDailyUsage } from "./actions";
-import { DAILY_LIMIT } from "./constants";
+import { planAiLimit } from "./constants";
 
 export const maxDuration = 60;
 
@@ -16,14 +16,16 @@ export default async function AiAsistanPage({
   const { data: { user } } = await supabase.auth.getUser();
   const admin = createAdminClient();
 
-  const [{ data: chats }, used] = await Promise.all([
+  const [{ data: chats }, used, { data: activePurchase }] = await Promise.all([
     admin
       .from("ai_chats")
       .select("id, title, created_at")
       .eq("student_id", user!.id)
       .order("created_at", { ascending: false }),
     getDailyUsage(user!.id),
+    admin.from("purchases").select("plan").eq("user_id", user!.id).eq("status", "active").limit(1).maybeSingle(),
   ]);
+  const dailyLimit = planAiLimit(activePurchase?.plan);
 
   // Aktif sohbetin mesajları
   const selectedId = activeChatId ?? chats?.[0]?.id ?? null;
@@ -43,8 +45,8 @@ export default async function AiAsistanPage({
       chats={chats ?? []}
       activeChatId={selectedId}
       initialMessages={messages}
-      remaining={Math.max(0, DAILY_LIMIT - used)}
-      dailyLimit={DAILY_LIMIT}
+      remaining={Math.max(0, dailyLimit - used)}
+      dailyLimit={dailyLimit}
     />
   );
 }

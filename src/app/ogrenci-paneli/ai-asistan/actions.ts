@@ -4,7 +4,7 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { callGeminiChat, type ChatTurn } from "@/lib/gemini";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { DAILY_LIMIT } from "./constants";
+import { planAiLimit } from "./constants";
 
 const SYSTEM_PROMPT = `Sen "Rekor Zeka AI Asistan"sın — Türkiye'deki YKS, LGS ve KPSS öğrencilerine yardımcı olan samimi, motive edici bir sınav koçu asistanısın.
 
@@ -68,10 +68,14 @@ export async function sendChatMessage(formData: FormData): Promise<
   const user = await getStudent();
   const admin = createAdminClient();
 
-  // Günlük limit
-  const used = await getDailyUsage(user.id);
-  if (used >= DAILY_LIMIT) {
-    return { error: `Günlük mesaj limitiniz doldu (${DAILY_LIMIT}/${DAILY_LIMIT}). Hakkınız yarın yenilenecek.` };
+  // Günlük limit (paket kademesine göre)
+  const [used, { data: activePurchase }] = await Promise.all([
+    getDailyUsage(user.id),
+    admin.from("purchases").select("plan").eq("user_id", user.id).eq("status", "active").limit(1).maybeSingle(),
+  ]);
+  const dailyLimit = planAiLimit(activePurchase?.plan);
+  if (used >= dailyLimit) {
+    return { error: `Günlük mesaj limitiniz doldu (${dailyLimit}/${dailyLimit}). Hakkınız yarın yenilenecek.` };
   }
 
   const text = ((formData.get("message") as string) || "").trim();
@@ -160,5 +164,5 @@ export async function sendChatMessage(formData: FormData): Promise<
   }
 
   revalidatePath("/ogrenci-paneli/ai-asistan");
-  return { ok: true, chatId: finalChatId, reply, remaining: Math.max(0, DAILY_LIMIT - used - 1) };
+  return { ok: true, chatId: finalChatId, reply, remaining: Math.max(0, dailyLimit - used - 1) };
 }

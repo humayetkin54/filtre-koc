@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export function IntroPopup() {
   const [open, setOpen] = useState(false);
@@ -23,7 +24,7 @@ export function IntroPopup() {
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-4"
       onClick={(e) => e.target === e.currentTarget && close()}
     >
-      <div className="relative w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-2xl">
+      <div className="relative w-full max-w-md rounded-3xl bg-white p-8 text-center shadow-2xl">
         <button
           type="button"
           onClick={close}
@@ -35,23 +36,33 @@ export function IntroPopup() {
           </svg>
         </button>
 
-        <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-4xl">
-          🧠
-        </div>
+        {/* Site ikonu en üstte */}
+        <Image
+          src="/logo.png"
+          alt="Rekor Zeka"
+          width={200}
+          height={200}
+          className="mx-auto mb-4 h-20 w-20 object-contain"
+        />
 
-        <h2 className="text-xl font-bold text-gray-900">
-          Ücretsiz uzman görüşmesi ister misin?
+        <span className="inline-block rounded-full bg-[#123A57] px-5 py-1.5 text-xs font-bold uppercase tracking-widest text-white">
+          Erken Kayıt Fırsatı
+        </span>
+
+        <h2 className="mt-4 text-2xl font-bold leading-snug text-gray-900 sm:text-3xl">
+          2027 Kontenjanlarımız Açıldı!
         </h2>
-        <p className="mt-3 text-sm text-gray-500 leading-relaxed">
-          PDR koordinatörlerimizle 30 dakikalık ücretsiz ön görüşme yap, hedefini ve çalışma planını birlikte belirleyelim.
+        <p className="mt-3 text-sm leading-relaxed text-gray-500">
+          Sınırlı sayıdaki kontenjanlarda yerini ayırt, Rekor Zeka&apos;nın profesyonel
+          koçlarıyla hedeflerine bir adım önde başla.
         </p>
 
         <a
-          href="/on-gorusme"
+          href="/paketler"
           onClick={close}
-          className="btn-primary mt-6 w-full py-3.5"
+          className="mt-6 block w-full rounded-xl bg-[#0E8FA3] py-3.5 text-base font-bold text-white transition-colors hover:bg-[#0c7d8f]"
         >
-          Tıkla, hemen görüş →
+          Paketleri İncele
         </a>
       </div>
     </div>
