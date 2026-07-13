@@ -98,9 +98,9 @@ export function PlansGrid() {
             {/* Çekirdek özellikler */}
             <ul className={`mt-4 flex-1 space-y-2 border-t pt-4 ${p.popular ? "border-white/10" : "border-gray-100"}`}>
               {cat.core.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-[13px]">
-                  <span className={`mt-0.5 font-bold ${p.popular ? "text-emerald-300" : "text-emerald-500"}`}>✓</span>
-                  <span className={p.popular ? "text-white/90" : "text-gray-600"}>{f}</span>
+                <li key={f.text} className="flex items-start gap-2 text-[13px]">
+                  <span className="mt-0.5 text-sm">{f.icon}</span>
+                  <span className={p.popular ? "text-white/90" : "text-gray-600"}>{f.text}</span>
                 </li>
               ))}
             </ul>

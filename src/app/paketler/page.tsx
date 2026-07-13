@@ -1,8 +1,27 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { guarantees } from "./data";
+import { guarantees, plans, comparison, comparisonPriceRow } from "./data";
 import { PlansGrid } from "./plans-grid";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+
+// Karşılaştırma tablosu hücresi: true → yeşil ✓, false → kırmızı ✗, metin → düz yazı
+function Cell({ v }: { v: string | boolean }) {
+  if (v === true) {
+    return (
+      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-50 text-sm font-bold text-emerald-500">
+        ✓
+      </span>
+    );
+  }
+  if (v === false) {
+    return (
+      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-50 text-sm font-bold text-red-400">
+        ✗
+      </span>
+    );
+  }
+  return <span className="text-[13px] text-gray-600">{v}</span>;
+}
 
 export default async function PaketlerPage() {
   const supabase = await createClient();
@@ -67,6 +86,83 @@ export default async function PaketlerPage() {
             <PlansGrid />
           </div>
         </Suspense>
+      </section>
+
+      {/* Kıst iade sloganı */}
+      <section className="px-4 pb-12 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-3 rounded-2xl bg-gradient-to-r from-[#123A57] to-[#0E8FA3] px-6 py-7 text-center sm:flex-row sm:gap-5 sm:text-left">
+          <span className="text-4xl">💳</span>
+          <div>
+            <p className="text-xl font-bold text-white">Kullandığın kadar öde!</p>
+            <p className="mt-1 text-sm leading-relaxed text-white/80">
+              Uzun paketlerde (3-6 aylık ve sınava kadar) dilediğin an iptal edebilirsin —
+              yalnızca kullandığın aylar ücretlendirilir, kalan ayların ücreti iade edilir.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Paketleri Karşılaştır */}
+      <section className="px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-gray-900">
+            <span className="text-[#0E8FA3]">Paketleri</span> Karşılaştır
+          </h2>
+          <div className="mt-8 overflow-x-auto rounded-2xl border border-gray-200 bg-white">
+            <table className="w-full min-w-[680px] text-sm">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="px-5 py-4 text-left font-semibold text-gray-500">Özellikler</th>
+                  {plans.map((p) => (
+                    <th
+                      key={p.name}
+                      className={`px-4 py-4 text-center font-bold ${
+                        p.popular ? "rounded-t-xl bg-[#eef9f9] text-[#0E8FA3]" : "text-gray-800"
+                      }`}
+                    >
+                      {p.name}
+                      {p.popular && (
+                        <div className="mt-0.5 text-[11px] font-semibold text-[#0E8FA3]/80">
+                          En Çok Tercih Edilen
+                        </div>
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {comparison.map((row) => (
+                  <tr key={row.feature} className="border-b border-gray-50">
+                    <td className="px-5 py-3.5 font-medium text-gray-700">{row.feature}</td>
+                    {row.values.map((v, i) => (
+                      <td
+                        key={i}
+                        className={`px-4 py-3.5 text-center ${plans[i]?.popular ? "bg-[#eef9f9]/60" : ""}`}
+                      >
+                        <Cell v={v} />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                <tr>
+                  <td className="px-5 py-4 font-bold text-gray-900">Aylık Ortalama Ücret</td>
+                  {comparisonPriceRow.map((v, i) => (
+                    <td
+                      key={i}
+                      className={`px-4 py-4 text-center font-bold ${
+                        plans[i]?.popular
+                          ? "rounded-b-xl bg-[#eef9f9] text-[#0E8FA3]"
+                          : "text-gray-800"
+                      }`}
+                    >
+                      {v}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       {/* Guarantees */}
