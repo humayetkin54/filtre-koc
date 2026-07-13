@@ -30,6 +30,15 @@ export async function signIn(formData: FormData) {
     redirect("/ogrenci/anasayfa");
   }
 
+  // Veli mi? Bir öğrenci bu e-postayı veli olarak eklediyse veli paneline git
+  const { count: parentCount } = await admin
+    .from("veli_links")
+    .select("id", { count: "exact", head: true })
+    .eq("parent_email", (user!.email ?? "").toLowerCase());
+  if ((parentCount ?? 0) > 0) {
+    redirect("/veli-paneli");
+  }
+
   redirect("/koclar");
 }
 

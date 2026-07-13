@@ -24,6 +24,11 @@ export default async function ProfilPage({
     .eq("status", "active");
   const hasPackage = (activeCount ?? 0) > 0;
   const veliTakipOn = user.user_metadata?.veli_takip_enabled === true;
+  const { data: parents } = await admin
+    .from("veli_links")
+    .select("id, parent_email")
+    .eq("student_id", user.id)
+    .order("created_at", { ascending: true });
 
   return (
     <div className="min-h-full bg-gray-50">
@@ -156,7 +161,7 @@ export default async function ProfilPage({
         </div>
 
         {/* Veli Takip Sistemi */}
-        <VeliTakipToggle initial={veliTakipOn} hasPackage={hasPackage} />
+        <VeliTakipToggle initial={veliTakipOn} hasPackage={hasPackage} parents={parents ?? []} />
 
       </div>
     </div>

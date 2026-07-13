@@ -31,6 +31,59 @@ export async function setVeliTakip(enabled: boolean): Promise<{ ok?: true; error
   return { ok: true };
 }
 
+// Veli ekle — max 2 veli, kendi e-postası olamaz.
+export async function addParent(email: string): Promise<{ ok?: true; error?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Oturum bulunamadı." };
+
+  const parentEmail = email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parentEmail)) {
+    return { error: "Geçerli bir e-posta adresi girin." };
+  }
+  if (parentEmail === user.email?.toLowerCase()) {
+    return { error: "Kendi e-posta adresinizi veli olarak ekleyemezsiniz." };
+  }
+
+  const admin = createAdminClient();
+  const { count } = await admin
+    .from("veli_links")
+    .select("id", { count: "exact", head: true })
+    .eq("student_id", user.id);
+  if ((count ?? 0) >= 2) {
+    return { error: "En fazla 2 veli ekleyebilirsiniz." };
+  }
+
+  const { error } = await admin
+    .from("veli_links")
+    .insert({ student_id: user.id, parent_email: parentEmail });
+  if (error) {
+    if (error.code === "23505") return { error: "Bu e-posta zaten ekli." };
+    return { error: "Veli eklenemedi. (Veritabanı tablosu kurulu olmayabilir.)" };
+  }
+
+  revalidatePath("/profil");
+  return { ok: true };
+}
+
+// Veli sil — öğrenci yalnızca kendi kaydını siler.
+export async function removeParent(linkId: string): Promise<{ ok?: true; error?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Oturum bulunamadı." };
+
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("veli_links")
+    .delete()
+    .eq("id", linkId)
+    .eq("student_id", user.id);
+  if (error) return { error: "Silinemedi." };
+
+  revalidatePath("/profil");
+  return { ok: true };
+}
+
 export async function updateProfile(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
