@@ -57,7 +57,7 @@ export default function Navbar({
         { href: "/destek", label: "Destek Merkezi" },
       ];
 
-  const panelHref = isAdmin ? "/admin" : isCoach ? "/koc-paneli" : hasPurchase ? "/ogrenci-paneli" : null;
+  const panelHref = isAdmin ? "/admin" : isCoach ? "/koc-paneli" : hasPurchase ? "/ogrenci/anasayfa" : null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/80 backdrop-blur-md">
@@ -245,7 +245,7 @@ export default function Navbar({
                 )}
                 {!isAdmin && !isCoach && hasPurchase && (
                   <Link
-                    href="/ogrenci-paneli"
+                    href="/ogrenci/anasayfa"
                     onClick={() => setMenuOpen(false)}
                     className="rounded-lg bg-[#475569] px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#334155]"
                   >

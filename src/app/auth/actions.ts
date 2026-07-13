@@ -27,7 +27,7 @@ export async function signIn(formData: FormData) {
     .eq("status", "active");
 
   if ((count ?? 0) > 0) {
-    redirect("/ogrenci-paneli");
+    redirect("/ogrenci/anasayfa");
   }
 
   redirect("/koclar");
