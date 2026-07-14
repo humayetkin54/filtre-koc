@@ -61,7 +61,7 @@ const kayanB = [
 
 function KayanKart({ icon, text }: { icon: string; text: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-5 shadow-sm">
+    <div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-5 shadow-sm transition-colors duration-200 hover:border-[#0E8FA3]">
       <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-50 text-lg">{icon}</span>
       <span className="text-sm font-bold text-gray-800">{text}</span>
     </div>
@@ -163,7 +163,7 @@ export default function HomePage() {
                   'Üniversite Kariyer ve Tercih Rehberliği',
                 ],
                 btn: 'PDR Uzmanlarını Gör',
-                href: '/koclar',
+                href: '/koclar?tip=PDR',
               },
             ].map(c => (
               <div
@@ -241,7 +241,7 @@ export default function HomePage() {
                 { icon: '💳', title: 'Uygun ve Erişilebilir' },
                 { icon: '⚡', title: 'Hem Hızlı Okuma Hem Koçluk' },
               ].map(k => (
-                <div key={k.title} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-5 shadow-sm">
+                <div key={k.title} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-[#0E8FA3] hover:shadow-md">
                   <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-[#eef9f9] text-lg">{k.icon}</span>
                   <span className="text-sm font-bold text-gray-800">{k.title}</span>
                 </div>

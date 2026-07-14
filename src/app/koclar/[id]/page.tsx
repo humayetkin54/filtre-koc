@@ -16,6 +16,7 @@ const typeColors: Record<CoachType, string> = {
   LGS:       "bg-violet-50 text-violet-700",
   "KPSS/AGS":"bg-orange-50 text-orange-700",
   DGS:       "bg-teal-50 text-teal-700",
+  PDR:       "bg-pink-50 text-pink-700",
 };
 
 const expertiseTags: Record<CoachType, string[]> = {
@@ -23,6 +24,7 @@ const expertiseTags: Record<CoachType, string[]> = {
   LGS:       ["LGS Stratejisi", "Fen Lisesi", "Motivasyon", "Zaman Yönetimi"],
   "KPSS/AGS":["KPSS Genel Kültür", "AGS Stratejisi", "Konu Planı"],
   DGS:       ["DGS Matematik", "Sözel Mantık", "Hedef Bölüm"],
+  PDR:       ["Sınav Kaygısı", "Motivasyon", "Odaklanma", "Tercih Rehberliği"],
 };
 
 /* Sahte yorum verisi — gerçek DB'den çekilecek */

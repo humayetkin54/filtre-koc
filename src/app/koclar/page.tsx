@@ -8,7 +8,7 @@ export default async function KoclarPage({
   searchParams: Promise<{ tip?: string }>;
 }) {
   const { tip } = await searchParams;
-  const initialTip = ["YKS", "LGS", "KPSS/AGS", "DGS"].includes(tip ?? "")
+  const initialTip = ["YKS", "LGS", "KPSS/AGS", "DGS", "PDR"].includes(tip ?? "")
     ? (tip as FilterType)
     : undefined;
 

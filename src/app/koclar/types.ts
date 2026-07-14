@@ -1,4 +1,4 @@
-export type CoachType = "YKS" | "LGS" | "KPSS/AGS" | "DGS";
+export type CoachType = "YKS" | "LGS" | "KPSS/AGS" | "DGS" | "PDR";
 export type Availability = "open" | "low" | "full";
 export type FilterType = "all" | CoachType;
 

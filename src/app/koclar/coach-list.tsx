@@ -12,6 +12,7 @@ const FILTERS: { value: FilterType; label: string }[] = [
   { value: "LGS", label: "LGS" },
   { value: "KPSS/AGS", label: "KPSS/AGS" },
   { value: "DGS", label: "DGS" },
+  { value: "PDR", label: "PDR" },
 ];
 
 const typeColors: Record<CoachType, string> = {
@@ -19,6 +20,7 @@ const typeColors: Record<CoachType, string> = {
   LGS: "bg-violet-50 text-violet-700",
   "KPSS/AGS": "bg-orange-50 text-orange-700",
   DGS: "bg-teal-50 text-teal-700",
+  PDR: "bg-pink-50 text-pink-700",
 };
 
 function StarRating({ rating, count }: { rating: number; count: number }) {
