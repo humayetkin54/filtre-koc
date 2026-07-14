@@ -40,6 +40,61 @@ export async function coachSignIn(formData: FormData) {
   redirect("/koc-paneli");
 }
 
+// Google ile giren koç adayı: hesap var, koç bilgileri eksik → coaches kaydı oluşturur (pending)
+export async function completeCoachApplication(
+  formData: FormData
+): Promise<{ ok?: true; error?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Oturum bulunamadı. Lütfen tekrar giriş yapın." };
+
+  const university = ((formData.get("university") as string) || "").trim();
+  const department = ((formData.get("department") as string) || "").trim();
+  const bio = ((formData.get("bio") as string) || "").trim();
+  if (!university || !department) return { error: "Üniversite ve bölüm zorunludur." };
+
+  const admin = createAdminClient();
+  const { data: existing } = await admin
+    .from("coaches")
+    .select("id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (existing) return { error: "Bu hesap için zaten bir koç başvurusu var." };
+
+  const name = ((user.user_metadata?.full_name as string) || user.email || "Koç").trim();
+  const initials = name
+    .split(/\s+/)
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  const { error: insertError } = await admin.from("coaches").insert({
+    user_id: user.id,
+    name,
+    university,
+    department,
+    bio: bio || null,
+    status: "pending",
+    avatar_initials: initials,
+    avatar_color: "#123A57",
+    avatar_text_color: "#ffffff",
+    types: [],
+    rating: 0,
+    rating_count: 0,
+    net_increase: "+0",
+    price: 0,
+    availability: "open",
+    max_students: 10,
+    current_students: 0,
+  });
+  if (insertError) return { error: "Başvuru kaydedilemedi: " + insertError.message };
+
+  // Politika: onay bekleyen koç oturumda kalmaz
+  await supabase.auth.signOut();
+  return { ok: true };
+}
+
 export async function coachSignUp(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;

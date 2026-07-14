@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import KocKayitForm from "./koc-kayit-form";
+import { GoogleButton } from "@/components/auth/google-button";
 
 export default function KocKayitPage({
   searchParams,
@@ -31,6 +32,7 @@ export default function KocKayitPage({
 
           <StatusMessage searchParams={searchParams} />
           <KocKayitForm />
+          <GoogleButton flow="koc" />
 
           <p className="mt-6 text-center text-xs text-gray-500">
             Zaten koç hesabın var mı?{" "}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { GoogleButton } from "@/components/auth/google-button";
 import { coachSignIn } from "@/app/koc-auth/actions";
 
 export default function KocGirisPage({
@@ -68,6 +69,7 @@ export default function KocGirisPage({
               Giriş yap
             </button>
           </form>
+          <GoogleButton flow="koc" />
 
           <p className="mt-6 text-center text-xs text-gray-500">
             Öğrenci hesabıyla mı giriş yapacaksın?{" "}

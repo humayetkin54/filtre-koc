@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import KayitForm from "./kayit-form";
+import { GoogleButton } from "@/components/auth/google-button";
 
 export default function KayitPage({
   searchParams,
@@ -31,6 +32,7 @@ export default function KayitPage({
 
           <StatusMessage searchParams={searchParams} />
           <KayitForm />
+          <GoogleButton flow="ogrenci" />
 
           <p className="mt-4 text-center text-xs text-gray-400">
             Kayıt olarak{" "}

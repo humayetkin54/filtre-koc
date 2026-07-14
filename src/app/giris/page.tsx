@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { signIn } from "@/app/auth/actions";
+import { GoogleButton } from "@/components/auth/google-button";
 
 export default function GirisPage({
   searchParams,
@@ -65,6 +66,7 @@ export default function GirisPage({
               Giriş yap
             </button>
           </form>
+          <GoogleButton flow="ogrenci" />
         </div>
       </div>
     </div>
