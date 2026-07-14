@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { updateProfile } from "./actions";
 import { VeliTakipToggle } from "./veli-takip-toggle";
 import { ProfilePhotoCard } from "./profile-photo-card";
+import { CoachBioCard } from "./coach-bio-card";
 
 export default async function ProfilPage({
   searchParams,
@@ -30,6 +31,13 @@ export default async function ProfilPage({
     .select("id, parent_email")
     .eq("student_id", user.id)
     .order("created_at", { ascending: true });
+
+  // Koç hesabıysa biyografi kartı gösterilir
+  const { data: coachRow } = await admin
+    .from("coaches")
+    .select("bio")
+    .eq("user_id", user.id)
+    .maybeSingle();
 
   return (
     <div className="min-h-full bg-gray-50">
@@ -75,6 +83,9 @@ export default async function ProfilPage({
             ((user.user_metadata?.full_name as string)?.[0] ?? user.email?.[0] ?? "?").toUpperCase()
           }
         />
+
+        {/* Koç biyografisi */}
+        {coachRow && <CoachBioCard initialBio={coachRow.bio} />}
 
         {/* Bilgileri güncelle */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6">
