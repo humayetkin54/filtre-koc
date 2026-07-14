@@ -2,6 +2,7 @@
 
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { ADMIN_EMAILS } from "@/lib/admins";
 
 export async function signIn(formData: FormData) {
   const email = formData.get("email") as string;
@@ -15,6 +16,11 @@ export async function signIn(formData: FormData) {
   }
 
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Admin: doğrudan yönetim paneline
+  if (ADMIN_EMAILS.includes((user?.email ?? "").toLowerCase())) {
+    redirect("/admin");
+  }
 
   // Veli hesabı: öğrenci onboarding'ine girmeden doğrudan veli paneline
   if (user?.user_metadata?.grade === "Veli") {

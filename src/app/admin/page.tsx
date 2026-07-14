@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { deleteIntroRequest, updateCoachStatus } from "./actions";
 import { PurchasesTable } from "./purchases-table";
 
-const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.com"];
+import { ADMIN_EMAILS } from "@/lib/admins";
 
 interface Coach {
   id: string;

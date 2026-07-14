@@ -2,7 +2,7 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { updateCoachStatus } from "../actions";
 
-const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.com"];
+import { ADMIN_EMAILS } from "@/lib/admins";
 
 interface Coach {
   id: string;

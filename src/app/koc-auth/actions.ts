@@ -3,7 +3,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.com"];
+import { ADMIN_EMAILS } from "@/lib/admins";
 
 export async function coachSignIn(formData: FormData) {
   const email = formData.get("email") as string;

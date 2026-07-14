@@ -3,7 +3,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
-const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.com"];
+import { ADMIN_EMAILS } from "@/lib/admins";
 
 export async function cancelPurchase(purchaseId: string) {
   const supabase = await createClient();

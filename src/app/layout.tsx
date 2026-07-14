@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import { PwaSetup } from "@/components/pwa/PwaSetup";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { ADMIN_EMAILS } from "@/lib/admins";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -79,7 +80,7 @@ export default async function RootLayout({
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const ADMIN_EMAILS = ["enes2oo8@hotmail.com", "akifdemir54@icloud.com"];
+
   const isAdmin = !!user && ADMIN_EMAILS.includes((user.email ?? "").toLowerCase());
 
   let isCoach = false;
