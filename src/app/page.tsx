@@ -41,13 +41,6 @@ const yolHaritasi = [
   },
 ]
 
-const kocTipleri = [
-  { tag: 'YKS', title: 'YKS Koçluğu', desc: 'TYT ve AYT\'de net artışı hedefleyen, hedef bölümü okuyan koçlarla çalış.', features: ['Hedef üniversite mezunu koç', 'TYT + AYT strateji planı', 'Haftalık deneme analizi', '7/24 WhatsApp desteği'] },
-  { tag: 'LGS', title: 'LGS Koçluğu', desc: 'Fen ve Anadolu Lisesi\'ni kazanmak için stratejik hazırlık.', features: ['Yeni nesil soru taktikleri', 'Veli bilgilendirme raporu', 'Düzenli performans takibi'] },
-  { tag: 'KPSS/AGS', title: 'KPSS/AGS Koçluğu', desc: 'KPSS\'de üst sıralara girmek için deneyimli, sınavı kazanmış koçlar.', features: ['GY/GK + Alan sınavı planı', 'Özgün soru analizleri', 'Esnek program desteği'] },
-  { tag: 'PDR', title: 'Psikolojik Danışmanlık', desc: 'Sınav kaygısı, motivasyon ve stres yönetimi için uzman PDR desteği.', features: ['PDR mezunu danışmanlar', 'Sınav kaygısı terapisi', 'Kariyer & tercih rehberliği', 'Aile görüşmeleri'] },
-]
-
 const garantiler = [
   { icon: '🛡️', title: '7 gün koşulsuz iade', desc: 'İlk 7 gün içinde memnun kalmazsan, soru sormadan tam iade. Uzun paketlerde iptalde kullanılmayan aylar iade edilir.' },
   { icon: '👥', title: 'Max 8 öğrenci / koç', desc: 'Her koça en fazla 8 öğrenci — tam ilgi garantisi.' },
@@ -76,22 +69,117 @@ export default function HomePage() {
             <span className="w-2 h-2 bg-[#0E8FA3] rounded-full animate-pulse" />
             YENİ NESİL · PDR DESTEKLİ · SEÇKİN AKADEMİK KOÇLUK PLATFORMU
           </div>
-          <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight text-[#1e293b] mb-6 leading-tight">
-            Doğru Koç, doğru zamanlama, doğru psikolojiyle{' '}
+          <h1 className="font-bold text-3xl sm:text-4xl md:text-5xl tracking-tight text-[#1e293b] mb-6 leading-tight">
+            Doğru Koç, Doğru Zamanlama, Doğru Psikolojiyle{' '}
             <span className="text-[#0E8FA3]">Rekor&apos;u</span> Sen Kır!
           </h1>
           <p className="text-lg text-gray-500 max-w-2xl mb-10 leading-relaxed">
             Doğrulanmış PDR uzmanları, derece yapmış koçlar, hızlı okuma ve AI destekli yeni nesil
             çözümleri keşfetmek için sitemize ücretsiz üye ol ve incele!
           </p>
-          <Link href="/on-gorusme" className="btn-primary px-10 py-4 text-lg">
-            Ücretsiz Ön Görüşme →
-          </Link>
+          <div className="flex gap-4 flex-wrap justify-center">
+            <Link href="/on-gorusme" className="btn-primary px-10 py-4 text-lg">
+              Ücretsiz Ön Görüşme →
+            </Link>
+            <a href="#ozellikler" className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-8 py-4 rounded-xl text-lg transition-all">
+              Platform Özelliklerini Keşfet
+            </a>
+          </div>
           <div className="flex gap-12 mt-16 flex-wrap justify-center">
             {stats.map(s => (
               <div key={s.lbl}>
                 <div className="font-bold text-4xl tracking-tight text-gray-900">{s.num}</div>
                 <div className="text-xs text-gray-400 font-medium uppercase tracking-wider mt-1">{s.lbl}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ÇÖZÜMLERİMİZ */}
+      <section className="py-24 px-[5%] bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="font-bold text-4xl tracking-tight text-gray-900 text-center mb-14">
+            Seni Rekora Taşıyacak Çözümlerimiz
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                title: 'YKS Koçluk',
+                color: '#0E8FA3',
+                tint: '#eef9f9',
+                icon: '🎯',
+                desc: <>Rekor Zeka, koçluk hizmetine ek olarak <strong className="text-gray-800">YKS Koçluk + Hızlı Okuma</strong> ikilisini sunar. TYT ve AYT netlerini bilimsel taktiklerle güvenle artır.</>,
+                features: [
+                  'Derece Öğrencisinden Mentorluk',
+                  'Haftalık Kişiye Özel Çalışma Programı',
+                  'Deneme AI Analiz ve Soru Çözümü',
+                  '7/24 WhatsApp Üzerinden Kesintisiz Destek',
+                ],
+                btn: 'YKS Koçlarını İncele',
+                href: '/koclar?tip=YKS',
+              },
+              {
+                title: 'LGS Koçluk',
+                color: '#E2600F',
+                tint: '#fdf0e7',
+                icon: '🏆',
+                desc: <>Fen Lisesi hedefine giden yolda yalnız değilsin. <strong className="text-gray-800">LGS Koçluk + Hızlı Okuma</strong> ile yeni nesil sorularda hızlan ve daha çok net yap.</>,
+                features: [
+                  'Alanında Uzman LGS Koçları',
+                  'Yeni Nesil Paragraf ve Soru Taktikleri',
+                  'Düzenli Deneme Analizi ve Veli Bilgilendirme',
+                ],
+                btn: 'LGS Koçlarını İncele',
+                href: '/koclar?tip=LGS',
+              },
+              {
+                title: 'PDR Uzmanından Koçluk',
+                color: '#123A57',
+                tint: '#eef3f5',
+                icon: '🧠',
+                desc: <>Uzman psikolojik danışmanlarımızla sınav sürecini profesyonelce yönet. Odaklanma sorunlarını aş ve başarıya odaklan.</>,
+                features: [
+                  'Sınav Kaygısı ve Stres Yönetimi',
+                  'Birebir Motivasyon ve Odaklanma Görüşmeleri',
+                  'Üniversite Kariyer ve Tercih Rehberliği',
+                ],
+                btn: 'PDR Uzmanlarını Gör',
+                href: '/koclar',
+              },
+            ].map(c => (
+              <div
+                key={c.title}
+                className="flex flex-col rounded-2xl border border-gray-100 bg-white p-7 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+                style={{ borderTop: `4px solid ${c.color}` }}
+              >
+                <div className="mb-5 flex items-start justify-between gap-2">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-xl text-2xl" style={{ background: c.tint }}>
+                    {c.icon}
+                  </span>
+                  <span className="rounded-full px-3 py-1.5 text-[11px] font-bold" style={{ background: c.tint, color: c.color }}>
+                    ⚡ Hızlı Okuma Entegreli
+                  </span>
+                </div>
+                <h3 className="mb-3 text-xl font-bold text-gray-900">{c.title}</h3>
+                <p className="mb-5 text-sm leading-relaxed text-gray-500">{c.desc}</p>
+                <ul className="flex-1 space-y-2.5">
+                  <li className="flex items-start gap-2 text-sm font-bold" style={{ color: c.color }}>
+                    <span>⊕</span> Koçluk + Hızlı Okuma Eğitimi
+                  </li>
+                  {c.features.map(f => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-gray-600">
+                      <span className="font-bold" style={{ color: c.color }}>✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={c.href}
+                  className="mt-7 rounded-xl py-3.5 text-center text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                  style={{ background: c.color }}
+                >
+                  {c.btn} →
+                </Link>
               </div>
             ))}
           </div>
@@ -246,31 +334,6 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* KOÇ TİPLERİ */}
-      <section className="py-24 px-[5%] bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-xs font-semibold tracking-widest uppercase text-blue-600 mb-3">Hizmetler</p>
-          <h2 className="font-bold text-4xl tracking-tight text-gray-900 mb-4">Hangi yoldasın?</h2>
-          <p className="text-gray-500 max-w-lg mb-12">Sınavına ve hedefine özel koçluk modeli seçiyorsun.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {kocTipleri.map(k => (
-              <div key={k.tag} className="group bg-white rounded-2xl p-6 border border-gray-100 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-transparent koc-card">
-                <span className="koc-tag inline-block text-xs font-bold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-4 transition-colors">{k.tag}</span>
-                <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-white transition-colors">{k.title}</h3>
-                <p className="text-sm text-gray-500 mb-4 group-hover:text-white/80 transition-colors">{k.desc}</p>
-                <ul className="space-y-2">
-                  {k.features.map(f => (
-                    <li key={f} className="text-xs text-gray-500 flex items-center gap-2 group-hover:text-white/80 transition-colors">
-                      <span className="text-green-500 font-bold group-hover:text-white">✓</span> {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
           </div>
         </div>
       </section>
