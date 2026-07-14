@@ -1,6 +1,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { WelcomeModal } from "./welcome-modal";
+import { CoachReviewCard } from "./coach-review-card";
 import { EXAM_CONFIGS } from "./deneme/exam-config";
 
 const SHORT_EXAM: Record<string, string> = { TYT: "TYT", SAY: "SAY", EA: "EA", SOZ: "SÖZ", DIL: "DİL" };
@@ -45,6 +46,19 @@ export default async function OgrenciPaneliPage() {
   ]);
 
   const purchase = purchases?.[0];
+
+  // Koç değerlendirmesi: aktif koçu varsa mevcut yorumunu getir
+  let myReview: { rating: number; comment: string | null } | null = null;
+  if (purchase?.coach_id) {
+    const { data } = await admin
+      .from("coach_reviews")
+      .select("rating, comment")
+      .eq("student_id", user!.id)
+      .eq("coach_id", purchase.coach_id)
+      .maybeSingle();
+    myReview = data ?? null;
+  }
+
   const lastDeneme = denemes?.[0];
   const denemeInfo = lastDenemeInfo(lastDeneme);
   const pendingHw = (homework ?? []).filter(h => h.status === "pending").length;
@@ -106,6 +120,11 @@ export default async function OgrenciPaneliPage() {
           ))}
         </div>
       </div>
+
+      {/* Koç değerlendirme */}
+      {purchase?.coach_id && purchase.coach_name && (
+        <CoachReviewCard coachName={purchase.coach_name} existing={myReview} />
+      )}
     </div>
   );
 }

@@ -27,18 +27,14 @@ const expertiseTags: Record<CoachType, string[]> = {
   PDR:       ["Sınav Kaygısı", "Motivasyon", "Odaklanma", "Tercih Rehberliği"],
 };
 
-/* Sahte yorum verisi — gerçek DB'den çekilecek */
-const MOCK_REVIEWS = [
-  { initials: "MT", name: "Musa Eren T.", rating: 4.8, comment: "" },
-  { initials: "HG", name: "Hande G.", rating: 5.0, comment: "Bu sene LGS'ye hazırlanıyorum ve bu süreçte destek alıyorum. Hem kaynak yönlendirmesi konusunda hem de motivasyon kaybı yaşadığım zamanlarda bana çok faydası oldu. Düzenli olarak iletişim halindeyiz. Bana çok güzel destek oluyor ve cesaretlendiriyor. İyi ki onu tanışmışım." },
-];
-
-const RATING_BARS = [
-  { label: "Öğretme Kalitesi", value: 5.0 },
-  { label: "İletişim",         value: 4.9 },
-  { label: "Ulaşılabilirlik",  value: 4.9 },
-  { label: "Geri Bildirim",    value: 5.0 },
-];
+// Yorumlar coach_reviews tablosundan gelir (öğrenciler panelden değerlendirir)
+function initialsOf(name: string) {
+  return name
+    .split(/\s+/)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("")
+    .slice(0, 2);
+}
 
 export default async function CoachDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -59,6 +55,14 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
     .eq("status", "approved")
     .neq("id", id)
     .limit(4);
+
+  /* Gerçek öğrenci yorumları */
+  const { data: reviews } = await supabase
+    .from("coach_reviews")
+    .select("student_name, rating, comment, created_at")
+    .eq("coach_id", id)
+    .order("created_at", { ascending: false })
+    .limit(10);
 
   const allTags = Array.from(new Set(c.types.flatMap((t) => expertiseTags[t] ?? [])));
 
@@ -179,7 +183,7 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
           <h2 className="text-xl font-bold text-gray-900 mb-6">Değerlendirmeler</h2>
 
           {/* Özet */}
-          <div className="flex flex-col sm:flex-row gap-8 mb-8">
+          <div className="flex items-center gap-6 mb-8">
             <div className="flex flex-col items-center justify-center flex-shrink-0">
               <p className="text-6xl font-bold text-gray-900">{c.rating.toFixed(1)}</p>
               <div className="flex mt-2 gap-0.5">
@@ -189,39 +193,36 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
               </div>
               <p className="mt-1 text-sm text-gray-400">{c.rating_count} değerlendirme</p>
             </div>
-
-            <div className="flex-1 space-y-2.5">
-              {RATING_BARS.map((bar) => (
-                <div key={bar.label} className="flex items-center gap-3">
-                  <span className="w-32 text-sm text-gray-600 flex-shrink-0">{bar.label}</span>
-                  <div className="flex-1 h-2.5 rounded-full bg-gray-100 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-amber-400"
-                      style={{ width: `${(bar.value / 5) * 100}%` }}
-                    />
-                  </div>
-                  <span className="w-6 text-sm font-semibold text-gray-700 text-right">{bar.value.toFixed(1)}</span>
-                </div>
-              ))}
-            </div>
+            <p className="text-sm text-gray-400 leading-relaxed">
+              Değerlendirmeler yalnızca bu koçla aktif olarak çalışan öğrenciler tarafından, öğrenci panelinden yapılabilir.
+            </p>
           </div>
 
           {/* Yorumlar */}
           <div className="space-y-5 border-t border-gray-100 pt-5">
-            {MOCK_REVIEWS.map((rev) => (
-              <div key={rev.name} className="space-y-2">
+            {(!reviews || reviews.length === 0) && (
+              <p className="text-sm text-gray-400">
+                Henüz yazılı yorum yok — bu koçla çalışan öğrenciler değerlendirme bıraktıkça burada görünecek.
+              </p>
+            )}
+            {(reviews ?? []).map((rev, ri) => (
+              <div key={ri} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-[#0E8FA3] flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
-                      {rev.initials}
+                      {initialsOf(rev.student_name ?? "Ö")}
                     </div>
-                    <span className="font-semibold text-gray-800 text-sm">{rev.name}</span>
+                    <div>
+                      <span className="font-semibold text-gray-800 text-sm">{rev.student_name ?? "Öğrenci"}</span>
+                      <p className="text-[11px] text-gray-400">
+                        {new Date(rev.created_at).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
+                      </p>
+                    </div>
                   </div>
                   <div className="flex items-center gap-1">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={i} className={`text-sm ${i < Math.round(rev.rating) ? "text-amber-400" : "text-gray-200"}`}>★</span>
+                      <span key={i} className={`text-sm ${i < rev.rating ? "text-amber-400" : "text-gray-200"}`}>★</span>
                     ))}
-                    <span className="ml-1 text-sm font-semibold text-gray-700">{rev.rating.toFixed(1)}</span>
                   </div>
                 </div>
                 {rev.comment && (
