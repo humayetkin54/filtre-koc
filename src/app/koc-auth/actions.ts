@@ -9,6 +9,12 @@ import { sendEmail } from "@/lib/email";
 // Koç adaylarının doldurması gereken Google Forms bilgi formu
 const KOC_FORM_URL = "https://forms.gle/2dujAJAXJMT2wbp3A";
 
+const VALID_TYPES = ["YKS", "LGS", "KPSS/AGS", "DGS", "PDR"];
+
+function readTypes(formData: FormData): string[] {
+  return formData.getAll("types").map(String).filter((t) => VALID_TYPES.includes(t));
+}
+
 function kocFormEmailHtml(name: string) {
   const first = name.split(/\s+/)[0] || "Koç Adayı";
   return `
@@ -86,7 +92,9 @@ export async function completeCoachApplication(
   const university = ((formData.get("university") as string) || "").trim();
   const department = ((formData.get("department") as string) || "").trim();
   const bio = ((formData.get("bio") as string) || "").trim();
+  const types = readTypes(formData);
   if (!university || !department) return { error: "Üniversite ve bölüm zorunludur." };
+  if (types.length === 0) return { error: "En az bir koçluk alanı seçmelisin." };
 
   const admin = createAdminClient();
   const { data: existing } = await admin
@@ -114,7 +122,7 @@ export async function completeCoachApplication(
     avatar_initials: initials,
     avatar_color: "#123A57",
     avatar_text_color: "#ffffff",
-    types: [],
+    types,
     rating: 0,
     rating_count: 0,
     net_increase: "+0",
@@ -144,6 +152,11 @@ export async function coachSignUp(formData: FormData) {
   const university = formData.get("university") as string;
   const department = formData.get("department") as string;
   const bio = formData.get("bio") as string;
+  const types = readTypes(formData);
+
+  if (types.length === 0) {
+    redirect(`/koc-kayit?error=${encodeURIComponent("En az bir koçluk alanı seçmelisin.")}`);
+  }
 
   const admin = createAdminClient();
 
@@ -177,7 +190,7 @@ export async function coachSignUp(formData: FormData) {
       avatar_initials: initials,
       avatar_color: "#123A57",
       avatar_text_color: "#ffffff",
-      types: [],
+      types,
       rating: 0,
       rating_count: 0,
       net_increase: "+0",

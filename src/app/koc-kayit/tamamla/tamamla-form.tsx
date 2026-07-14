@@ -51,6 +51,19 @@ export function TamamlaForm() {
         <input type="text" name="department" required placeholder="Örn: Rehberlik ve Psikolojik Danışmanlık" className={inputCls} />
       </div>
       <div>
+        <label className="mb-1.5 block text-sm font-medium text-gray-300">
+          Hangi alanlarda koçluk yapmak istersin? <span className="text-red-400">*</span>
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {["YKS", "LGS", "KPSS/AGS", "DGS", "PDR"].map((t) => (
+            <label key={t} className="flex cursor-pointer items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-gray-300 has-[:checked]:border-[#0E8FA3] has-[:checked]:bg-[#0E8FA3]/20 has-[:checked]:text-white">
+              <input type="checkbox" name="types" value={t} className="h-4 w-4 accent-[#0E8FA3]" />
+              {t}
+            </label>
+          ))}
+        </div>
+      </div>
+      <div>
         <label className="mb-1.5 block text-sm font-medium text-gray-300">Kendini kısaca tanıt</label>
         <textarea name="bio" rows={4} placeholder="Deneyimin, derecen, öğrencilerle çalışma tarzın…" className={inputCls} />
       </div>
