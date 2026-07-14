@@ -265,7 +265,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-6 gap-5">
             {/* Deneme AI Analiz — büyük kart */}
-            <div className="lg:col-span-3 rounded-2xl p-7 text-white" style={{ background: 'linear-gradient(135deg, #123A57 0%, #0E8FA3 100%)' }}>
+            <div className="lg:col-span-3 rounded-2xl p-7 text-white transition-all duration-200 hover:-translate-y-1 hover:shadow-xl" style={{ background: 'linear-gradient(135deg, #123A57 0%, #0E8FA3 100%)' }}>
               <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold tracking-widest uppercase mb-4">📸 Deneme AI Analiz</span>
               <h3 className="font-bold text-2xl mb-2">Kitapçığını fotoğrafla,<br />yapay zeka analiz etsin</h3>
               <p className="text-sm text-white/80 leading-relaxed mb-6">Deneme kitapçığının fotoğraflarını yükle; yapay zeka doğru-yanlışlarından zayıf konularını tespit etsin, koçun tek tıkla haftalık programına dönüştürsün.</p>
@@ -279,7 +279,7 @@ export default function HomePage() {
             </div>
 
             {/* AI Asistan — büyük kart */}
-            <div className="lg:col-span-3 rounded-2xl border border-gray-200 bg-gray-50 p-7">
+            <div className="lg:col-span-3 rounded-2xl border border-gray-200 bg-gray-50 p-7 transition-all duration-200 hover:-translate-y-1 hover:border-[#0E8FA3] hover:shadow-lg">
               <span className="inline-block rounded-full bg-[#eef9f9] px-3 py-1 text-[11px] font-bold tracking-widest uppercase text-[#0E8FA3] mb-4">🤖 RekorZeka AI Asistan</span>
               <h3 className="font-bold text-2xl text-gray-900 mb-2">7/24 yanında bir<br />yapay zeka koçu</h3>
               <p className="text-sm text-gray-500 leading-relaxed mb-6">Takıldığın sorunun fotoğrafını gönder, adım adım çözümünü al. Çalışma planı, konu anlatımı ve motivasyon — gece yarısı bile.</p>
