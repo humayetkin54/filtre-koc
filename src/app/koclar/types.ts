@@ -10,6 +10,7 @@ export interface Coach {
   avatar_initials: string;
   avatar_color: string;
   avatar_text_color: string;
+  avatar_url?: string | null;
   rating: number;
   rating_count: number;
   current_students: number;

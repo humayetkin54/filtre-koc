@@ -48,6 +48,7 @@ export default function Navbar({
       ]
     : isCoach
     ? [
+        { href: "/profil", label: "Profilim" },
         { href: "/koc-paneli", label: "Koç Paneli" },
         { href: "/koc-paneli/ogrencilerim", label: "Öğrencilerim" },
         { href: "/destek", label: "Destek Merkezi" },
@@ -113,10 +114,15 @@ export default function Navbar({
                   className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white py-1.5 pl-1.5 pr-3 transition-colors hover:bg-zinc-50"
                   aria-expanded={userOpen}
                 >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#123A57] text-white">
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-                      <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
-                    </svg>
+                  <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#123A57] text-white">
+                    {user.user_metadata?.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={user.user_metadata.avatar_url} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                        <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                      </svg>
+                    )}
                   </span>
                   <span className="max-w-[150px] truncate text-sm font-semibold text-[#1e293b]">
                     {user.user_metadata?.full_name ?? user.email}

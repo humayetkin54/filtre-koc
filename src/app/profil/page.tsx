@@ -2,6 +2,7 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { updateProfile } from "./actions";
 import { VeliTakipToggle } from "./veli-takip-toggle";
+import { ProfilePhotoCard } from "./profile-photo-card";
 
 export default async function ProfilPage({
   searchParams,
@@ -43,12 +44,17 @@ export default async function ProfilPage({
 
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
 
-        {/* Avatar */}
+        {/* Kimlik */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#123A57]/10 text-2xl font-bold text-[#123A57]">
-              {(user.user_metadata?.full_name as string)?.[0]?.toUpperCase() ??
-                user.email?.[0]?.toUpperCase()}
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-[#123A57]/10 text-2xl font-bold text-[#123A57]">
+              {user.user_metadata?.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={user.user_metadata.avatar_url} alt="Profil fotoğrafı" className="h-full w-full object-cover" />
+              ) : (
+                (user.user_metadata?.full_name as string)?.[0]?.toUpperCase() ??
+                user.email?.[0]?.toUpperCase()
+              )}
             </div>
             <div>
               <p className="font-semibold text-gray-900">
@@ -61,6 +67,14 @@ export default async function ProfilPage({
             </div>
           </div>
         </div>
+
+        {/* Profil fotoğrafı yükleme */}
+        <ProfilePhotoCard
+          currentUrl={(user.user_metadata?.avatar_url as string | undefined) ?? null}
+          initials={
+            ((user.user_metadata?.full_name as string)?.[0] ?? user.email?.[0] ?? "?").toUpperCase()
+          }
+        />
 
         {/* Bilgileri güncelle */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6">

@@ -60,10 +60,15 @@ function CoachCard({
 
         {/* Yuvarlak avatar */}
         <div
-          className="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-bold ring-4 ring-white shadow-md mb-4 flex-shrink-0"
+          className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden text-2xl font-bold ring-4 ring-white shadow-md mb-4 flex-shrink-0"
           style={{ backgroundColor: coach.avatar_color, color: coach.avatar_text_color }}
         >
-          {coach.avatar_initials}
+          {coach.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={coach.avatar_url} alt={coach.name} className="h-full w-full object-cover" />
+          ) : (
+            coach.avatar_initials
+          )}
         </div>
 
         {/* İsim */}

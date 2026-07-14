@@ -88,10 +88,15 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
 
             {/* Avatar */}
             <div
-              className="w-28 h-28 flex-shrink-0 rounded-full flex items-center justify-center text-3xl font-bold ring-4 ring-white shadow-lg"
+              className="w-28 h-28 flex-shrink-0 rounded-full flex items-center justify-center overflow-hidden text-3xl font-bold ring-4 ring-white shadow-lg"
               style={{ backgroundColor: c.avatar_color, color: c.avatar_text_color }}
             >
-              {c.avatar_initials}
+              {c.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={c.avatar_url} alt={c.name} className="h-full w-full object-cover" />
+              ) : (
+                c.avatar_initials
+              )}
             </div>
 
             {/* Bilgiler */}
