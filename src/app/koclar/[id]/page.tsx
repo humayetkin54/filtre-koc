@@ -111,11 +111,17 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
 
               {/* Yıldız */}
               <div className="mt-3 flex items-center justify-center sm:justify-start gap-1.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`text-lg ${i < Math.round(c.rating) ? "text-amber-400" : "text-gray-200"}`}>★</span>
-                ))}
-                <span className="ml-1 text-sm font-semibold text-gray-700">{c.rating.toFixed(1)}/5</span>
-                <span className="text-sm text-gray-400">({c.rating_count} değerlendirme)</span>
+                {c.rating_count === 0 ? (
+                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-600">🆕 Yeni koç</span>
+                ) : (
+                  <>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span key={i} className={`text-lg ${i < Math.round(c.rating) ? "text-amber-400" : "text-gray-200"}`}>★</span>
+                    ))}
+                    <span className="ml-1 text-sm font-semibold text-gray-700">{c.rating.toFixed(1)}/5</span>
+                    <span className="text-sm text-gray-400">({c.rating_count} değerlendirme)</span>
+                  </>
+                )}
               </div>
 
               {/* Sınav türleri */}
@@ -184,15 +190,17 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
 
           {/* Özet */}
           <div className="flex items-center gap-6 mb-8">
-            <div className="flex flex-col items-center justify-center flex-shrink-0">
-              <p className="text-6xl font-bold text-gray-900">{c.rating.toFixed(1)}</p>
-              <div className="flex mt-2 gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} className={`text-xl ${i < Math.round(c.rating) ? "text-amber-400" : "text-gray-200"}`}>★</span>
-                ))}
+            {c.rating_count > 0 && (
+              <div className="flex flex-col items-center justify-center flex-shrink-0">
+                <p className="text-6xl font-bold text-gray-900">{c.rating.toFixed(1)}</p>
+                <div className="flex mt-2 gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i} className={`text-xl ${i < Math.round(c.rating) ? "text-amber-400" : "text-gray-200"}`}>★</span>
+                  ))}
+                </div>
+                <p className="mt-1 text-sm text-gray-400">{c.rating_count} değerlendirme</p>
               </div>
-              <p className="mt-1 text-sm text-gray-400">{c.rating_count} değerlendirme</p>
-            </div>
+            )}
             <p className="text-sm text-gray-400 leading-relaxed">
               Değerlendirmeler yalnızca bu koçla aktif olarak çalışan öğrenciler tarafından, öğrenci panelinden yapılabilir.
             </p>
@@ -240,16 +248,18 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
             <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{c.bio}</p>
 
             {/* İstatistikler */}
-            <div className="mt-8 grid grid-cols-2 gap-4 border-t border-gray-100 pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-[#0E8FA3]">{c.rating_count}+</p>
-                <p className="mt-1 text-sm text-gray-500">Yorum sayısı</p>
+            {c.rating_count > 0 && (
+              <div className="mt-8 grid grid-cols-2 gap-4 border-t border-gray-100 pt-6">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-[#0E8FA3]">{c.rating_count}</p>
+                  <p className="mt-1 text-sm text-gray-500">Yorum sayısı</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-[#0E8FA3]">{c.rating.toFixed(1)}</p>
+                  <p className="mt-1 text-sm text-gray-500">Ortalama Puan</p>
+                </div>
               </div>
-              <div className="text-center">
-                <p className="text-3xl font-bold text-[#0E8FA3]">{c.rating.toFixed(1)}</p>
-                <p className="mt-1 text-sm text-gray-500">Ortalama Puan</p>
-              </div>
-            </div>
+            )}
           </div>
         )}
 

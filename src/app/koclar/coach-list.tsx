@@ -24,6 +24,13 @@ const typeColors: Record<CoachType, string> = {
 };
 
 function StarRating({ rating, count }: { rating: number; count: number }) {
+  if (count === 0) {
+    return (
+      <div className="flex items-center justify-center">
+        <span className="rounded-full bg-emerald-50 px-3 py-0.5 text-xs font-bold text-emerald-600">🆕 Yeni koç</span>
+      </div>
+    );
+  }
   return (
     <div className="flex items-center justify-center gap-1.5 text-sm">
       <span className="text-amber-400">★</span>

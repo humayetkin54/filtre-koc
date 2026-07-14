@@ -35,8 +35,17 @@ export default async function KoclarPage({
     return (
       <div className="flex min-h-full items-center justify-center bg-zinc-50 px-4">
         <div className="max-w-md rounded-2xl border border-zinc-200 bg-white px-6 py-16 text-center">
-          <p className="text-lg font-semibold text-zinc-900">Henüz kayıtlı koç bulunmuyor.</p>
-          <p className="mt-2 text-sm text-zinc-500">Yakında yeni koçlar eklenecek.</p>
+          <div className="text-4xl">🎓</div>
+          <p className="mt-3 text-lg font-semibold text-zinc-900">Eylül dönemi koç kadromuz hazırlanıyor</p>
+          <p className="mt-2 text-sm text-zinc-500">
+            Doğrulanmış koçlarımız çok yakında burada. Bu arada ücretsiz ön görüşmeyle yerini ayırtabilirsin.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <a href="/on-gorusme" className="btn-primary px-6 py-2.5 text-sm font-bold">Ücretsiz Ön Görüşme</a>
+            <a href="/koc-kayit" className="rounded-xl border border-zinc-200 px-6 py-2.5 text-sm font-semibold text-zinc-600 hover:bg-zinc-50">
+              Koç Olmak İstiyorum
+            </a>
+          </div>
         </div>
       </div>
     );
