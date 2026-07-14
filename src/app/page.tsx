@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { IntroPopup } from './intro-popup'
 
 const stats = [
@@ -261,7 +262,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#0E8FA3] mb-3">Platform Özellikleri</p>
           <h2 className="font-bold text-4xl tracking-tight text-gray-900 mb-4">Sadece koçluk değil,<br className="sm:hidden" /> yeni nesil teknoloji</h2>
-          <p className="text-gray-500 max-w-xl mb-12">Koçunun birebir ilgisine, yapay zeka destekli araçlar eşlik eder. Hepsi tek panelde, tüm paketlere dahil.</p>
+          <p className="text-gray-500 max-w-xl mb-12">Koçunun birebir ilgisine, yapay zeka destekli araçlar eşlik eder. Hepsi tek panelde, tüm paketlere dahil. <span className="font-semibold text-gray-700">📷 Aşağıdakiler platformdan gerçek ekran görüntüleridir.</span></p>
 
           <div className="grid grid-cols-1 lg:grid-cols-6 gap-5">
             {/* Deneme AI Analiz — büyük kart */}
@@ -283,10 +284,13 @@ export default function HomePage() {
               <span className="inline-block rounded-full bg-[#eef9f9] px-3 py-1 text-[11px] font-bold tracking-widest uppercase text-[#0E8FA3] mb-4">🤖 RekorZeka AI Asistan</span>
               <h3 className="font-bold text-2xl text-gray-900 mb-2">7/24 yanında bir<br />yapay zeka koçu</h3>
               <p className="text-sm text-gray-500 leading-relaxed mb-6">Takıldığın sorunun fotoğrafını gönder, adım adım çözümünü al. Çalışma planı, konu anlatımı ve motivasyon — gece yarısı bile.</p>
-              <div className="space-y-2">
-                <div className="ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-[#0E8FA3] px-4 py-2.5 text-xs text-white">Bu soruyu çözemedim, yardım eder misin? 📷</div>
-                <div className="max-w-[80%] rounded-2xl rounded-bl-md bg-white border border-gray-200 px-4 py-2.5 text-xs text-gray-600">Tabii! Adım adım çözelim: önce verilenleri yazalım… 🤖</div>
-              </div>
+              <Image
+                src="/screenshots/ai-asistan.png"
+                alt="RekorZeka AI Asistan — gerçek panel ekran görüntüsü"
+                width={2560}
+                height={1600}
+                className="w-full rounded-xl border border-gray-200 shadow-sm"
+              />
             </div>
 
             {/* Hızlı Okuma */}
@@ -294,11 +298,13 @@ export default function HomePage() {
               <div className="text-2xl mb-3">👁️</div>
               <h3 className="font-bold text-gray-900 mb-1.5">Hızlı Okuma Merkezi</h3>
               <p className="text-xs text-gray-500 leading-relaxed mb-4">WPM hız testi, takistoskop ve göz egzersizleriyle okuma hızını katla. Paragraf sorularında kazandığın her dakika, fazladan çözülen soru demek.</p>
-              <div className="flex items-end gap-2">
-                <span className="font-bold text-3xl text-[#0E8FA3]">320</span>
-                <span className="text-xs text-gray-400 mb-1">WPM</span>
-                <span className="ml-auto rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-600">18 başarı rozeti 🏅</span>
-              </div>
+              <Image
+                src="/screenshots/hizli-okuma.png"
+                alt="Hızlı Okuma paneli — gerçek ekran görüntüsü"
+                width={2560}
+                height={1600}
+                className="w-full rounded-xl border border-gray-100"
+              />
             </div>
 
             {/* Net Takibi */}
@@ -306,12 +312,13 @@ export default function HomePage() {
               <div className="text-2xl mb-3">📊</div>
               <h3 className="font-bold text-gray-900 mb-1.5">Net Takibi & Grafikler</h3>
               <p className="text-xs text-gray-500 leading-relaxed mb-4">Her deneme sonucun TYT/AYT ayrımıyla grafiğe dönüşür; gelişimini sen de koçun da anlık görür.</p>
-              <svg viewBox="0 0 200 60" className="w-full">
-                <polyline points="10,45 60,38 110,30 160,18 190,12" fill="none" stroke="#0E8FA3" strokeWidth="3" strokeLinecap="round" />
-                <polyline points="10,52 60,48 110,42 160,35 190,28" fill="none" stroke="#E2600F" strokeWidth="3" strokeLinecap="round" strokeDasharray="6 4" />
-                <circle cx="190" cy="12" r="4" fill="#0E8FA3" />
-                <circle cx="190" cy="28" r="4" fill="#E2600F" />
-              </svg>
+              <Image
+                src="/screenshots/deneme-grafik.png"
+                alt="TYT/AYT toplam net grafiği — gerçek panel ekran görüntüsü"
+                width={1932}
+                height={867}
+                className="w-full rounded-xl border border-gray-100"
+              />
             </div>
 
             {/* Veli Takip */}
