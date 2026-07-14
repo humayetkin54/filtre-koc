@@ -290,7 +290,7 @@ export default function HomePage() {
             </div>
 
             {/* Hızlı Okuma */}
-            <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6">
+            <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:border-[#0E8FA3] hover:shadow-lg">
               <div className="text-2xl mb-3">👁️</div>
               <h3 className="font-bold text-gray-900 mb-1.5">Hızlı Okuma Merkezi</h3>
               <p className="text-xs text-gray-500 leading-relaxed mb-4">WPM hız testi, takistoskop ve göz egzersizleriyle okuma hızını katla. Paragraf sorularında kazandığın her dakika, fazladan çözülen soru demek.</p>
@@ -302,7 +302,7 @@ export default function HomePage() {
             </div>
 
             {/* Net Takibi */}
-            <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6">
+            <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:border-[#0E8FA3] hover:shadow-lg">
               <div className="text-2xl mb-3">📊</div>
               <h3 className="font-bold text-gray-900 mb-1.5">Net Takibi & Grafikler</h3>
               <p className="text-xs text-gray-500 leading-relaxed mb-4">Her deneme sonucun TYT/AYT ayrımıyla grafiğe dönüşür; gelişimini sen de koçun da anlık görür.</p>
@@ -315,7 +315,7 @@ export default function HomePage() {
             </div>
 
             {/* Veli Takip */}
-            <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6">
+            <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:border-[#0E8FA3] hover:shadow-lg">
               <div className="text-2xl mb-3">👨‍👩‍👧</div>
               <h3 className="font-bold text-gray-900 mb-1.5">Veli Takip Sistemi</h3>
               <p className="text-xs text-gray-500 leading-relaxed mb-4">Öğrencinin izniyle veliler; koç, ödev durumu ve deneme gelişimini kendi panelinden şeffafça takip eder.</p>
@@ -333,7 +333,7 @@ export default function HomePage() {
               { icon: '💬', title: 'Koçla Mesajlaşma', desc: 'Sorunu panelden yaz, koçun bildirimle görsün; kesintisiz iletişim.' },
               { icon: '📅', title: 'Program & Ödev Takibi', desc: 'Haftalık ders programın ve ödevlerin tek ekranda, tik tik ilerle.' },
             ].map(f => (
-              <div key={f.title} className="flex items-start gap-4 rounded-2xl border border-gray-100 bg-gray-50 p-5">
+              <div key={f.title} className="flex items-start gap-4 rounded-2xl border border-gray-100 bg-gray-50 p-5 transition-all duration-200 hover:-translate-y-1 hover:border-[#0E8FA3] hover:shadow-md">
                 <span className="text-2xl">{f.icon}</span>
                 <div>
                   <h4 className="font-semibold text-gray-900 text-sm mb-1">{f.title}</h4>
