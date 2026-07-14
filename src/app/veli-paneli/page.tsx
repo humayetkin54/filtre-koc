@@ -17,14 +17,40 @@ export default async function VeliPaneliPage() {
     .eq("parent_email", (user.email ?? "").toLowerCase());
 
   if (!links || links.length === 0) {
+    // Bu hesap bir öğrenci mi? Öyleyse doğru panele yönlendir
+    const { count: purchaseCount } = await admin
+      .from("purchases")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "active");
+    const isStudent = (purchaseCount ?? 0) > 0;
+
     return (
       <div className="mx-auto max-w-2xl px-4 py-20 text-center">
         <div className="text-5xl">👨‍👩‍👧</div>
         <h1 className="mt-4 text-2xl font-bold text-gray-900">Veli Paneli</h1>
-        <p className="mt-2 text-gray-500">
-          Bu hesaba bağlı bir öğrenci bulunamadı. Öğrencinizin, profil sayfasındaki
-          <strong> Veli Takip Sistemi</strong> bölümünden e-posta adresinizi (<span className="font-mono text-sm">{user.email}</span>) eklemesi gerekiyor.
-        </p>
+        {isStudent ? (
+          <>
+            <p className="mt-2 text-gray-500">
+              Bu sayfa <strong>veliler</strong> içindir ve şu an öğrenci hesabınla giriş yapmış durumdasın.
+              Velin gelişimini takip etsin istersen, profil sayfandaki <strong>Veli Takip Sistemi</strong>
+              bölümünden onun e-posta adresini ekleyebilirsin.
+            </p>
+            <div className="mt-6 flex justify-center gap-3">
+              <a href="/ogrenci/anasayfa" className="rounded-xl bg-[#0E8FA3] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#0c7d8f]">
+                Öğrenci Paneline Git
+              </a>
+              <a href="/profil" className="rounded-xl border border-gray-200 px-6 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+                Veli Ekle
+              </a>
+            </div>
+          </>
+        ) : (
+          <p className="mt-2 text-gray-500">
+            Bu hesaba bağlı bir öğrenci bulunamadı. Öğrencinizin, profil sayfasındaki
+            <strong> Veli Takip Sistemi</strong> bölümünden e-posta adresinizi (<span className="font-mono text-sm">{user.email}</span>) eklemesi gerekiyor.
+          </p>
+        )}
       </div>
     );
   }
