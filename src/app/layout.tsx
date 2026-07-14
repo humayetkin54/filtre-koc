@@ -18,8 +18,47 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rekor Zeka",
-  description: "Hedefinize uygun koçu bulun ve koçluğa başlayın.",
+  metadataBase: new URL("https://www.rekorzeka.com"),
+  title: {
+    default: "Rekor Zeka — PDR Destekli Online YKS & LGS Koçluğu",
+    template: "%s | Rekor Zeka",
+  },
+  description:
+    "Derece yapmış koçlar, PDR uzmanları ve yapay zeka destekli araçlarla online YKS, LGS ve KPSS koçluğu. AI deneme analizi, hızlı okuma eğitimi ve veli takip sistemi tek platformda.",
+  keywords: [
+    "YKS koçluğu",
+    "LGS koçluğu",
+    "online koçluk",
+    "sınav koçluğu",
+    "TYT net artırma",
+    "hızlı okuma",
+    "sınav kaygısı",
+    "PDR desteği",
+    "öğrenci koçu",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    siteName: "Rekor Zeka",
+    title: "Rekor Zeka — PDR Destekli Online YKS & LGS Koçluğu",
+    description:
+      "Derece yapmış koçlar, PDR uzmanları ve yapay zeka destekli araçlarla online sınav koçluğu.",
+    images: [{ url: "/logo.png", width: 512, height: 512, alt: "Rekor Zeka" }],
+  },
+  robots: { index: true, follow: true },
+};
+
+// Arama motorları için kuruluş şeması
+const ORG_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  name: "Rekor Zeka",
+  url: "https://www.rekorzeka.com",
+  logo: "https://www.rekorzeka.com/logo.png",
+  description:
+    "PDR destekli, yapay zeka araçlarıyla güçlendirilmiş online YKS, LGS ve KPSS koçluk platformu.",
+  email: "bilgi@rekorzeka.com",
+  areaServed: "TR",
 };
 
 export default async function RootLayout({
@@ -69,6 +108,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSONLD) }} />
         <Script
           type="module"
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
