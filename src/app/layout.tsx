@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
+import { PwaSetup } from "@/components/pwa/PwaSetup";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import "./globals.css";
 
@@ -46,6 +47,15 @@ export const metadata: Metadata = {
     images: [{ url: "/logo.png", width: 512, height: 512, alt: "Rekor Zeka" }],
   },
   robots: { index: true, follow: true },
+  appleWebApp: {
+    capable: true,
+    title: "Rekor Zeka",
+    statusBarStyle: "default",
+  },
+};
+
+export const viewport = {
+  themeColor: "#123A57",
 };
 
 // Arama motorları için kuruluş şeması
@@ -109,6 +119,7 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSONLD) }} />
+        <PwaSetup />
         <Script
           type="module"
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
