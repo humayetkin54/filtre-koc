@@ -4,6 +4,18 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { plans, categories } from "./data";
 
+// Yeşil mesaj balonu (WhatsApp desteği satırı için)
+function WhatsAppIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 flex-shrink-0" fill="#25D366" aria-hidden>
+      <path d="M12 3C6.48 3 2 6.92 2 11.75c0 2.1.87 4.02 2.32 5.53L3.2 21l4.06-1.6c1.44.55 3.05.85 4.74.85 5.52 0 10-3.92 10-8.75S17.52 3 12 3z" />
+      <circle cx="8.2" cy="11.75" r="1.05" fill="#fff" />
+      <circle cx="12" cy="11.75" r="1.05" fill="#fff" />
+      <circle cx="15.8" cy="11.75" r="1.05" fill="#fff" />
+    </svg>
+  );
+}
+
 export function PlansGrid() {
   const [catIdx, setCatIdx] = useState(0);
   const cat = categories[catIdx];
@@ -99,7 +111,11 @@ export function PlansGrid() {
             <ul className={`mt-4 flex-1 space-y-2 border-t pt-4 ${p.popular ? "border-white/10" : "border-gray-100"}`}>
               {cat.core.map((f) => (
                 <li key={f.text} className="flex items-start gap-2 text-[13px]">
-                  <span className="mt-0.5 text-sm">{f.icon}</span>
+                  {f.icon === "whatsapp" ? (
+                    <WhatsAppIcon />
+                  ) : (
+                    <span className="mt-0.5 text-sm">{f.icon}</span>
+                  )}
                   <span className={p.popular ? "text-white/90" : "text-gray-600"}>{f.text}</span>
                 </li>
               ))}

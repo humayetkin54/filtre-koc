@@ -8,13 +8,6 @@ const stats = [
   { num: '7', lbl: 'Gün Koşulsuz İade Garantisi' },
 ]
 
-const heroChips = [
-  '🤖 AI Soru Çözümü',
-  '📸 Deneme Kitapçığı AI Analizi',
-  '👁️ Hızlı Okuma Merkezi',
-  '👨‍👩‍👧 Veli Takip Sistemi',
-]
-
 const yolHaritasi = [
   {
     num: '01', icon: '🔬', color: '#0E8FA3',
@@ -69,45 +62,32 @@ export default function HomePage() {
     <main>
       <IntroPopup />
       {/* HERO */}
-      <section className="min-h-screen flex flex-col justify-center px-[5%] py-32"
+      <section className="relative min-h-screen flex flex-col justify-center px-[5%] py-32"
         style={{ background: 'linear-gradient(135deg, #eef3f5 0%, #e3eef0 35%, #cfe9e6 70%, #b8e0db 100%)' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-white border border-gray-200 text-[#1e293b] text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-6">
+        {/* Sağ üst: Hızlı Okuma */}
+        <Link
+          href="/ogrenci-paneli/hizli-okuma"
+          className="absolute right-5 top-5 rounded-xl bg-[#123A57] px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-[#0d2c42] sm:right-10 sm:top-8"
+        >
+          👁️ Hızlı Okuma
+        </Link>
+        <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
+          <div className="inline-flex items-center gap-2 bg-white border border-gray-200 text-[#1e293b] text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-8">
             <span className="w-2 h-2 bg-[#0E8FA3] rounded-full animate-pulse" />
             YENİ NESİL · PDR DESTEKLİ · SEÇKİN AKADEMİK KOÇLUK PLATFORMU
           </div>
-          <h1 className="font-bold text-5xl md:text-7xl tracking-tight text-[#1e293b] max-w-3xl mb-6 leading-tight">
-            Derece yapan koçlar ve yapay zeka ile{' '}
-            <span className="text-[#E2600F]">netlerini katla</span>
+          <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight text-[#1e293b] mb-6 leading-tight">
+            Doğru Koç, doğru zamanlama, doğru psikolojiyle{' '}
+            <span className="text-[#0E8FA3]">Rekor&apos;u</span> Sen Kır!
           </h1>
-          <p className="text-lg text-gray-500 max-w-xl mb-8 leading-relaxed">
-            Sıradan tavsiyeleri ve ezbere programları unutun. Diploma güvenceli PDR koordinatörleri liderliğinde, yapay zeka destekli analiz araçlarıyla çalışın. Sadece çalışmayı değil, kazanma psikolojisini öğrenin.
+          <p className="text-lg text-gray-500 max-w-2xl mb-10 leading-relaxed">
+            Doğrulanmış PDR uzmanları, derece yapmış koçlar, hızlı okuma ve AI destekli yeni nesil
+            çözümleri keşfetmek için sitemize ücretsiz üye ol ve incele!
           </p>
-          <div className="flex gap-2 flex-wrap mb-10">
-            {heroChips.map(c => (
-              <span key={c} className="rounded-full border border-white/60 bg-white/70 px-3.5 py-1.5 text-xs font-semibold text-[#123A57] backdrop-blur-sm">
-                {c}
-              </span>
-            ))}
-          </div>
-          <div className="flex gap-3 flex-wrap items-center">
-            <Link href="/on-gorusme" className="btn-primary px-8 py-4 text-base">
-              Ücretsiz Uzman Görüşmesi Al →
-            </Link>
-            <Link href="/koclar?tip=YKS" className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-6 py-3.5 rounded-xl text-base transition-all">
-              YKS Koçunu Seç
-            </Link>
-            <Link href="/koclar?tip=LGS" className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-6 py-3.5 rounded-xl text-base transition-all">
-              LGS Koçunu Seç
-            </Link>
-            <Link href={`/koclar?tip=${encodeURIComponent('KPSS/AGS')}`} className="border-2 border-[#0E8FA3] text-[#0E8FA3] hover:bg-[#0E8FA3] hover:text-white font-semibold px-6 py-3.5 rounded-xl text-base transition-all">
-              KPSS/AGS Koçu
-            </Link>
-          </div>
-          <a href="#ozellikler" className="mt-5 inline-block text-sm font-semibold text-[#0E8FA3] hover:underline">
-            ↓ Platform özelliklerini keşfet
-          </a>
-          <div className="flex gap-12 mt-16 flex-wrap">
+          <Link href="/on-gorusme" className="btn-primary px-10 py-4 text-lg">
+            Ücretsiz Ön Görüşme →
+          </Link>
+          <div className="flex gap-12 mt-16 flex-wrap justify-center">
             {stats.map(s => (
               <div key={s.lbl}>
                 <div className="font-bold text-4xl tracking-tight text-gray-900">{s.num}</div>

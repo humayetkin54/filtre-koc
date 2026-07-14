@@ -73,7 +73,7 @@ export const categories = [
     title: "YKS Koçluğu",
     core: [
       { icon: "🎥", text: "Haftada 1 online görüşme" },
-      { icon: "💬", text: "Günlük iletişim — sınırsız WhatsApp desteği" },
+      { icon: "whatsapp", text: "Günlük iletişim — sınırsız WhatsApp desteği" },
       { icon: "📨", text: "Koçunla mesajlaşabilme" },
       { icon: "📅", text: "Sana özel haftalık program" },
       { icon: "🎓", text: "Psikolojik Danışman veya Derece Koçu" },
@@ -89,7 +89,7 @@ export const categories = [
     core: [
       { icon: "🧠", text: "Psikolojik Danışman ile süreç takibi" },
       { icon: "🎥", text: "Her hafta online görüşme" },
-      { icon: "💬", text: "Günlük iletişim — sınırsız WhatsApp desteği" },
+      { icon: "whatsapp", text: "Günlük iletişim — sınırsız WhatsApp desteği" },
       { icon: "📅", text: "Sana özel günlük/haftalık program" },
       { icon: "🗓️", text: "İki haftada bir veli görüşmesi" },
       { icon: "📸", text: "Deneme AI Analiz (kitapçık fotoğrafından)" },
@@ -104,7 +104,7 @@ export const categories = [
     core: [
       { icon: "🧠", text: "Psikolojik Danışman tarafından süreç takibi" },
       { icon: "🎥", text: "Haftada 1 online görüşme" },
-      { icon: "💬", text: "Günlük iletişim — sınırsız WhatsApp desteği" },
+      { icon: "whatsapp", text: "Günlük iletişim — sınırsız WhatsApp desteği" },
       { icon: "📨", text: "Koçunla mesajlaşabilme" },
       { icon: "📅", text: "Sana özel haftalık program" },
       { icon: "📚", text: "Seviyeye uygun kaynak önerileri" },
