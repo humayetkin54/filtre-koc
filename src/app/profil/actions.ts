@@ -110,5 +110,22 @@ export async function updateProfile(formData: FormData) {
     redirect(`/profil?error=${encodeURIComponent(error.message)}`);
   }
 
+  // İsim değiştiyse koç kartına da yansıt (coaches.name başvuru anının kopyası kalmasın)
+  if (name) {
+    const admin = createAdminClient();
+    const initials = name
+      .trim()
+      .split(/\s+/)
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+    await admin
+      .from("coaches")
+      .update({ name: name.trim(), avatar_initials: initials })
+      .eq("user_id", user.id);
+    revalidatePath("/koclar");
+  }
+
   redirect("/profil?success=1");
 }
