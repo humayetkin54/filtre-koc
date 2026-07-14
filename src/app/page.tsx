@@ -77,7 +77,7 @@ export default function HomePage() {
         style={{ background: 'linear-gradient(135deg, #eef3f5 0%, #e3eef0 35%, #cfe9e6 70%, #b8e0db 100%)' }}>
         {/* Sağ üst: Hızlı Okuma */}
         <Link
-          href="/ogrenci-paneli/hizli-okuma"
+          href="/hizli-okuma"
           className="absolute right-5 top-5 rounded-xl bg-[#123A57] px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-[#0d2c42] sm:right-10 sm:top-8"
         >
           👁️ Hızlı Okuma
