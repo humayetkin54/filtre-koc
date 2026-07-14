@@ -41,14 +41,32 @@ const yolHaritasi = [
   },
 ]
 
-const garantiler = [
-  { icon: '🛡️', title: '7 gün koşulsuz iade', desc: 'İlk 7 gün içinde memnun kalmazsan, soru sormadan tam iade. Uzun paketlerde iptalde kullanılmayan aylar iade edilir.' },
-  { icon: '👥', title: 'Max 8 öğrenci / koç', desc: 'Her koça en fazla 8 öğrenci — tam ilgi garantisi.' },
-  { icon: '🔄', title: 'Koç değiştirme hakkı', desc: 'Uyum sağlayamazsan dilediğinde ücretsiz koç değiştirebilirsin.' },
-  { icon: '⭐', title: 'Aylık performans puanı', desc: 'Düşük puan alan koç platformdan çıkarılır.' },
-  { icon: '📊', title: 'Veli takip paneli', desc: 'Aileler haftalık çalışma verisini ve gelişim raporunu görür.' },
-  { icon: '🎓', title: 'Doğrulanmış koçlar', desc: 'Tüm koçlar diploma ve sınav sonuçlarıyla doğrulanıyor.' },
+// "Neden Rekor Zeka?" kayan özellik sütunları
+const kayanA = [
+  { icon: '🤖', text: '7/24 AI Soru Çözümü' },
+  { icon: '⚡', text: '3x Hızlı Okuma' },
+  { icon: '🎯', text: 'YKS, LGS, KPSS Odaklı' },
+  { icon: '🧑‍🏫', text: 'Kişiye Özel Koç' },
+  { icon: '📊', text: 'Detaylı Deneme Analizi' },
+  { icon: '👨‍👩‍👧', text: 'Veli Takip Sistemi' },
 ]
+const kayanB = [
+  { icon: '💬', text: 'Sınırsız WhatsApp Desteği' },
+  { icon: '📖', text: 'Paragraf Taktikleri' },
+  { icon: '🧠', text: 'PDR Desteği' },
+  { icon: '📱', text: 'Mobil Uyumlu' },
+  { icon: '📸', text: 'Kitapçıktan AI Analiz' },
+  { icon: '🎥', text: 'Online Görüşme' },
+]
+
+function KayanKart({ icon, text }: { icon: string; text: string }) {
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-5 shadow-sm">
+      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-50 text-lg">{icon}</span>
+      <span className="text-sm font-bold text-gray-800">{text}</span>
+    </div>
+  )
+}
 
 export default function HomePage() {
   return (
@@ -182,6 +200,56 @@ export default function HomePage() {
                 </Link>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* NEDEN REKOR ZEKA */}
+      <section className="py-24 px-[5%] bg-gray-50 overflow-hidden">
+        <div className="max-w-6xl mx-auto grid gap-14 lg:grid-cols-2 lg:items-center">
+          {/* Sol: kayan özellik sütunları */}
+          <div className="relative grid h-[480px] grid-cols-2 gap-4 overflow-hidden">
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-20 bg-gradient-to-b from-gray-50 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-gray-50 to-transparent" />
+            <div className="animate-scroll-up flex flex-col gap-4">
+              {[...kayanA, ...kayanA].map((f, i) => (
+                <KayanKart key={`a-${i}`} icon={f.icon} text={f.text} />
+              ))}
+            </div>
+            <div className="animate-scroll-down flex flex-col gap-4">
+              {[...kayanB, ...kayanB].map((f, i) => (
+                <KayanKart key={`b-${i}`} icon={f.icon} text={f.text} />
+              ))}
+            </div>
+          </div>
+
+          {/* Sağ: metin + mini kartlar */}
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase text-[#0E8FA3] mb-3">🚀 Neden Rekor Zeka?</p>
+            <h2 className="font-bold text-4xl tracking-tight text-gray-900 mb-5 leading-tight">
+              Rekor Zeka&apos;yı Seçmek<br />İçin Güçlü Nedenler
+            </h2>
+            <p className="text-gray-500 leading-relaxed mb-8">
+              Rekor Zeka, klasik eğitim anlayışını geride bırakıp <strong className="text-gray-800">hızlı okumayı</strong>,{' '}
+              <strong className="text-gray-800">sınav koçluğunu</strong> ve{' '}
+              <strong className="text-gray-800">yapay zekayı</strong> tek bir platformda eriterek sunar.
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2 mb-10">
+              {[
+                { icon: '📈', title: 'Veriye Dayalı Gelişim' },
+                { icon: '🧭', title: 'Kişiselleştirilmiş Takip' },
+                { icon: '💳', title: 'Uygun ve Erişilebilir' },
+                { icon: '⚡', title: 'Hem Hızlı Okuma Hem Koçluk' },
+              ].map(k => (
+                <div key={k.title} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-5 py-5 shadow-sm">
+                  <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-[#eef9f9] text-lg">{k.icon}</span>
+                  <span className="text-sm font-bold text-gray-800">{k.title}</span>
+                </div>
+              ))}
+            </div>
+            <Link href="/koclar" className="btn-primary inline-block px-8 py-4 text-base">
+              Koçları Keşfet →
+            </Link>
           </div>
         </div>
       </section>
@@ -334,42 +402,6 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* KALİTE GÜVENCE */}
-      <section className="py-24 px-[5%]" style={{ background: 'linear-gradient(135deg, #0e0e14 0%, #1a1040 100%)' }}>
-        <div className="max-w-6xl mx-auto">
-          <p className="text-xs font-semibold tracking-widest uppercase text-purple-400 mb-3">Seçkin Bir Gelecek Tasarımı</p>
-          <h2 className="font-bold text-4xl tracking-tight text-white mb-4">Sıradan bir çalışma değil,<br />seçkin bir gelecek tasarımı</h2>
-          <p className="text-gray-400 max-w-2xl mb-12">Rekor Zeka&apos;da her öğrenci, kendine özgü bir yol haritasıyla ilerler. Akademik başarıyı psikolojik denge ve veriye dayalı takiple harmanlıyoruz — çünkü gerçek dönüşüm, sistemli bir yaklaşımla mümkündür.</p>
-
-          {/* Değer kartları */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
-            {[
-              { icon: '👔', title: 'Terzi Usulü Mentorluk', desc: 'Her öğrenci tektir, programı da öyle olmalıdır.' },
-              { icon: '🧠', title: 'Akademik & Psikolojik Denge', desc: 'Sadece netleri değil, kaygıyı da yönetiyoruz.' },
-              { icon: '👑', title: 'Ayrıcalıklı Kulüp', desc: 'Burası sadece bir kurs değil, başarıya odaklanmış bir topluluk.' },
-              { icon: '📊', title: 'Veriye Dayalı Takip', desc: 'Anlık analizler, gerçek zamanlı gelişim grafikleri.' },
-            ].map(v => (
-              <div key={v.title} className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                <div className="text-3xl mb-4">{v.icon}</div>
-                <h4 className="font-semibold text-white mb-2">{v.title}</h4>
-                <p className="text-sm text-gray-400 leading-relaxed">{v.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Kalite güvencesi kartları */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {garantiler.map(g => (
-              <div key={g.title} className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                <div className="text-3xl mb-4">{g.icon}</div>
-                <h4 className="font-semibold text-white mb-2">{g.title}</h4>
-                <p className="text-sm text-gray-400 leading-relaxed">{g.desc}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>

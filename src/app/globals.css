@@ -89,3 +89,19 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+
+/* Dikey kayan özellik sütunları (ana sayfa "Neden Rekor Zeka?") */
+@keyframes marquee-up {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+@keyframes marquee-down {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0); }
+}
+.animate-scroll-up {
+  animation: marquee-up 26s linear infinite;
+}
+.animate-scroll-down {
+  animation: marquee-down 26s linear infinite;
+}
