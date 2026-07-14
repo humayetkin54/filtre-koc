@@ -4,7 +4,6 @@ import { IntroPopup } from './intro-popup'
 const stats = [
   { num: '%100', lbl: 'PDR / Psikoloji Koordinasyonu' },
   { num: '7/24', lbl: 'Yapay Zeka Destekli Asistan' },
-  { num: '3x', lbl: 'Okuma Hızı Artış Hedefi' },
   { num: '7', lbl: 'Gün Koşulsuz İade Garantisi' },
 ]
 
@@ -87,9 +86,12 @@ export default function HomePage() {
             <span className="w-2 h-2 bg-[#0E8FA3] rounded-full animate-pulse" />
             YENİ NESİL · PDR DESTEKLİ · SEÇKİN AKADEMİK KOÇLUK PLATFORMU
           </div>
-          <h1 className="font-bold text-3xl sm:text-4xl md:text-5xl tracking-tight text-[#1e293b] mb-6 leading-tight">
-            Doğru Koç, Doğru Zamanlama, Doğru Psikolojiyle{' '}
-            <span className="text-[#0E8FA3]">Rekor&apos;u</span> Sen Kır!
+          <h1 className="font-bold text-[26px] sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-[#1e293b] mb-6 leading-tight">
+            Doğru Koç, Doğru Zamanlama,
+            <br className="hidden sm:block" />{' '}
+            <span className="sm:whitespace-nowrap">
+              Doğru Psikolojiyle <span className="text-[#0E8FA3]">Rekor&apos;u</span> Sen Kır!
+            </span>
           </h1>
           <p className="text-lg text-gray-500 max-w-2xl mb-10 leading-relaxed">
             Doğrulanmış PDR uzmanları, derece yapmış koçlar, hızlı okuma ve AI destekli yeni nesil
