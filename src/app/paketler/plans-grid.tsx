@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { plans, categories } from "./data";
+import { SALES_ACTIVE } from "@/lib/launch";
 
 // Yeşil mesaj balonu (WhatsApp desteği satırı için)
 function WhatsAppIcon() {
@@ -122,14 +123,14 @@ export function PlansGrid() {
             </ul>
 
             <a
-              href={checkoutUrl(p.name, p.price, p.period)}
+              href={SALES_ACTIVE ? checkoutUrl(p.name, p.price, p.period) : "/on-gorusme"}
               className={
                 p.popular
                   ? "mt-6 block rounded-xl bg-white px-6 py-3.5 text-center text-sm font-bold text-[#123A57] transition-all hover:-translate-y-0.5 hover:shadow-lg"
                   : "btn-primary mt-6 block w-full py-3.5 text-center text-sm font-bold hover:-translate-y-0.5"
               }
             >
-              Hemen Satın Al →
+              {SALES_ACTIVE ? "Hemen Satın Al →" : "Ücretsiz Ön Görüşme Planla →"}
             </a>
           </div>
         ))}

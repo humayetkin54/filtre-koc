@@ -76,6 +76,11 @@ export default async function PaketlerPage() {
           <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white">
             💳 Tüm paketlerde 12 aya varan taksit imkânı
           </span>
+          <div className="mt-4">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#E2600F] px-4 py-2 text-sm font-bold text-white">
+              🎉 Eylül dönemi erken kayıt kontenjanı açıldı — yerini ücretsiz ön görüşmeyle ayırt
+            </span>
+          </div>
         </div>
       </section>
 

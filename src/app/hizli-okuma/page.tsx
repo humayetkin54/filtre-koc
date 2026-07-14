@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { hizliOkumaAccess } from "@/lib/hizli-okuma-access";
+import { SALES_ACTIVE } from "@/lib/launch";
 
 export const metadata = { title: "Hızlı Okuma Paketleri | Rekor Zeka" };
 
@@ -126,13 +127,13 @@ export default async function HizliOkumaSatisPage() {
             </Link>
           ) : (
             <Link
-              href={buyHref}
+              href={SALES_ACTIVE ? buyHref : "/on-gorusme"}
               className="mt-8 block rounded-xl bg-[#123A57] py-4 text-center text-base font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#0d2c42] hover:shadow-lg"
             >
-              Hemen Satın Al
+              {SALES_ACTIVE ? "Hemen Satın Al" : "Ücretsiz Ön Görüşme Planla"}
             </Link>
           )}
-          {!user && (
+          {!user && SALES_ACTIVE && (
             <p className="mt-3 text-center text-xs text-gray-400">
               Satın almak için önce <strong className="text-[#0E8FA3]">ücretsiz üye</strong> olman gerekiyor —
               butona tıklayınca kayıt sayfasına yönlendirileceksin.
