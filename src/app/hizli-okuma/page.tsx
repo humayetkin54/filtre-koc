@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { hizliOkumaAccess } from "@/lib/hizli-okuma-access";
 
 export const metadata = { title: "Hızlı Okuma Paketleri | Rekor Zeka" };
 
@@ -46,6 +47,18 @@ export default async function HizliOkumaSatisPage() {
   const buyHref = user
     ? `/satin-al?category=${encodeURIComponent("Hızlı Okuma")}&plan=${encodeURIComponent("30 Gün")}&price=2499&period=${encodeURIComponent("/30 gün")}`
     : "/kayit";
+
+  // Zaten erişimi var mı? (paket dahili veya ayrı satın alım)
+  let hasAccess = false;
+  if (user) {
+    const admin = createAdminClient();
+    const { data: purchases } = await admin
+      .from("purchases")
+      .select("plan, category, created_at")
+      .eq("user_id", user.id)
+      .eq("status", "active");
+    hasAccess = hizliOkumaAccess(purchases ?? []).allowed;
+  }
 
   return (
     <main
@@ -103,13 +116,22 @@ export default async function HizliOkumaSatisPage() {
             ))}
           </div>
 
-          {/* Satın al */}
-          <Link
-            href={buyHref}
-            className="mt-8 block rounded-xl bg-[#123A57] py-4 text-center text-base font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#0d2c42] hover:shadow-lg"
-          >
-            Hemen Satın Al
-          </Link>
+          {/* Satın al / panelde aç */}
+          {hasAccess ? (
+            <Link
+              href="/ogrenci-paneli/hizli-okuma"
+              className="mt-8 block rounded-xl bg-[#0E8FA3] py-4 text-center text-base font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#0c7d8f] hover:shadow-lg"
+            >
+              ✅ Erişimin Var — Panelde Aç
+            </Link>
+          ) : (
+            <Link
+              href={buyHref}
+              className="mt-8 block rounded-xl bg-[#123A57] py-4 text-center text-base font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#0d2c42] hover:shadow-lg"
+            >
+              Hemen Satın Al
+            </Link>
+          )}
           {!user && (
             <p className="mt-3 text-center text-xs text-gray-400">
               Satın almak için önce <strong className="text-[#0E8FA3]">ücretsiz üye</strong> olman gerekiyor —
