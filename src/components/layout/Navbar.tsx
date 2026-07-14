@@ -227,7 +227,7 @@ export default function Navbar({
                 <span className="px-3 py-2 text-sm text-zinc-500">
                   {user.user_metadata?.full_name ?? user.email}
                 </span>
-                {!isAdmin && !isCoach && (
+                {!isAdmin && (
                   <Link
                     href="/profil"
                     onClick={() => setMenuOpen(false)}
