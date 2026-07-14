@@ -18,9 +18,6 @@ export default function KocGirisPage({
             <Link href="/" className="inline-flex items-center justify-center rounded-xl bg-white px-4 py-2">
               <Image src="/logo-navbar.png" alt="Rekor Zeka" width={1316} height={1183} className="h-9 w-auto" />
             </Link>
-            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-purple-500/20 px-3 py-1 text-xs font-semibold text-purple-300">
-              Koç Paneli
-            </div>
             <h1 className="mt-3 text-xl font-semibold text-white">
               Koç girişi
             </h1>
