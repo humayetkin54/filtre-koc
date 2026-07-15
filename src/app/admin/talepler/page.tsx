@@ -31,11 +31,22 @@ export default async function TaleplerPage() {
   const admin = createAdminClient();
   const { data: coaches } = await admin
     .from("coaches")
-    .select("id, name, university, department, types, status, created_at, avatar_initials, avatar_color, avatar_text_color")
+    .select("id, name, university, department, types, status, created_at, avatar_initials, avatar_color, avatar_text_color, rank_type, rank_value, result_doc_path")
     .order("created_at", { ascending: false });
 
   const allCoaches = (coaches ?? []) as Coach[];
   const pendingCoaches = allCoaches.filter(c => c.status === "pending");
+
+  // Sonuç belgeleri gizli bucket'ta — yönetici için 1 saatlik imzalı link üret
+  const docLinks: Record<string, string> = {};
+  for (const c of pendingCoaches as (Coach & { result_doc_path?: string | null })[]) {
+    if (c.result_doc_path) {
+      const { data: signed } = await admin.storage
+        .from("belgeler")
+        .createSignedUrl(c.result_doc_path, 3600);
+      if (signed?.signedUrl) docLinks[c.id] = signed.signedUrl;
+    }
+  }
   const approvedCoaches = allCoaches.filter(c => c.status === "approved");
 
   return (
@@ -83,6 +94,22 @@ export default async function TaleplerPage() {
                         ))}
                       </div>
                     )}
+                    <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                      {(c as Coach & { rank_type?: string | null; rank_value?: number | null }).rank_type &&
+                        (c as Coach & { rank_value?: number | null }).rank_value ? (
+                        <span className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">
+                          🏆 {(c as Coach & { rank_type?: string }).rank_type} - {((c as Coach & { rank_value?: number }).rank_value ?? 0).toLocaleString("tr-TR")}
+                        </span>
+                      ) : null}
+                      {docLinks[c.id] ? (
+                        <a href={docLinks[c.id]} target="_blank" rel="noopener noreferrer"
+                          className="rounded-full bg-[#eef9f9] px-2.5 py-0.5 text-[11px] font-bold text-[#0E8FA3] hover:underline">
+                          📄 Sonuç belgesini görüntüle
+                        </a>
+                      ) : (
+                        <span className="text-[11px] text-gray-400">Belge yüklenmemiş</span>
+                      )}
+                    </div>
                   </div>
                   <p className="text-xs text-gray-400 shrink-0">{fmt(c.created_at)}</p>
                   <div className="flex gap-2 shrink-0">

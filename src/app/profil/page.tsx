@@ -4,6 +4,7 @@ import { updateProfile } from "./actions";
 import { VeliTakipToggle } from "./veli-takip-toggle";
 import { ProfilePhotoCard } from "./profile-photo-card";
 import { CoachBioCard } from "./coach-bio-card";
+import { CoachRankCard } from "./coach-rank-card";
 
 export default async function ProfilPage({
   searchParams,
@@ -32,10 +33,10 @@ export default async function ProfilPage({
     .eq("student_id", user.id)
     .order("created_at", { ascending: true });
 
-  // Koç hesabıysa biyografi kartı gösterilir
+  // Koç hesabıysa biyografi + derece kartları gösterilir
   const { data: coachRow } = await admin
     .from("coaches")
-    .select("bio")
+    .select("bio, rank_type, rank_value, result_doc_path")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -86,6 +87,15 @@ export default async function ProfilPage({
 
         {/* Koç biyografisi */}
         {coachRow && <CoachBioCard initialBio={coachRow.bio} />}
+
+        {/* Koç derecesi + sonuç belgesi */}
+        {coachRow && (
+          <CoachRankCard
+            initialType={coachRow.rank_type ?? null}
+            initialValue={coachRow.rank_value ?? null}
+            hasDoc={!!coachRow.result_doc_path}
+          />
+        )}
 
         {/* Bilgileri güncelle */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6">

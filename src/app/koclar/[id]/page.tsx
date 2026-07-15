@@ -114,6 +114,13 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
                 {c.department && <p className="text-sm text-gray-500">{c.department}</p>}
               </div>
 
+              {/* Türkiye sıralaması rozeti */}
+              {c.rank_type && c.rank_value ? (
+                <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-4 py-1.5 text-sm font-bold text-amber-700">
+                  🏆 {c.rank_type} - {c.rank_value.toLocaleString("tr-TR")} <span className="font-medium text-amber-600/80">Türkiye Sıralaması</span>
+                </span>
+              ) : null}
+
               {/* Yıldız */}
               <div className="mt-3 flex items-center justify-center sm:justify-start gap-1.5">
                 {c.rating_count === 0 ? (

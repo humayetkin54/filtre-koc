@@ -11,6 +11,8 @@ export interface Coach {
   avatar_color: string;
   avatar_text_color: string;
   avatar_url?: string | null;
+  rank_type?: string | null;
+  rank_value?: number | null;
   rating: number;
   rating_count: number;
   current_students: number;

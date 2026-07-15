@@ -88,6 +88,13 @@ function CoachCard({
           {coach.university}{coach.department ? ` - ${coach.department}` : ""}
         </p>
 
+        {/* Türkiye sıralaması rozeti */}
+        {coach.rank_type && coach.rank_value ? (
+          <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3.5 py-1 text-sm font-bold text-amber-700">
+            🏆 {coach.rank_type} - {coach.rank_value.toLocaleString("tr-TR")}
+          </span>
+        ) : null}
+
         {/* Sınav türleri */}
         <div className="mt-3 flex flex-wrap justify-center gap-1.5">
           {coach.types.map((type) => (
