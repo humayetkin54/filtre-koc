@@ -4,13 +4,13 @@ export const metadata = { title: "Hakkımızda" }
 
 const values = [
   {
-    title: "Doğrulanmış uzman kadro",
-    desc: "Psikolojik danışmanlar ve koçlarımız, ÖSYM kontrol kodlu belge doğrulama sürecinden geçer. Doğrulanamayan iddia vitrine çıkmaz.",
+    title: "Doğrulanmış psikolojik danışmanlar",
+    desc: "PDR uzmanlarımız sınav kaygısı, motivasyon ve süreç yönetiminde öğrencinin yanında — diplomaları ve uzmanlıkları doğrulanır.",
     icon: "🛡️",
   },
   {
     title: "Süreci bizzat başarmış koçlar",
-    desc: "Koçlarımız hazırlandığın sınavı bizzat deneyimlemiş, derecesini belgelemiş mentorlar — teoriden değil, yaşanmışlıktan konuşurlar.",
+    desc: "Koçlarımız hazırlandığın sınavı bizzat deneyimlemiş, derecesini ÖSYM kontrol kodlu belgeyle kanıtlamış mentorlar — doğrulanamayan iddia vitrine çıkmaz.",
     icon: "🏆",
   },
   {
@@ -66,24 +66,44 @@ export default async function HakkimizdaPage() {
     .eq("is_active", true)
   const coachCount = count ?? 0
 
+  // Gerçek öğrenci yorumları — yorum yoksa bölüm hiç görünmez (sahte yorum YOK)
+  const { data: reviews } = await admin
+    .from("coach_reviews")
+    .select("student_name, rating, comment, created_at")
+    .not("comment", "is", null)
+    .neq("comment", "")
+    .order("created_at", { ascending: false })
+    .limit(3)
+  const realReviews = reviews ?? []
+
   return (
     <div className="min-h-full bg-white">
       {/* Hero */}
       <section className="border-b border-gray-100 bg-gradient-to-br from-slate-900 via-[#1a1f5c] to-[#123A57] px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-blue-300">
-            Neden Rekor Zeka?
+            Hakkımızda
           </p>
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            Hakkımızda
+            Yeni Nesil Sınav Koçluğu
           </h1>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-white/80">
             Doğrulanmış psikolojik danışmanlar ve dereceli koçlarla; yapay zekâ destekli
             kişisel takibi ve hızlı okuma araçlarını tek platformda bir araya getiriyoruz.
           </p>
-          <p className="mt-5 text-sm font-semibold tracking-wide text-[#5fd0e0]">
-            Doğrulanmış koçlar · Yapay zekâ destekli takip · Şeffaf süreç
-          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            {[
+              "✔ Belgeli Koçlar",
+              "🧠 Psikolojik Danışman",
+              "🤖 Yapay Zekâ",
+              "⚡ Hızlı Okuma",
+              "⭐ Gerçek Değerlendirmeler",
+            ].map((b) => (
+              <span key={b} className="rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white">
+                {b}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -110,19 +130,22 @@ export default async function HakkimizdaPage() {
                 öğrenci değerlendirmeleriyle ölçülür.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-gray-400">
-                Yeni bir platformuz ve bununla gurur duyuyoruz — şişirilmiş rakamlar yerine
-                doğrulanabilir gerçekler sunuyoruz. 2026-2027 dönemi öğrencilerimizi sınırlı
-                kontenjanla alıyoruz.
+                Kadromuzu kalite standartlarımızdan ödün vermeden, kontrollü şekilde büyütüyoruz —
+                şişirilmiş rakamlar yerine doğrulanabilir gerçekler sunuyoruz. 2026-2027 dönemi
+                öğrencilerimizi sınırlı kontenjanla alıyoruz.
               </p>
             </div>
             <div className="rounded-2xl bg-gradient-to-br from-[#123A57]/10 to-[#E2600F]/10 p-10 text-center">
+              <div className="text-2xl">👨‍🏫</div>
               <div className="text-5xl font-bold text-[#123A57]">{coachCount}</div>
               <div className="mt-1 text-sm font-semibold text-gray-600">Onaylı koç &amp; uzman</div>
               <div className="text-xs text-gray-400">Kadromuz büyümeye devam ediyor</div>
-              <div className="mt-6 text-5xl font-bold text-[#123A57]">%100</div>
+              <div className="mt-6 text-2xl">🛡️</div>
+              <div className="text-5xl font-bold text-[#123A57]">%100</div>
               <div className="mt-1 text-sm font-semibold text-gray-600">Belge kontrolü</div>
               <div className="text-xs text-gray-400">Her koç doğrulama sürecinden geçer</div>
-              <div className="mt-6 text-5xl font-bold text-[#123A57]">7/24</div>
+              <div className="mt-6 text-2xl">🤖</div>
+              <div className="text-5xl font-bold text-[#123A57]">7/24</div>
               <div className="mt-1 text-sm font-semibold text-gray-600">Yapay zekâ asistanı</div>
               <div className="text-xs text-gray-400">Her an erişilebilir çalışma desteği</div>
             </div>
@@ -148,6 +171,60 @@ export default async function HakkimizdaPage() {
                 <div className="mb-3 text-3xl">{v.icon}</div>
                 <h3 className="font-semibold text-gray-900">{v.title}</h3>
                 <p className="mt-2 text-sm text-gray-500">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Gerçek öğrenci yorumları — sadece gerçek veri varsa */}
+      {realReviews.length > 0 && (
+        <section className="border-t border-gray-100 px-4 py-20 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#123A57]">
+              Sosyal Kanıt
+            </p>
+            <h2 className="mb-10 text-3xl font-bold tracking-tight text-gray-900">
+              Öğrencilerimiz ne diyor?
+            </h2>
+            <div className="grid gap-5 sm:grid-cols-3">
+              {realReviews.map((r, i) => (
+                <div key={i} className="rounded-2xl border border-gray-200 bg-white p-6">
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: 5 }).map((_, j) => (
+                      <span key={j} className={j < r.rating ? "text-amber-400" : "text-gray-200"}>★</span>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-gray-600">&quot;{r.comment}&quot;</p>
+                  <p className="mt-3 text-xs font-semibold text-gray-400">— {r.student_name ?? "Öğrenci"}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Kimler için? */}
+      <section className="border-t border-gray-100 bg-gray-50 px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#123A57]">
+            Kimler İçin?
+          </p>
+          <h2 className="mb-10 text-3xl font-bold tracking-tight text-gray-900">
+            Rekor Zeka sana göre mi?
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              "YKS'ye ilk kez hazırlananlar",
+              "Mezun öğrenciler",
+              "Derece hedefleyenler",
+              "Programını tek başına sürdüremeyenler",
+              "Sınav kaygısı yaşayanlar",
+              "Çocuğuna koç desteği isteyen aileler",
+            ].map((k) => (
+              <div key={k} className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-5 py-4">
+                <span className="font-bold text-emerald-500">✔</span>
+                <span className="text-sm font-semibold text-gray-700">{k}</span>
               </div>
             ))}
           </div>
