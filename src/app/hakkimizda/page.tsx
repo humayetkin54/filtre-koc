@@ -4,14 +4,24 @@ export const metadata = { title: "Hakkımızda" }
 
 const values = [
   {
-    title: "Belgeyle doğrulama",
-    desc: "Her koç, ÖSYM kontrol kodlu sonuç belgesi ve diplomasıyla doğrulanır. Doğrulanamayan iddia vitrine çıkmaz.",
+    title: "Doğrulanmış uzman kadro",
+    desc: "Psikolojik danışmanlar ve koçlarımız, ÖSYM kontrol kodlu belge doğrulama sürecinden geçer. Doğrulanamayan iddia vitrine çıkmaz.",
     icon: "🛡️",
   },
   {
-    title: "Sınırlı öğrenci",
-    desc: "Koç başına sınırlı öğrenci. Daha fazlası ilgisizliğe yol açar; biz bunu sistem olarak engelliyoruz.",
-    icon: "👥",
+    title: "Süreci bizzat başarmış koçlar",
+    desc: "Koçlarımız hazırlandığın sınavı bizzat deneyimlemiş, derecesini belgelemiş mentorlar — teoriden değil, yaşanmışlıktan konuşurlar.",
+    icon: "🏆",
+  },
+  {
+    title: "Yapay zekâ destekli takip",
+    desc: "Deneme kitapçığından eksik konu analizi, 7/24 soru çözüm asistanı ve kişiselleştirilmiş çalışma önerileri.",
+    icon: "🤖",
+  },
+  {
+    title: "Hızlı okuma & bilişsel gelişim",
+    desc: "Takistoskop, blok okuma ve göz egzersizleriyle okuma hızını geliştir — paragrafta kazanılan her dakika fazladan çözülen soru demek.",
+    icon: "👁️",
   },
   {
     title: "Şeffaflık",
@@ -19,9 +29,9 @@ const values = [
     icon: "📊",
   },
   {
-    title: "Deneyimden geliyor",
-    desc: "Rekor Zeka kurucuları bizzat koçluk aldı, sistemin eksiklerini yaşayarak keşfetti — bu platform o eksiklere cevaptır.",
-    icon: "🎓",
+    title: "Sınırlı öğrenci",
+    desc: "Koç başına sınırlı öğrenci. Daha fazlası ilgisizliğe yol açar; biz bunu sistem olarak engelliyoruz.",
+    icon: "👥",
   },
 ]
 
@@ -62,14 +72,17 @@ export default async function HakkimizdaPage() {
       <section className="border-b border-gray-100 bg-gradient-to-br from-slate-900 via-[#1a1f5c] to-[#123A57] px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-blue-300">
-            Biz kimiz
+            Neden Rekor Zeka?
           </p>
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Hakkımızda
           </h1>
-          <p className="mt-4 max-w-xl mx-auto text-lg text-white/70">
-            Rekor Zeka, kalitesiz koçluk deneyimlerini bizzat yaşamış öğrenciler tarafından kuruldu.
-            Çözümümüz: belgeyle doğrulanan koçlar ve yapay zeka destekli sistematik takip.
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-white/80">
+            Doğrulanmış psikolojik danışmanlar ve dereceli koçlarla; yapay zekâ destekli
+            kişisel takibi ve hızlı okuma araçlarını tek platformda bir araya getiriyoruz.
+          </p>
+          <p className="mt-5 text-sm font-semibold tracking-wide text-[#5fd0e0]">
+            Doğrulanmış koçlar · Yapay zekâ destekli takip · Şeffaf süreç
           </p>
         </div>
       </section>
@@ -86,24 +99,32 @@ export default async function HakkimizdaPage() {
                 Her öğrencinin hak ettiği kalitede koçluğa erişimi var
               </h2>
               <p className="mt-4 leading-relaxed text-gray-500">
-                Türkiye&apos;de koçluk pazarı büyüyor ama kalite güvencesi yok. Öğrenciler
-                binlerce lira ödeyip derecesi bile doğrulanmamış koçlarla karşılaşabiliyor.
-                Biz bunu sistem düzeyinde çözüyoruz: ÖSYM belgesiyle doğrulanan koçlar,
-                sınırlı öğrenci sayısı ve gerçek öğrenci değerlendirmeleri.
+                Sınava hazırlanmayı yalnızca çalışmak değil, <strong className="text-gray-700">doğru
+                yönlendirilmek</strong> olarak görüyoruz. Öğrencilerimiz sadece program almaz; hedef
+                analizi, düzenli takip, motivasyon desteği, yapay zekâ destekli çalışma önerileri
+                ve hızlı okuma araçlarıyla bütüncül bir hazırlık deneyimi yaşar.
               </p>
               <p className="mt-3 leading-relaxed text-gray-500">
-                <strong className="text-gray-700">Yeni bir platformuz ve bununla gurur duyuyoruz:</strong>{" "}
-                şişirilmiş rakamlar yerine doğrulanabilir gerçekler sunuyoruz. 2026-2027 dönemi
-                öğrencilerimizi sınırlı kontenjanla alıyoruz.
+                Türkiye&apos;de sınav hazırlık pazarında bilgi çok, güven sınırlı. Biz standardı
+                şeffaf doğrulamayla kuruyoruz: her koç ÖSYM belgesiyle teyit edilir, gerçek
+                öğrenci değerlendirmeleriyle ölçülür.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-gray-400">
+                Yeni bir platformuz ve bununla gurur duyuyoruz — şişirilmiş rakamlar yerine
+                doğrulanabilir gerçekler sunuyoruz. 2026-2027 dönemi öğrencilerimizi sınırlı
+                kontenjanla alıyoruz.
               </p>
             </div>
             <div className="rounded-2xl bg-gradient-to-br from-[#123A57]/10 to-[#E2600F]/10 p-10 text-center">
               <div className="text-5xl font-bold text-[#123A57]">{coachCount}</div>
-              <div className="mt-1 text-sm text-gray-500">Onaylı koç — ve büyüyor</div>
+              <div className="mt-1 text-sm font-semibold text-gray-600">Onaylı koç &amp; uzman</div>
+              <div className="text-xs text-gray-400">Kadromuz büyümeye devam ediyor</div>
               <div className="mt-6 text-5xl font-bold text-[#123A57]">%100</div>
-              <div className="mt-1 text-sm text-gray-500">ÖSYM belge kontrolü politikası</div>
+              <div className="mt-1 text-sm font-semibold text-gray-600">Belge kontrolü</div>
+              <div className="text-xs text-gray-400">Her koç doğrulama sürecinden geçer</div>
               <div className="mt-6 text-5xl font-bold text-[#123A57]">7/24</div>
-              <div className="mt-1 text-sm text-gray-500">Yapay zeka asistanı</div>
+              <div className="mt-1 text-sm font-semibold text-gray-600">Yapay zekâ asistanı</div>
+              <div className="text-xs text-gray-400">Her an erişilebilir çalışma desteği</div>
             </div>
           </div>
         </div>
@@ -168,12 +189,20 @@ export default async function HakkimizdaPage() {
               30 dakikalık ücretsiz ön görüşmede hedefini dinliyor, sana en uygun koçu öneriyoruz.
               Taahhüt yok.
             </p>
-            <a
-              href="/on-gorusme"
-              className="mt-5 inline-block rounded-xl bg-white px-8 py-3 text-sm font-bold text-[#123A57] transition-all hover:-translate-y-0.5 hover:shadow-lg"
-            >
-              Ücretsiz Ön Görüşme Planla →
-            </a>
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
+              <a
+                href="/on-gorusme"
+                className="rounded-xl bg-white px-8 py-3 text-sm font-bold text-[#123A57] transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                Ücretsiz Ön Görüşme Planla →
+              </a>
+              <a
+                href="/koclar"
+                className="rounded-xl border-2 border-white/60 px-8 py-3 text-sm font-bold text-white transition hover:bg-white/10"
+              >
+                Koçlarımızı İncele
+              </a>
+            </div>
           </div>
         </div>
       </section>
