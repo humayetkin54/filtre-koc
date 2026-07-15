@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import KocKayitForm from "./koc-kayit-form";
+import { KOC_FORM_URL } from "@/lib/koc-form";
 import { GoogleButton } from "@/components/auth/google-button";
 
 export default function KocKayitPage({
@@ -55,8 +56,21 @@ async function StatusMessage({
 
   if (params.success) {
     return (
-      <div className="mb-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
-        Başvurunuz alındı! E-postanıza doğrulama bağlantısı gönderdik. Onay sürecini tamamladıktan sonra size dönüş yapacağız.
+      <div className="mb-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-4 text-sm text-emerald-300">
+        <p className="font-semibold">Başvurun alındı! 🎉 Son adım: 2 dakikalık bilgi formunu doldur.</p>
+        <a
+          href={KOC_FORM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 block rounded-xl bg-[#E2600F] px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-[#c2530d]"
+        >
+          📋 Bilgi Formunu Doldur
+        </a>
+        <p className="mt-3 text-xs text-emerald-200/70">
+          Formun bağlantısını e-postana da gönderdik (bilgi@rekorzeka.com) — görünmüyorsa Spam/Gereksiz
+          klasörünü kontrol edip &quot;Spam değil&quot; olarak işaretle. Form + başvurun birlikte
+          değerlendirilecek; onaylandığında sana dönüş yapacağız.
+        </p>
       </div>
     );
   }

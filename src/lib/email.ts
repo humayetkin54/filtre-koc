@@ -85,9 +85,12 @@ async function sendViaBrevo(
       headers: { "api-key": apiKey, "Content-Type": "application/json" },
       body: JSON.stringify({
         sender: { email: senderEmail, name: "Rekor Zeka" },
+        replyTo: { email: senderEmail, name: "Rekor Zeka" },
         to,
         subject,
         htmlContent: html,
+        // Düz metin alternatifi — spam skorunu düşürür
+        textContent: html.replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
       }),
       signal: AbortSignal.timeout(15_000),
     });

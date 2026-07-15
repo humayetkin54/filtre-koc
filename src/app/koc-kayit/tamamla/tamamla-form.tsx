@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { completeCoachApplication } from "@/app/koc-auth/actions";
+import { KOC_FORM_URL } from "@/lib/koc-form";
 
 const inputCls =
   "w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#0E8FA3] focus:ring-2 focus:ring-[#0E8FA3]/30";
@@ -30,8 +31,19 @@ export function TamamlaForm() {
         <div className="text-3xl">🎉</div>
         <p className="mt-2 font-semibold text-emerald-300">Başvurun alındı!</p>
         <p className="mt-1 text-sm text-gray-300">
-          Ekibimiz başvurunu inceleyecek; onaylandığında Google hesabınla giriş yapıp koç paneline
-          ulaşabileceksin.
+          Son adım: <strong>2 dakikalık bilgi formunu</strong> doldur. Ekibimiz form + başvurunu birlikte
+          değerlendirecek; onaylandığında Google hesabınla giriş yapıp koç paneline ulaşabileceksin.
+        </p>
+        <a
+          href={KOC_FORM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 block rounded-xl bg-[#E2600F] px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-[#c2530d]"
+        >
+          📋 Bilgi Formunu Doldur
+        </a>
+        <p className="mt-3 text-xs text-gray-400">
+          Bağlantıyı e-postana da gönderdik — Spam/Gereksiz klasörüne düşmüş olabilir.
         </p>
         <Link href="/" className="mt-4 inline-block rounded-xl bg-white px-6 py-2.5 text-sm font-bold text-[#123A57]">
           Ana Sayfaya Dön
@@ -70,7 +82,7 @@ export function TamamlaForm() {
       <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3">
         <input type="checkbox" required className="mt-1 h-4 w-4 accent-[#E2600F]" />
         <span className="text-sm font-semibold text-red-400">
-          Mailine gelen Google Forms bilgi formunu doldurmayı unutma!
+          Mailine gelen Google Forms bilgi formunu doldurmayı unutma! (Gelmezse Spam/Gereksiz klasörüne bak)
         </span>
       </label>
       {err && <p className="rounded-lg bg-red-500/15 px-3 py-2 text-xs text-red-300">{err}</p>}

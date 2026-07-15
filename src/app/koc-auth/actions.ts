@@ -6,8 +6,7 @@ import { redirect } from "next/navigation";
 import { ADMIN_EMAILS } from "@/lib/admins";
 import { sendEmail } from "@/lib/email";
 
-// Koç adaylarının doldurması gereken Google Forms bilgi formu
-const KOC_FORM_URL = "https://forms.gle/2dujAJAXJMT2wbp3A";
+import { KOC_FORM_URL } from "@/lib/koc-form";
 
 const VALID_TYPES = ["YKS", "LGS", "KPSS/AGS", "DGS", "PDR"];
 
@@ -136,7 +135,7 @@ export async function completeCoachApplication(
   // Bilgi formu e-postası (bilgi@rekorzeka.com üzerinden)
   await sendEmail({
     to: [{ email: user.email!, name }],
-    subject: "Rekor Zeka Koç Başvurun Alındı — Bilgi Formunu Doldur 📋",
+    subject: "Rekor Zeka koç başvurun alındı - bilgi formu",
     html: kocFormEmailHtml(name),
   });
 
@@ -206,7 +205,7 @@ export async function coachSignUp(formData: FormData) {
       // Bilgi formu e-postası (bilgi@rekorzeka.com üzerinden)
       await sendEmail({
         to: [{ email, name }],
-        subject: "Rekor Zeka Koç Başvurun Alındı — Bilgi Formunu Doldur 📋",
+        subject: "Rekor Zeka koç başvurun alındı - bilgi formu",
         html: kocFormEmailHtml(name),
       });
     }

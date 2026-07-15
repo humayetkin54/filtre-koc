@@ -95,7 +95,7 @@ export default function KocKayitForm() {
       <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3">
         <input type="checkbox" required className="mt-1 h-4 w-4 accent-[#E2600F]" />
         <span className="text-sm font-semibold text-red-400">
-          Mailine gelen Google Forms bilgi formunu doldurmayı unutma!
+          Mailine gelen Google Forms bilgi formunu doldurmayı unutma! (Gelmezse Spam/Gereksiz klasörüne bak)
         </span>
       </label>
       <button type="submit" className="w-full rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-700">
