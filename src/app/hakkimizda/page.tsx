@@ -104,6 +104,20 @@ export default async function HakkimizdaPage() {
               </span>
             ))}
           </div>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <a
+              href="/on-gorusme"
+              className="rounded-xl bg-[#E2600F] px-7 py-3 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              Ücretsiz Ön Görüşme →
+            </a>
+            <a
+              href="/koclar"
+              className="rounded-xl border-2 border-white/50 px-7 py-3 text-sm font-bold text-white transition hover:bg-white/10"
+            >
+              Koçları İncele
+            </a>
+          </div>
         </div>
       </section>
 
@@ -119,25 +133,21 @@ export default async function HakkimizdaPage() {
                 Her öğrencinin hak ettiği kalitede koçluğa erişimi var
               </h2>
               <p className="mt-4 leading-relaxed text-gray-500">
-                Sınava hazırlanmayı yalnızca çalışmak değil, <strong className="text-gray-700">doğru
-                yönlendirilmek</strong> olarak görüyoruz. Öğrencilerimiz sadece program almaz; hedef
-                analizi, düzenli takip, motivasyon desteği, yapay zekâ destekli çalışma önerileri
-                ve hızlı okuma araçlarıyla bütüncül bir hazırlık deneyimi yaşar.
+                <strong className="text-gray-700">Sınava hazırlanmayı yalnızca çalışmak değil, doğru
+                yönlendirilmek olarak görüyoruz.</strong> Öğrencilerimiz sadece çalışma programı değil;
+                hedef analizi, düzenli takip, motivasyon desteği, yapay zekâ destekli çalışma
+                önerileri ve hızlı okuma araçlarıyla bütüncül bir hazırlık deneyimi yaşar.
               </p>
               <p className="mt-3 leading-relaxed text-gray-500">
-                Türkiye&apos;de sınav hazırlık pazarında bilgi çok, güven sınırlı. Biz standardı
-                şeffaf doğrulamayla kuruyoruz: her koç ÖSYM belgesiyle teyit edilir, gerçek
-                öğrenci değerlendirmeleriyle ölçülür.
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-gray-400">
-                Kadromuzu kalite standartlarımızdan ödün vermeden, kontrollü şekilde büyütüyoruz —
-                şişirilmiş rakamlar yerine doğrulanabilir gerçekler sunuyoruz. 2026-2027 dönemi
-                öğrencilerimizi sınırlı kontenjanla alıyoruz.
+                Türkiye&apos;de güvenilir YKS ve LGS koçluğu standartlarını yükseltmek için çalışıyoruz.
+                Koçlarımız ve psikolojik danışmanlarımız doğrulama sürecinden geçer, öğrenciler
+                gerçek değerlendirmelerle desteklenir. Kaliteden ödün vermeden, kontrollü şekilde
+                büyümeye devam ediyoruz.
               </p>
             </div>
             <div className="rounded-2xl bg-gradient-to-br from-[#123A57]/10 to-[#E2600F]/10 p-10 text-center">
               <div className="text-2xl">👨‍🏫</div>
-              <div className="text-5xl font-bold text-[#123A57]">{coachCount}</div>
+              <div className="text-5xl font-bold text-[#123A57]">{coachCount}+</div>
               <div className="mt-1 text-sm font-semibold text-gray-600">Onaylı koç &amp; uzman</div>
               <div className="text-xs text-gray-400">Kadromuz büyümeye devam ediyor</div>
               <div className="mt-6 text-2xl">🛡️</div>
@@ -280,6 +290,9 @@ export default async function HakkimizdaPage() {
                 Koçlarımızı İncele
               </a>
             </div>
+            <p className="mt-4 text-xs text-white/60">
+              Kart bilgisi gerekmez · Ücretsiz · Taahhüt yok
+            </p>
           </div>
         </div>
       </section>
