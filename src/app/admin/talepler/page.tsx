@@ -1,6 +1,6 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { updateCoachStatus } from "../actions";
+import { setDocVerified, updateCoachStatus } from "../actions";
 
 import { ADMIN_EMAILS } from "@/lib/admins";
 
@@ -31,7 +31,7 @@ export default async function TaleplerPage() {
   const admin = createAdminClient();
   const { data: coaches } = await admin
     .from("coaches")
-    .select("id, name, university, department, types, status, created_at, avatar_initials, avatar_color, avatar_text_color, rank_type, rank_value, result_doc_path")
+    .select("id, name, university, department, types, status, created_at, avatar_initials, avatar_color, avatar_text_color, rank_type, rank_value, result_doc_path, doc_verified")
     .order("created_at", { ascending: false });
 
   const allCoaches = (coaches ?? []) as Coach[];
@@ -39,7 +39,7 @@ export default async function TaleplerPage() {
 
   // Sonuç belgeleri gizli bucket'ta — yönetici için 1 saatlik imzalı link üret
   const docLinks: Record<string, string> = {};
-  for (const c of pendingCoaches as (Coach & { result_doc_path?: string | null })[]) {
+  for (const c of allCoaches as (Coach & { result_doc_path?: string | null })[]) {
     if (c.result_doc_path) {
       const { data: signed } = await admin.storage
         .from("belgeler")
@@ -102,10 +102,25 @@ export default async function TaleplerPage() {
                         </span>
                       ) : null}
                       {docLinks[c.id] ? (
-                        <a href={docLinks[c.id]} target="_blank" rel="noopener noreferrer"
-                          className="rounded-full bg-[#eef9f9] px-2.5 py-0.5 text-[11px] font-bold text-[#0E8FA3] hover:underline">
-                          📄 Sonuç belgesini görüntüle
-                        </a>
+                        <>
+                          <a href={docLinks[c.id]} target="_blank" rel="noopener noreferrer"
+                            className="rounded-full bg-[#eef9f9] px-2.5 py-0.5 text-[11px] font-bold text-[#0E8FA3] hover:underline">
+                            📄 Sonuç belgesini görüntüle
+                          </a>
+                          {(c as Coach & { doc_verified?: boolean }).doc_verified ? (
+                            <form action={setDocVerified.bind(null, c.id, false)}>
+                              <button type="submit" className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-600 hover:bg-emerald-100">
+                                🛡️ Doğrulandı ✓ (geri al)
+                              </button>
+                            </form>
+                          ) : (
+                            <form action={setDocVerified.bind(null, c.id, true)}>
+                              <button type="submit" className="rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700 hover:bg-amber-100">
+                                Belgeyi Doğrula
+                              </button>
+                            </form>
+                          )}
+                        </>
                       ) : (
                         <span className="text-[11px] text-gray-400">Belge yüklenmemiş</span>
                       )}
@@ -158,11 +173,32 @@ export default async function TaleplerPage() {
                       {[c.university, c.department].filter(Boolean).join(" · ")}
                     </p>
                   </div>
-                  <form action={updateCoachStatus.bind(null, c.id, "rejected")}>
-                    <button type="submit" className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition">
-                      Kaldır
-                    </button>
-                  </form>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {docLinks[c.id] && (
+                      <a href={docLinks[c.id]} target="_blank" rel="noopener noreferrer"
+                        className="rounded-lg bg-[#eef9f9] px-3 py-1.5 text-xs font-semibold text-[#0E8FA3] hover:underline">
+                        📄 Belge
+                      </a>
+                    )}
+                    {docLinks[c.id] && ((c as Coach & { doc_verified?: boolean }).doc_verified ? (
+                      <form action={setDocVerified.bind(null, c.id, false)}>
+                        <button type="submit" className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-600 hover:bg-emerald-100 transition">
+                          🛡️ Doğrulandı ✓
+                        </button>
+                      </form>
+                    ) : (
+                      <form action={setDocVerified.bind(null, c.id, true)}>
+                        <button type="submit" className="rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition">
+                          Doğrula
+                        </button>
+                      </form>
+                    ))}
+                    <form action={updateCoachStatus.bind(null, c.id, "rejected")}>
+                      <button type="submit" className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition">
+                        Kaldır
+                      </button>
+                    </form>
+                  </div>
                 </div>
               ))}
             </div>

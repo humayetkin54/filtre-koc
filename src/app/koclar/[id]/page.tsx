@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Coach, CoachType } from "../types";
@@ -44,6 +44,16 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
   if (!coach) notFound();
 
   const c = coach as Coach;
+
+  // Başarı belgesi: yalnızca yüklü + yönetici doğrulamışsa gösterilir (gizli bucket, 1 saatlik imzalı link)
+  let belgeUrl: string | null = null;
+  if (c.result_doc_path && c.doc_verified) {
+    const adminClient = createAdminClient();
+    const { data: signed } = await adminClient.storage
+      .from("belgeler")
+      .createSignedUrl(c.result_doc_path, 3600);
+    belgeUrl = signed?.signedUrl ?? null;
+  }
   const avail = availabilityConfig[c.availability];
   const isFull = c.availability === "full";
   const schedule = (coach.availability_schedule as Record<string, string[]>) ?? {};
@@ -166,7 +176,8 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
           </div>
         </div>
 
-        {/* ── 2. BAŞARI BELGESİ ── */}
+        {/* ── 2. BAŞARI BELGESİ (yalnızca doğrulanmışsa) ── */}
+        {belgeUrl && (
         <div className="rounded-2xl border border-gray-200 bg-gradient-to-r from-gray-50 to-white p-5 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-1 h-full bg-[#0E8FA3] rounded-l-2xl" />
           <div className="flex items-start gap-4 pl-2">
@@ -177,7 +188,7 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
             </div>
             <div className="flex-1">
               <p className="font-bold text-gray-900">Başarı Belgesi</p>
-              <p className="text-sm text-gray-500 mt-0.5">YKS sonuç belgesi doğrulandı</p>
+              <p className="text-sm text-gray-500 mt-0.5">ÖSYM sonuç belgesi doğrulandı{c.rank_type && c.rank_value ? ` — ${c.rank_type} ${c.rank_value.toLocaleString("tr-TR")}` : ""}</p>
               <div className="mt-3 flex items-center justify-between flex-wrap gap-3">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[#0E8FA3]/30 bg-[#eef9f9] px-3 py-1 text-xs font-semibold text-[#0E8FA3]">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
@@ -185,16 +196,17 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
                   </svg>
                   Doğrulanmış Belge
                 </span>
-                <button className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition">
+                <a href={belgeUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"/>
                   </svg>
                   Belgeyi büyütmek için tıklayın
-                </button>
+                </a>
               </div>
             </div>
           </div>
         </div>
+        )}
 
         {/* ── 3. DEĞERLENDİRMELER ── */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">

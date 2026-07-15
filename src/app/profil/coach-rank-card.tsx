@@ -55,8 +55,9 @@ export function CoachRankCard({
     <div className="rounded-2xl border border-gray-200 bg-white p-6">
       <h2 className="font-semibold text-gray-900">Sınav Derecen &amp; Sonuç Belgesi</h2>
       <p className="mt-1 text-sm text-gray-500">
-        Sıralaman koç kartında 🏆 rozeti olarak görünür — güven kazandırır. Sonuç belgen ise
-        <strong> yalnızca doğrulama için yöneticiye</strong> görünür, profilde yayınlanmaz.
+        Sıralaman koç kartında 🏆 rozeti olarak görünür. Sonuç belgen yönetici tarafından ÖSYM
+        kontrol koduyla doğrulanır; doğrulandıktan sonra profilinde <strong>&quot;Doğrulanmış Belge&quot;</strong> bölümü
+        olarak yayınlanır — öğrenci ve velilere büyük güven verir.
       </p>
 
       {/* Sıralama */}
@@ -120,6 +121,8 @@ export function CoachRankCard({
         <input ref={fileRef} type="file" accept="application/pdf,image/jpeg,image/png" onChange={onPickDoc} className="hidden" />
         <p className="mt-2 text-xs text-gray-400">
           ÖSYM Aday İşlemleri&apos;nden indirdiğin <strong>kontrol kodlu</strong> sonuç belgesi (PDF/JPG/PNG, en fazla 10MB).
+          <strong className="text-gray-500"> T.C. kimlik numaranı kapatarak/karalayarak yükle</strong> — belge, yönetici
+          doğrulamasından sonra profilinde &quot;Doğrulanmış Belge&quot; olarak yayınlanır.
         </p>
       </div>
 

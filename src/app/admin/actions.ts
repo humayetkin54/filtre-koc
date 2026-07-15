@@ -35,6 +35,18 @@ export async function removeCoachFromPurchase(purchaseId: string) {
   revalidatePath("/admin");
 }
 
+export async function setDocVerified(coachId: string, verified: boolean) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user || !ADMIN_EMAILS.includes((user.email ?? "").toLowerCase())) return;
+
+  const admin = createAdminClient();
+  await admin.from("coaches").update({ doc_verified: verified }).eq("id", coachId);
+  revalidatePath("/admin/talepler");
+  revalidatePath("/koclar");
+  revalidatePath(`/koclar/${coachId}`);
+}
+
 export async function updateCoachStatus(coachId: string, status: "approved" | "rejected") {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

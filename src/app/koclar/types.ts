@@ -13,6 +13,8 @@ export interface Coach {
   avatar_url?: string | null;
   rank_type?: string | null;
   rank_value?: number | null;
+  result_doc_path?: string | null;
+  doc_verified?: boolean;
   rating: number;
   rating_count: number;
   current_students: number;
