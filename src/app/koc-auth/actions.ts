@@ -77,6 +77,12 @@ export async function coachSignIn(formData: FormData) {
     redirect(`/koc-giris?error=${encodeURIComponent("Hesabınız henüz onaylanmadı. En kısa sürede dönüş yapacağız.")}`);
   }
 
+  if (coach.status !== "approved") {
+    // Reddedilmiş/kaldırılmış koç: koç paneline giremez ama hesabı kilitlenmez
+    await supabase.auth.signOut();
+    redirect(`/koc-giris?error=${encodeURIComponent("Koç başvurunuz onaylanmadı. Dilersen öğrenci girişinden siteyi kullanmaya devam edebilirsin.")}`);
+  }
+
   redirect("/koc-paneli");
 }
 

@@ -32,11 +32,14 @@ export async function GET(request: Request) {
         if (coachRow.status === "approved") {
           return NextResponse.redirect(`${origin}/koc-paneli`);
         }
-        // Onay bekleyen koç: mevcut politika — oturum kapatılır
-        await supabase.auth.signOut();
-        return NextResponse.redirect(
-          `${origin}/koc-giris?error=${encodeURIComponent("Hesabınız henüz onaylanmadı. En kısa sürede dönüş yapacağız.")}`
-        );
+        if (coachRow.status === "pending") {
+          // Onay bekleyen koç: mevcut politika — oturum kapatılır
+          await supabase.auth.signOut();
+          return NextResponse.redirect(
+            `${origin}/koc-giris?error=${encodeURIComponent("Hesabınız henüz onaylanmadı. En kısa sürede dönüş yapacağız.")}`
+          );
+        }
+        // Reddedilmiş/kaldırılmış koç kaydı hesabı KİLİTLEMEZ — normal kullanıcı akışına devam
       }
 
       // Koç akışından geldi ama koç kaydı yok → bilgi tamamlama
