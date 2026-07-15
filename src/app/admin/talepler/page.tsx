@@ -174,6 +174,9 @@ export default async function TaleplerPage() {
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
+                    {!docLinks[c.id] && (
+                      <span className="text-[10px] text-gray-300">belge yok</span>
+                    )}
                     {docLinks[c.id] && (
                       <a href={docLinks[c.id]} target="_blank" rel="noopener noreferrer"
                         className="rounded-lg bg-[#eef9f9] px-3 py-1.5 text-xs font-semibold text-[#0E8FA3] hover:underline">
