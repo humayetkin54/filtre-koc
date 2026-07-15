@@ -63,6 +63,7 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
     .from("coaches")
     .select("id, name, avatar_initials, avatar_color, avatar_text_color, net_increase, types")
     .eq("status", "approved")
+    .eq("is_active", true)
     .neq("id", id)
     .limit(4);
 

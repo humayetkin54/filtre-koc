@@ -16,7 +16,7 @@ export default async function KoclarPage({
   const admin = createAdminClient();
 
   const [{ data: coaches, error }, { data: { user } }] = await Promise.all([
-    supabase.from("coaches").select("*").eq("status", "approved").order("rating", { ascending: false }),
+    supabase.from("coaches").select("*").eq("status", "approved").eq("is_active", true).order("rating", { ascending: false }),
     supabase.auth.getUser(),
   ]);
 
