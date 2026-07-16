@@ -67,17 +67,6 @@ export default function KocKayitForm() {
           <label className="mb-1.5 block text-sm font-medium text-gray-300">Şifre</label>
           <input type="password" name="password" required minLength={6} autoComplete="new-password" placeholder="En az 6 karakter" className={inputClass} />
         </div>
-        <div className="sm:col-span-2">
-          <label className="mb-1.5 block text-sm font-medium text-gray-300">
-            Kendini kısaca tanıt <span className="text-gray-500 font-normal">(opsiyonel)</span>
-          </label>
-          <textarea
-            name="bio"
-            rows={3}
-            placeholder="Hangi sınavlara hazırladın, kaç yıllık deneyimin var..."
-            className={`${inputClass} resize-none`}
-          />
-        </div>
       </div>
       <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3">
         <input type="checkbox" required className="mt-1 h-4 w-4 accent-[#E2600F]" />

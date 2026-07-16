@@ -62,10 +62,6 @@ export function TamamlaForm() {
         <label className="mb-1.5 block text-sm font-medium text-gray-300">Bölüm *</label>
         <input type="text" name="department" required placeholder="Örn: Rehberlik ve Psikolojik Danışmanlık" className={inputCls} />
       </div>
-      <div>
-        <label className="mb-1.5 block text-sm font-medium text-gray-300">Kendini kısaca tanıt</label>
-        <textarea name="bio" rows={4} placeholder="Deneyimin, derecen, öğrencilerle çalışma tarzın…" className={inputCls} />
-      </div>
       <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3">
         <input type="checkbox" required className="mt-1 h-4 w-4 accent-[#E2600F]" />
         <span className="text-sm font-semibold text-red-400">
