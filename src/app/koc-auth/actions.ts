@@ -97,9 +97,8 @@ export async function completeCoachApplication(
   const university = ((formData.get("university") as string) || "").trim();
   const department = ((formData.get("department") as string) || "").trim();
   const bio = ((formData.get("bio") as string) || "").trim();
-  const types = readTypes(formData);
+  const types = readTypes(formData); // formda alan yok; koç alanlarını profilinden seçer
   if (!university || !department) return { error: "Üniversite ve bölüm zorunludur." };
-  if (types.length === 0) return { error: "En az bir koçluk alanı seçmelisin." };
 
   const admin = createAdminClient();
   const { data: existing } = await admin
@@ -157,11 +156,7 @@ export async function coachSignUp(formData: FormData) {
   const university = formData.get("university") as string;
   const department = formData.get("department") as string;
   const bio = formData.get("bio") as string;
-  const types = readTypes(formData);
-
-  if (types.length === 0) {
-    redirect(`/koc-kayit?error=${encodeURIComponent("En az bir koçluk alanı seçmelisin.")}`);
-  }
+  const types = readTypes(formData); // formda alan yok; koç alanlarını profilinden seçer
 
   const admin = createAdminClient();
 

@@ -5,6 +5,7 @@ import { VeliTakipToggle } from "./veli-takip-toggle";
 import { ProfilePhotoCard } from "./profile-photo-card";
 import { CoachBioCard } from "./coach-bio-card";
 import { CoachRankCard } from "./coach-rank-card";
+import { CoachTypesCard } from "./coach-types-card";
 
 export default async function ProfilPage({
   searchParams,
@@ -36,7 +37,7 @@ export default async function ProfilPage({
   // Koç hesabıysa biyografi + derece kartları gösterilir
   const { data: coachRow } = await admin
     .from("coaches")
-    .select("bio, rank_type, rank_value, result_doc_path")
+    .select("bio, types, rank_type, rank_value, result_doc_path")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -84,6 +85,9 @@ export default async function ProfilPage({
             ((user.user_metadata?.full_name as string)?.[0] ?? user.email?.[0] ?? "?").toUpperCase()
           }
         />
+
+        {/* Koçluk alanları */}
+        {coachRow && <CoachTypesCard initialTypes={coachRow.types ?? []} />}
 
         {/* Koç biyografisi */}
         {coachRow && <CoachBioCard initialBio={coachRow.bio} />}
