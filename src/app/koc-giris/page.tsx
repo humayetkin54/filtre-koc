@@ -69,6 +69,11 @@ export default function KocGirisPage({
               Giriş yap
             </button>
           </form>
+          <div className="mt-3 text-right">
+            <Link href="/sifre-unuttum" className="text-sm font-medium text-purple-300 hover:underline">
+              Şifremi unuttum
+            </Link>
+          </div>
           <GoogleButton flow="koc" />
 
           <p className="mt-6 text-center text-xs text-gray-500">

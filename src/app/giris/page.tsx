@@ -66,6 +66,11 @@ export default function GirisPage({
               Giriş yap
             </button>
           </form>
+          <div className="mt-3 text-right">
+            <Link href="/sifre-unuttum" className="text-sm font-medium text-[#0E8FA3] hover:underline">
+              Şifremi unuttum
+            </Link>
+          </div>
           <GoogleButton flow="ogrenci" />
         </div>
       </div>

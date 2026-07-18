@@ -12,6 +12,11 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Şifre sıfırlama akışı: rol yönlendirmelerine girmeden doğrudan şifre ekranına
+      if (next === "/sifre-sifirla") {
+        return NextResponse.redirect(`${origin}/sifre-sifirla`);
+      }
+
       const user = data.user;
       const email = (user?.email ?? "").toLowerCase();
       const admin = createAdminClient();
