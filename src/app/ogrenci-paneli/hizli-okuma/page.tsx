@@ -18,6 +18,22 @@ export default async function HizliOkumaPage() {
 
   const access = hizliOkumaAccess(purchases ?? []);
 
+  // Kalıcı test geçmişi (cihazdan bağımsız; localStorage yalnızca yedek)
+  const { data: sessionRows } = await admin
+    .from("reading_sessions")
+    .select("wpm, comprehension, effective_wpm, passage_title, created_at")
+    .eq("user_id", user!.id)
+    .order("created_at", { ascending: true })
+    .limit(100);
+
+  const initialHistory = (sessionRows ?? []).map((r) => ({
+    date: r.created_at as string,
+    wpm: r.wpm as number,
+    comprehension: r.comprehension as number,
+    effectiveWpm: r.effective_wpm as number,
+    title: (r.passage_title as string) ?? "",
+  }));
+
   // Erişim yok → kilit ekranı
   if (!access.allowed) {
     const msg =
@@ -66,7 +82,7 @@ export default async function HizliOkumaPage() {
           )}
         </div>
       )}
-      <HizliOkumaClient />
+      <HizliOkumaClient initialHistory={initialHistory} />
     </div>
   );
 }

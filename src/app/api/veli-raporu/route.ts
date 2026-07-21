@@ -23,6 +23,7 @@ function raporHtml(opts: {
   pendingHw: number;
   totalHw: number;
   goal: string | null;
+  reading: { lastWpm: number; lastComp: number; delta: number | null } | null;
 }) {
   const teal = "#0E8FA3";
   const navy = "#123A57";
@@ -74,6 +75,14 @@ function raporHtml(opts: {
           <strong style="color:${opts.pendingHw > 0 ? "#d97706" : "#059669"};">${opts.pendingHw} ödev bekliyor</strong>
           · toplam ${opts.totalHw} ödev
         </p>
+
+        ${opts.reading ? `<h2 style="margin:20px 0 8px;font-size:15px;color:${navy};">👁️ Hızlı Okuma</h2><p style="margin:0;font-size:14px;color:#374151;">Son okuma hızı <strong style="color:${teal};">${opts.reading.lastWpm} WPM</strong> (anlama %${opts.reading.lastComp})${
+          opts.reading.delta === null
+            ? ""
+            : opts.reading.delta >= 0
+            ? ` · <span style="color:#059669;font-weight:700;">▲ +${opts.reading.delta} WPM</span> geçen haftaya göre`
+            : ` · <span style="color:#dc2626;font-weight:700;">▼ ${opts.reading.delta} WPM</span> geçen haftaya göre`
+        }</p>` : ""}
 
         ${opts.goal ? `<h2 style="margin:20px 0 8px;font-size:15px;color:${navy};">🎯 Hedef</h2><p style="margin:0;font-size:14px;color:#374151;">${opts.goal}</p>` : ""}
 
@@ -131,12 +140,26 @@ export async function GET(request: Request) {
       continue;
     }
 
-    const [{ data: purchases }, { data: denemeler }, { data: homework }, { data: goals }] = await Promise.all([
+    const [{ data: purchases }, { data: denemeler }, { data: homework }, { data: goals }, { data: reading }] = await Promise.all([
       admin.from("purchases").select("coach_name, category, plan").eq("user_id", studentId).eq("status", "active").limit(1),
       admin.from("deneme_results").select("exam_name, exam_date, net_total").eq("student_id", studentId).order("exam_date", { ascending: false }).limit(20),
       admin.from("homework").select("id, status").eq("student_id", studentId),
       admin.from("goals").select("target_university, target_department").eq("student_id", studentId).maybeSingle(),
+      admin.from("reading_sessions").select("wpm, comprehension, created_at").eq("user_id", studentId).order("created_at", { ascending: false }).limit(30),
     ]);
+
+    // Hızlı okuma: son sonuç + geçen haftaya göre trend
+    const readRows = (reading ?? []) as { wpm: number; comprehension: number; created_at: string }[];
+    let readingSummary: { lastWpm: number; lastComp: number; delta: number | null } | null = null;
+    if (readRows.length > 0) {
+      const last = readRows[0];
+      const prevWeek = readRows.find((r) => new Date(r.created_at) < weekAgo);
+      readingSummary = {
+        lastWpm: last.wpm,
+        lastComp: last.comprehension,
+        delta: prevWeek ? last.wpm - prevWeek.wpm : null,
+      };
+    }
 
     const all = (denemeler ?? []) as Deneme[];
     const week = all.filter((d) => new Date(d.exam_date) >= weekAgo);
@@ -159,6 +182,7 @@ export async function GET(request: Request) {
       goal: goals?.target_university
         ? `${goals.target_university}${goals.target_department ? " — " + goals.target_department : ""}`
         : null,
+      reading: readingSummary,
     });
 
     if (dry) {

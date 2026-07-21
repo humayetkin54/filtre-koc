@@ -1,11 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { PASSAGES, wordCount, type Passage } from "./passages";
 import { BADGES, type ExerciseKind, type ExerciseStats } from "./badges";
+import { saveReadingSession, backfillReadingSessions, logReadingExercise } from "./actions";
 
-// ---- localStorage ilerleme ----
+// ---- localStorage ilerleme (DB'nin çevrimdışı yedeği) ----
 const LS_KEY = "rekorzeka_wpm_history";
+const BACKFILL_FLAG = "rekorzeka_wpm_backfilled";
+
+// Ölçüm geçerliliği: bu hızın üstü fiziksel olarak okuma değil, atlama sayılır.
+const MAX_CREDIBLE_WPM = 900;
+
 type Result = { date: string; wpm: number; comprehension: number; effectiveWpm: number; title: string };
 
 function loadHistory(): Result[] {
@@ -20,6 +26,13 @@ function saveResult(r: Result) {
   const list = loadHistory();
   list.push(r);
   localStorage.setItem(LS_KEY, JSON.stringify(list.slice(-50)));
+}
+
+// DB + localStorage geçmişini tarihe göre birleştirir (aynı kayıt iki kez sayılmaz).
+function mergeHistory(a: Result[], b: Result[]): Result[] {
+  const byDate = new Map<string, Result>();
+  for (const r of [...a, ...b]) byDate.set(new Date(r.date).toISOString(), r);
+  return [...byDate.values()].sort((x, y) => +new Date(x.date) - +new Date(y.date));
 }
 
 // ---- egzersiz sayaçları (rozetler için) ----
@@ -38,12 +51,34 @@ function bumpExercise(kind: ExerciseKind) {
   const s = loadStats();
   s[kind] += 1;
   localStorage.setItem(STATS_KEY, JSON.stringify(s));
+  // Koç panelinde görünmesi için kalıcı kayıt (hata olursa yerel sayaç yine de artmış olur)
+  void logReadingExercise(kind).catch(() => {});
 }
 
 type Tab = "ozet" | "test" | "takistoskop" | "golgeleme" | "blok" | "gozacisi" | "gelisim";
 
-export function HizliOkumaClient() {
+export function HizliOkumaClient({ initialHistory = [] }: { initialHistory?: Result[] }) {
   const [tab, setTab] = useState<Tab>("ozet");
+  const [history, setHistory] = useState<Result[]>(initialHistory);
+
+  // Mount: yerel geçmişi DB geçmişiyle birleştir, DB'de olmayanları tek seferde yükle.
+  useEffect(() => {
+    const local = loadHistory();
+    const merged = mergeHistory(initialHistory, local);
+    setHistory(merged);
+
+    if (localStorage.getItem(BACKFILL_FLAG)) return;
+    const known = new Set(initialHistory.map((r) => new Date(r.date).toISOString()));
+    const missing = local.filter((r) => !known.has(new Date(r.date).toISOString()));
+    localStorage.setItem(BACKFILL_FLAG, "1");
+    if (missing.length) void backfillReadingSessions(missing).catch(() => {});
+    // initialHistory sunucudan bir kez gelir; yalnızca mount'ta çalışsın.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const addResult = useCallback((r: Result) => {
+    setHistory((h) => mergeHistory(h, [r]));
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -81,8 +116,8 @@ export function HizliOkumaClient() {
         ))}
       </div>
 
-      {tab === "ozet" && <Dashboard goTo={setTab} />}
-      {tab === "test" && <ReadingTest />}
+      {tab === "ozet" && <Dashboard goTo={setTab} history={history} />}
+      {tab === "test" && <ReadingTest onSaved={addResult} />}
       {tab === "takistoskop" && <Takistoskop />}
       {tab === "golgeleme" && (
         <PacerReader
@@ -105,7 +140,7 @@ export function HizliOkumaClient() {
         />
       )}
       {tab === "gozacisi" && <SchulteTable />}
-      {tab === "gelisim" && <Gelisim />}
+      {tab === "gelisim" && <Gelisim history={history} />}
     </div>
   );
 }
@@ -118,14 +153,12 @@ const EXERCISE_META: { kind: ExerciseKind; icon: string; label: string }[] = [
   { kind: "schulte", icon: "🔢", label: "Göz Açısı (Schulte)" },
 ];
 
-function Dashboard({ goTo }: { goTo: (t: Tab) => void }) {
-  const [history, setHistory] = useState<Result[]>([]);
+function Dashboard({ goTo, history }: { goTo: (t: Tab) => void; history: Result[] }) {
   const [stats, setStats] = useState<ExerciseStats>({ takistoskop: 0, golgeleme: 0, blok: 0, schulte: 0 });
   const [schulteBest, setSchulteBest] = useState<number | null>(null);
   const [showAllBadges, setShowAllBadges] = useState(false);
 
   useEffect(() => {
-    setHistory(loadHistory());
     setStats(loadStats());
     const b = localStorage.getItem(SCHULTE_KEY);
     if (b) setSchulteBest(Number(b));
@@ -348,12 +381,41 @@ function ProgressChart({ data }: { data: Result[] }) {
 // ==================== OKUMA HIZI TESTİ ====================
 type Phase = "select" | "reading" | "questions" | "result";
 
-function ReadingTest() {
+// Okunan metinleri hatırla — aynı metni tekrar vermek ölçümü geçersiz kılar.
+const SEEN_KEY = "rekorzeka_seen_passages";
+function loadSeen(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem(SEEN_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+function markSeen(id: string) {
+  const seen = loadSeen();
+  if (!seen.includes(id)) localStorage.setItem(SEEN_KEY, JSON.stringify([...seen, id]));
+}
+
+// Seviyeden rastgele metin seç; önce hiç okunmamışlardan ver, hepsi bittiyse havuzu sıfırla.
+function pickPassage(level: Passage["level"]): Passage {
+  const pool = PASSAGES.filter((p) => p.level === level);
+  const seen = loadSeen();
+  const fresh = pool.filter((p) => !seen.includes(p.id));
+  const from = fresh.length > 0 ? fresh : pool;
+  if (fresh.length === 0) {
+    // Bu seviyedeki tüm metinler okunmuş → seviyeyi listeden düşür
+    localStorage.setItem(SEEN_KEY, JSON.stringify(seen.filter((id) => !pool.some((p) => p.id === id))));
+  }
+  return from[Math.floor(Math.random() * from.length)];
+}
+
+function ReadingTest({ onSaved }: { onSaved: (r: Result) => void }) {
   const [phase, setPhase] = useState<Phase>("select");
   const [passage, setPassage] = useState<Passage | null>(null);
   const [startTs, setStartTs] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
+  const [tooFast, setTooFast] = useState(false);
 
   const words = passage ? wordCount(passage.text) : 0;
   const minutes = elapsed / 60000;
@@ -368,21 +430,33 @@ function ReadingTest() {
     setPassage(p);
     setAnswers(new Array(p.questions.length).fill(-1));
     setStartTs(Date.now());
+    setTooFast(false);
     setPhase("reading");
   }
   function finishReading() {
-    setElapsed(Date.now() - startTs);
+    const ms = Date.now() - startTs;
+    // Geçerlilik kontrolü: 900 WPM üstü = metin okunmadan geçilmiş demektir.
+    const minMs = (words / MAX_CREDIBLE_WPM) * 60000;
+    if (ms < minMs) {
+      setTooFast(true);
+      return;
+    }
+    setElapsed(ms);
     setPhase("questions");
   }
   function submit() {
     if (passage) {
-      saveResult({
+      const r: Result = {
         date: new Date().toISOString(),
         wpm,
         comprehension,
         effectiveWpm,
         title: passage.title,
-      });
+      };
+      saveResult(r); // yerel yedek
+      onSaved(r); // grafik/rozetler anında güncellensin
+      markSeen(passage.id);
+      void saveReadingSession({ ...r, passageId: passage.id }).catch(() => {}); // kalıcı kayıt
     }
     setPhase("result");
   }
@@ -390,33 +464,39 @@ function ReadingTest() {
     setPhase("select");
     setPassage(null);
     setElapsed(0);
+    setTooFast(false);
   }
 
-  // Metin seçimi
+  // Seviye seçimi — metin RASTGELE atanır (ezber/tanıdıklık ölçümü bozmasın)
   if (phase === "select") {
+    const LEVELS: { level: Passage["level"]; desc: string; color: string; icon: string }[] = [
+      { level: "Kolay", desc: "Günlük dille, akıcı metinler", color: "border-emerald-200 hover:border-emerald-400", icon: "🌱" },
+      { level: "Orta", desc: "Bilgi yoğunluğu artan metinler", color: "border-amber-200 hover:border-amber-400", icon: "⚡" },
+      { level: "İleri", desc: "Yoğun, terimli, uzun metinler", color: "border-rose-200 hover:border-rose-400", icon: "🔥" },
+    ];
     return (
-      <div className="grid gap-4 sm:grid-cols-3">
-        {PASSAGES.map((p) => {
-          const w = wordCount(p.text);
-          const levelColor =
-            p.level === "Kolay" ? "text-emerald-600 bg-emerald-50"
-            : p.level === "Orta" ? "text-amber-600 bg-amber-50"
-            : "text-rose-600 bg-rose-50";
-          return (
-            <button
-              key={p.id}
-              onClick={() => start(p)}
-              className="group rounded-2xl border border-gray-200 bg-white p-5 text-left transition-all hover:-translate-y-1 hover:border-[#0E8FA3] hover:shadow-lg"
-            >
-              <span className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-bold ${levelColor}`}>
-                {p.level}
-              </span>
-              <h3 className="mt-3 font-bold text-gray-900 group-hover:text-[#0E8FA3]">{p.title}</h3>
-              <p className="mt-1 text-xs text-gray-400">{w} kelime · {p.questions.length} anlama sorusu</p>
-              <span className="mt-4 inline-block text-sm font-semibold text-[#0E8FA3]">Teste başla →</span>
-            </button>
-          );
-        })}
+      <div>
+        <div className="mb-4 rounded-xl bg-[#eef9f9] px-4 py-3 text-sm text-[#0E8FA3]">
+          Seviyeni seç — sana <strong>rastgele bir metin</strong> atanır. Böylece hızın gerçek okuma hızını yansıtır, ezberi değil.
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {LEVELS.map((lv) => {
+            const count = PASSAGES.filter((p) => p.level === lv.level).length;
+            return (
+              <button
+                key={lv.level}
+                onClick={() => start(pickPassage(lv.level))}
+                className={`group rounded-2xl border bg-white p-6 text-left transition-all hover:-translate-y-1 hover:shadow-lg ${lv.color}`}
+              >
+                <div className="text-3xl">{lv.icon}</div>
+                <h3 className="mt-3 text-lg font-bold text-gray-900">{lv.level}</h3>
+                <p className="mt-1 text-xs text-gray-400">{lv.desc}</p>
+                <p className="mt-3 text-[11px] text-gray-400">{count} metin havuzu</p>
+                <span className="mt-3 inline-block text-sm font-semibold text-[#0E8FA3]">Rastgele metinle başla →</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -442,6 +522,12 @@ function ReadingTest() {
           <p className="mb-3 text-sm text-gray-500">
             Metni bitirdiğinde butona bas — sonra anlama soruları gelecek.
           </p>
+          {tooFast && (
+            <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+              ⚠️ Çok hızlı geçtin — bu sürede {words} kelime okumak mümkün değil ({MAX_CREDIBLE_WPM}+ WPM). Sonuç
+              kaydedilmez. Metni gerçekten okuyup tekrar dene.
+            </div>
+          )}
           <button
             onClick={finishReading}
             className="rounded-xl bg-[#0E8FA3] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0c7d8f]"
@@ -544,13 +630,52 @@ function feedback(wpm: number, comp: number): string {
 }
 
 // ==================== TAKİSTOSKOP ====================
+// Gerçek saat tabanlı ilerleme — setTimeout zincirinin biriktirdiği hız kaymasını önler.
+// index'i geçen gerçek süreye göre yeniden hesaplar; sekme arka plandayken bile hız sabit kalır.
+function usePacedIndex(
+  running: boolean,
+  unitsPerMinute: number,
+  total: number,
+  onDone: () => void
+) {
+  const [index, setIndex] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const indexRef = useRef(0);
+  indexRef.current = index;
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
+
+  useEffect(() => {
+    if (!running || unitsPerMinute <= 0) return;
+    const start = performance.now();
+    const base = indexRef.current;
+    let active = true;
+    const loop = (t: number) => {
+      if (!active) return;
+      const next = base + Math.floor(((t - start) / 60000) * unitsPerMinute);
+      if (next >= total) {
+        setIndex(total);
+        onDoneRef.current();
+        return;
+      }
+      if (next !== indexRef.current) setIndex(next);
+      rafRef.current = requestAnimationFrame(loop);
+    };
+    rafRef.current = requestAnimationFrame(loop);
+    return () => {
+      active = false;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [running, unitsPerMinute, total]);
+
+  return [index, setIndex] as const;
+}
+
 function Takistoskop() {
   const [passage, setPassage] = useState<Passage>(PASSAGES[0]);
   const [chunkSize, setChunkSize] = useState(1);
   const [wpm, setWpm] = useState(300);
   const [running, setRunning] = useState(false);
-  const [index, setIndex] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const chunks = useMemo(() => {
     const w = passage.text.trim().split(/\s+/).filter(Boolean);
@@ -561,19 +686,11 @@ function Takistoskop() {
     return out;
   }, [passage, chunkSize]);
 
-  useEffect(() => {
-    if (!running) return;
-    if (index >= chunks.length) {
-      setRunning(false);
-      bumpExercise("takistoskop"); // tur bitti → rozet sayacı
-      return;
-    }
-    const msPerChunk = (60000 / wpm) * chunkSize;
-    timerRef.current = setTimeout(() => setIndex((i) => i + 1), msPerChunk);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, [running, index, chunks.length, wpm, chunkSize]);
+  // chunkSize kelimelik bloklar → dakikadaki blok sayısı = wpm / chunkSize
+  const [index, setIndex] = usePacedIndex(running, wpm / chunkSize, chunks.length, () => {
+    setRunning(false);
+    bumpExercise("takistoskop"); // tur bitti → rozet sayacı
+  });
 
   function startPause() {
     if (index >= chunks.length) setIndex(0);
@@ -675,22 +792,14 @@ function PacerReader({
   const [windowSize, setWindowSize] = useState(defaultWindow);
   const [wpm, setWpm] = useState(250);
   const [running, setRunning] = useState(false);
-  const [index, setIndex] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const words = useMemo(() => passage.text.trim().split(/\s+/).filter(Boolean), [passage]);
 
-  useEffect(() => {
-    if (!running) return;
-    if (index >= words.length) {
-      setRunning(false);
-      bumpExercise(kind); // tur bitti → rozet sayacı
-      return;
-    }
-    const msPerStep = (60000 / wpm) * windowSize;
-    timerRef.current = setTimeout(() => setIndex((i) => i + windowSize), msPerStep);
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [running, index, words.length, wpm, windowSize, kind]);
+  // Vurgu bloğu her kelimede bir kayar; öncü kenar wpm hızında ilerler (kesintisiz akış).
+  const [index, setIndex] = usePacedIndex(running, wpm, words.length, () => {
+    setRunning(false);
+    bumpExercise(kind); // tur bitti → rozet sayacı
+  });
 
   function startPause() {
     if (index >= words.length) setIndex(0);
@@ -903,10 +1012,7 @@ function SchulteTable() {
 }
 
 // ==================== GELİŞİMİM ====================
-function Gelisim() {
-  const [history, setHistory] = useState<Result[]>([]);
-  useEffect(() => setHistory(loadHistory()), []);
-
+function Gelisim({ history }: { history: Result[] }) {
   if (history.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center">

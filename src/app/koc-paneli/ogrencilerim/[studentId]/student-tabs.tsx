@@ -92,10 +92,19 @@ const SUBJECT_COLORS: Record<string, string> = {
   "Geometri": "bg-indigo-100 text-indigo-800 border-indigo-200",
 };
 
+interface ReadingSession {
+  wpm: number;
+  comprehension: number;
+  effectiveWpm: number;
+  title: string;
+  date: string;
+}
+
 const TABS = [
   { key: "deneme", label: "📝 Denemeler" },
   { key: "program", label: "📅 Ders Programı" },
   { key: "odev", label: "✅ Ödevler" },
+  { key: "hizliokuma", label: "👁️ Hızlı Okuma" },
   { key: "mesaj", label: "💬 Mesajlar" },
   { key: "randevu", label: "🗓 Randevular" },
   { key: "not", label: "🔒 Notlarım" },
@@ -111,6 +120,7 @@ export function StudentTabs({
   coachNotes,
   unreadMessages = 0,
   aiScan = null,
+  readingSessions = [],
 }: {
   studentId: string;
   denemeler: DenemeResult[];
@@ -121,6 +131,7 @@ export function StudentTabs({
   coachNotes: CoachNote[];
   unreadMessages?: number;
   aiScan?: AiScan | null;
+  readingSessions?: ReadingSession[];
 }) {
   const [tab, setTabState] = useState<string>("deneme");
   const [isPending, startTransition] = useTransition();
@@ -585,6 +596,90 @@ export function StudentTabs({
           )}
         </div>
       )}
+
+      {/* ── HIZLI OKUMA ── */}
+      {tab === "hizliokuma" && <HizliOkumaPanel sessions={readingSessions} />}
+    </div>
+  );
+}
+
+function HizliOkumaPanel({ sessions }: { sessions: ReadingSession[] }) {
+  if (sessions.length === 0) {
+    return <Empty text="Öğrenci henüz Hızlı Okuma testi çözmemiş. Sonuçlar geldikçe gelişimi burada görünür." />;
+  }
+
+  const last = sessions[sessions.length - 1];
+  const first = sessions[0];
+  const bestWpm = Math.max(...sessions.map((s) => s.wpm));
+  const bestEff = Math.max(...sessions.map((s) => s.effectiveWpm));
+  const wpmDelta = last.wpm - first.wpm;
+
+  // Basit SVG çizgi grafiği (etkili hız)
+  const W = 640, H = 180, pad = 30;
+  const xs = sessions.length > 1 ? sessions.map((_, i) => pad + (i * (W - 2 * pad)) / (sessions.length - 1)) : [W / 2];
+  const maxV = Math.max(...sessions.map((s) => s.effectiveWpm), 100);
+  const ys = sessions.map((s) => H - pad - ((s.effectiveWpm / maxV) * (H - 2 * pad)));
+  const path = xs.map((x, i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(" ");
+
+  return (
+    <div className="space-y-4">
+      {/* Özet kartlar */}
+      <div className="grid gap-3 sm:grid-cols-4">
+        <MiniStat label="Son Okuma Hızı" value={`${last.wpm}`} unit="WPM" color="#0E8FA3" />
+        <MiniStat label="Son Anlama" value={`%${last.comprehension}`} unit="doğru oranı" color="#123A57" />
+        <MiniStat label="En İyi Etkili Hız" value={`${bestEff}`} unit="WPM" color="#E2600F" />
+        <MiniStat
+          label="İlk teste göre"
+          value={`${wpmDelta >= 0 ? "+" : ""}${wpmDelta}`}
+          unit="WPM değişim"
+          color={wpmDelta >= 0 ? "#059669" : "#dc2626"}
+        />
+      </div>
+
+      {/* Grafik */}
+      <div className="rounded-2xl border border-gray-200 bg-white p-5">
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-gray-700">Etkili Hız Gelişimi</h3>
+          <span className="text-xs text-gray-400">{sessions.length} test · en yüksek ham hız {bestWpm} WPM</span>
+        </div>
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
+          <line x1={pad} y1={H - pad} x2={W - pad} y2={H - pad} stroke="#e5e7eb" />
+          <path d={path} fill="none" stroke="#E2600F" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+          {xs.map((x, i) => (
+            <circle key={i} cx={x} cy={ys[i]} r={3.5} fill="#E2600F" />
+          ))}
+        </svg>
+      </div>
+
+      {/* Son testler tablosu */}
+      <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
+        <p className="border-b border-gray-100 bg-gray-50/50 px-5 py-3 text-xs font-bold uppercase tracking-wide text-gray-500">
+          Test Geçmişi
+        </p>
+        <div className="divide-y divide-gray-50">
+          {[...sessions].reverse().slice(0, 12).map((s, i) => (
+            <div key={i} className="flex items-center gap-3 px-5 py-3 text-sm">
+              <span className="w-24 shrink-0 text-[11px] font-semibold text-gray-400">
+                {new Date(s.date).toLocaleDateString("tr-TR", { day: "2-digit", month: "short", year: "2-digit" })}
+              </span>
+              <span className="flex-1 min-w-0 truncate text-gray-600">{s.title || "—"}</span>
+              <span className="shrink-0 font-semibold text-[#0E8FA3]">{s.wpm} WPM</span>
+              <span className="w-16 shrink-0 text-right text-gray-500">%{s.comprehension}</span>
+              <span className="w-24 shrink-0 text-right font-bold text-[#E2600F]">{s.effectiveWpm} etkili</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MiniStat({ label, value, unit, color }: { label: string; value: string; unit: string; color: string }) {
+  return (
+    <div className="rounded-2xl border border-gray-200 bg-white p-4">
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">{label}</p>
+      <p className="mt-1 text-2xl font-bold" style={{ color }}>{value}</p>
+      <p className="text-[11px] text-gray-400">{unit}</p>
     </div>
   );
 }

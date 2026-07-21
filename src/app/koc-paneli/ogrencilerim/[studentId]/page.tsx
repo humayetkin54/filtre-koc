@@ -45,6 +45,7 @@ export default async function StudentDetailPage({
     { data: appointments },
     { data: coachNotes },
     { data: aiScans },
+    { data: readingSessions },
   ] = await Promise.all([
     admin.from("goals").select("*").eq("student_id", studentId).maybeSingle(),
     admin.from("deneme_results").select("*").eq("student_id", studentId).order("exam_date", { ascending: false }),
@@ -54,6 +55,7 @@ export default async function StudentDetailPage({
     admin.from("appointments").select("id, date, time, status, note, meeting_link").eq("user_id", studentId).eq("coach_id", coach.id).order("date", { ascending: false }),
     admin.from("coach_notes").select("id, content, created_at").eq("coach_id", coach.id).eq("student_id", studentId).order("created_at", { ascending: false }),
     admin.from("exam_scans").select("id, exam_name, exam_date, analysis_text, program_suggestion").eq("student_id", studentId).eq("status", "done").order("exam_date", { ascending: false }).limit(1),
+    admin.from("reading_sessions").select("wpm, comprehension, effective_wpm, passage_title, created_at").eq("user_id", studentId).order("created_at", { ascending: true }).limit(100),
   ]);
 
   const initials = (purchase.student_name ?? purchase.student_email ?? "?")
@@ -115,6 +117,13 @@ export default async function StudentDetailPage({
           coachNotes={coachNotes ?? []}
           unreadMessages={(messages ?? []).filter(m => m.sender_role === "student" && !m.read_at).length}
           aiScan={aiScans?.[0] ?? null}
+          readingSessions={(readingSessions ?? []).map((r) => ({
+            wpm: r.wpm as number,
+            comprehension: r.comprehension as number,
+            effectiveWpm: r.effective_wpm as number,
+            title: (r.passage_title as string) ?? "",
+            date: r.created_at as string,
+          }))}
         />
       </div>
     </div>
