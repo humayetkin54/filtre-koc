@@ -46,6 +46,7 @@ export default async function StudentDetailPage({
     { data: coachNotes },
     { data: aiScans },
     { data: readingSessions },
+    { data: readingExercises },
   ] = await Promise.all([
     admin.from("goals").select("*").eq("student_id", studentId).maybeSingle(),
     admin.from("deneme_results").select("*").eq("student_id", studentId).order("exam_date", { ascending: false }),
@@ -56,6 +57,7 @@ export default async function StudentDetailPage({
     admin.from("coach_notes").select("id, content, created_at").eq("coach_id", coach.id).eq("student_id", studentId).order("created_at", { ascending: false }),
     admin.from("exam_scans").select("id, exam_name, exam_date, analysis_text, program_suggestion").eq("student_id", studentId).eq("status", "done").order("exam_date", { ascending: false }).limit(1),
     admin.from("reading_sessions").select("wpm, comprehension, effective_wpm, passage_title, created_at").eq("user_id", studentId).order("created_at", { ascending: true }).limit(100),
+    admin.from("reading_exercises").select("kind, value").eq("user_id", studentId).limit(1000),
   ]);
 
   const initials = (purchase.student_name ?? purchase.student_email ?? "?")
@@ -124,6 +126,16 @@ export default async function StudentDetailPage({
             title: (r.passage_title as string) ?? "",
             date: r.created_at as string,
           }))}
+          readingExercises={(() => {
+            const rows = (readingExercises ?? []) as { kind: string; value: number | null }[];
+            const counts = { takistoskop: 0, golgeleme: 0, blok: 0, schulte: 0 };
+            const schulteMs: number[] = [];
+            for (const e of rows) {
+              if (e.kind in counts) counts[e.kind as keyof typeof counts]++;
+              if (e.kind === "schulte" && e.value != null) schulteMs.push(e.value);
+            }
+            return { counts, schulteBest: schulteMs.length ? Math.min(...schulteMs) / 1000 : null };
+          })()}
         />
       </div>
     </div>

@@ -47,17 +47,27 @@ function loadStats(): ExerciseStats {
     return { ...EMPTY_STATS };
   }
 }
-function bumpExercise(kind: ExerciseKind) {
+function bumpExercise(kind: ExerciseKind, value?: number) {
   const s = loadStats();
   s[kind] += 1;
   localStorage.setItem(STATS_KEY, JSON.stringify(s));
   // Koç panelinde görünmesi için kalıcı kayıt (hata olursa yerel sayaç yine de artmış olur)
-  void logReadingExercise(kind).catch(() => {});
+  void logReadingExercise(kind, value).catch(() => {});
 }
 
 type Tab = "ozet" | "test" | "takistoskop" | "golgeleme" | "blok" | "gozacisi" | "gelisim";
 
-export function HizliOkumaClient({ initialHistory = [] }: { initialHistory?: Result[] }) {
+export type WeeklyCounts = { test: number; takistoskop: number; pacer: number; schulte: number };
+
+export function HizliOkumaClient({
+  initialHistory = [],
+  weekly = { test: 0, takistoskop: 0, pacer: 0, schulte: 0 },
+  schulteBestDb = null,
+}: {
+  initialHistory?: Result[];
+  weekly?: WeeklyCounts;
+  schulteBestDb?: number | null;
+}) {
   const [tab, setTab] = useState<Tab>("ozet");
   const [history, setHistory] = useState<Result[]>(initialHistory);
 
@@ -116,7 +126,7 @@ export function HizliOkumaClient({ initialHistory = [] }: { initialHistory?: Res
         ))}
       </div>
 
-      {tab === "ozet" && <Dashboard goTo={setTab} history={history} />}
+      {tab === "ozet" && <Dashboard goTo={setTab} history={history} weekly={weekly} schulteBestDb={schulteBestDb} />}
       {tab === "test" && <ReadingTest onSaved={addResult} />}
       {tab === "takistoskop" && <Takistoskop />}
       {tab === "golgeleme" && (
@@ -139,7 +149,7 @@ export function HizliOkumaClient({ initialHistory = [] }: { initialHistory?: Res
           kind="blok"
         />
       )}
-      {tab === "gozacisi" && <SchulteTable />}
+      {tab === "gozacisi" && <SchulteTable initialBest={schulteBestDb} />}
       {tab === "gelisim" && <Gelisim history={history} />}
     </div>
   );
@@ -153,16 +163,33 @@ const EXERCISE_META: { kind: ExerciseKind; icon: string; label: string }[] = [
   { kind: "schulte", icon: "🔢", label: "Göz Açısı (Schulte)" },
 ];
 
-function Dashboard({ goTo, history }: { goTo: (t: Tab) => void; history: Result[] }) {
+// Haftalık program hedefleri — sabit, öğrenciye net bir ritim verir.
+const WEEKLY_PLAN: { key: keyof WeeklyCounts; label: string; icon: string; target: number; tab: Tab }[] = [
+  { key: "test", label: "Okuma hızı testi", icon: "⏱️", target: 2, tab: "test" },
+  { key: "takistoskop", label: "Takistoskop turu", icon: "👁️", target: 3, tab: "takistoskop" },
+  { key: "pacer", label: "Pacer turu (gölgeleme/blok)", icon: "🎯", target: 3, tab: "golgeleme" },
+  { key: "schulte", label: "Göz açısı (Schulte)", icon: "🔢", target: 2, tab: "gozacisi" },
+];
+
+function Dashboard({
+  goTo, history, weekly, schulteBestDb,
+}: { goTo: (t: Tab) => void; history: Result[]; weekly: WeeklyCounts; schulteBestDb: number | null }) {
   const [stats, setStats] = useState<ExerciseStats>({ takistoskop: 0, golgeleme: 0, blok: 0, schulte: 0 });
-  const [schulteBest, setSchulteBest] = useState<number | null>(null);
+  const [schulteBest, setSchulteBest] = useState<number | null>(schulteBestDb);
   const [showAllBadges, setShowAllBadges] = useState(false);
 
   useEffect(() => {
     setStats(loadStats());
     const b = localStorage.getItem(SCHULTE_KEY);
-    if (b) setSchulteBest(Number(b));
-  }, []);
+    const local = b ? Number(b) : null;
+    const vals = [schulteBestDb, local].filter((v): v is number => v != null);
+    if (vals.length) setSchulteBest(Math.min(...vals));
+  }, [schulteBestDb]);
+
+  // Haftalık hedef ilerlemesi
+  const weekDone = WEEKLY_PLAN.reduce((a, p) => a + Math.min(weekly[p.key], p.target), 0);
+  const weekTotal = WEEKLY_PLAN.reduce((a, p) => a + p.target, 0);
+  const weekPct = Math.round((weekDone / weekTotal) * 100);
 
   const badgeInput = { history, stats, schulteBest };
   const earned = BADGES.filter((b) => b.earned(badgeInput));
@@ -185,6 +212,50 @@ function Dashboard({ goTo, history }: { goTo: (t: Tab) => void; history: Result[
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Sol sütun */}
         <div className="space-y-4 lg:col-span-2">
+          {/* Bu Haftaki Hedefin */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="font-bold text-gray-900">Bu Haftaki Hedefin</h2>
+                <p className="mt-0.5 text-sm text-gray-400">Düzenli tekrar, hızlı okumanın tek sırrı. Küçük ama sürekli.</p>
+              </div>
+              <div className="text-right">
+                <span className="text-2xl font-bold text-[#0E8FA3]">{weekPct}%</span>
+                <p className="text-[11px] text-gray-400">{weekDone}/{weekTotal} hedef</p>
+              </div>
+            </div>
+            {weekPct >= 100 && (
+              <div className="mt-3 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700">
+                🎉 Bu haftanın hedefini tamamladın! Ritmi bozma.
+              </div>
+            )}
+            <div className="mt-4 space-y-3">
+              {WEEKLY_PLAN.map((p) => {
+                const done = Math.min(weekly[p.key], p.target);
+                const pct = Math.round((done / p.target) * 100);
+                const full = done >= p.target;
+                return (
+                  <button key={p.key} onClick={() => goTo(p.tab)} className="block w-full text-left">
+                    <div className="mb-1 flex items-center justify-between text-sm">
+                      <span className="font-semibold text-gray-700">
+                        <span className="mr-1.5">{p.icon}</span>{p.label}
+                      </span>
+                      <span className={full ? "font-bold text-emerald-600" : "font-semibold text-gray-500"}>
+                        {full ? "✓ " : ""}{done}/{p.target}
+                      </span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+                      <div
+                        className={`h-full rounded-full transition-all ${full ? "bg-emerald-500" : "bg-[#0E8FA3]"}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* İlerleme Özeti */}
           <div className="rounded-2xl border border-gray-200 bg-white p-5">
             <h2 className="font-bold text-gray-900">İlerleme Özeti</h2>
@@ -885,18 +956,23 @@ function PacerReader({
 // ==================== GÖZ AÇISI (SCHULTE TABLOSU) ====================
 const SCHULTE_KEY = "rekorzeka_schulte_best";
 
-function SchulteTable() {
+function SchulteTable({ initialBest = null }: { initialBest?: number | null }) {
   const [grid, setGrid] = useState<number[]>([]);
   const [next, setNext] = useState(1);
   const [running, setRunning] = useState(false);
   const [startTs, setStartTs] = useState(0);
   const [now, setNow] = useState(0);
-  const [best, setBest] = useState<number | null>(null);
+  const [best, setBest] = useState<number | null>(initialBest);
   const [wrong, setWrong] = useState<number | null>(null);
 
   useEffect(() => {
+    // DB'den gelen en iyi süre ile localStorage'ı karşılaştır, küçüğü tut
     const b = localStorage.getItem(SCHULTE_KEY);
-    if (b) setBest(Number(b));
+    const local = b ? Number(b) : null;
+    setBest((cur) => {
+      const vals = [cur, local].filter((v): v is number => v != null);
+      return vals.length ? Math.min(...vals) : null;
+    });
   }, []);
 
   useEffect(() => {
@@ -925,7 +1001,7 @@ function SchulteTable() {
         const elapsed = (Date.now() - startTs) / 1000;
         setRunning(false);
         setNext(26);
-        bumpExercise("schulte"); // tablo bitti → rozet sayacı
+        bumpExercise("schulte", Math.round(elapsed * 1000)); // tablo bitti → rozet + DB'ye süre (ms)
         if (best === null || elapsed < best) {
           setBest(elapsed);
           localStorage.setItem(SCHULTE_KEY, String(elapsed));

@@ -68,11 +68,14 @@ export async function backfillReadingSessions(rows: SessionRow[]) {
 }
 
 // Bir egzersiz turu tamamlandığında çağrılır (rozet sayacının kalıcı karşılığı).
-export async function logReadingExercise(kind: string) {
+// value: Schulte gibi süre/skor taşıyan egzersizlerde ölçüm (ms). Diğerlerinde boş.
+export async function logReadingExercise(kind: string, value?: number) {
   const userId = await currentUserId();
   if (!userId) return { ok: false as const };
 
   const admin = createAdminClient();
-  await admin.from("reading_exercises").insert({ user_id: userId, kind });
+  await admin
+    .from("reading_exercises")
+    .insert({ user_id: userId, kind, value: value ?? null });
   return { ok: true as const };
 }

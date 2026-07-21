@@ -34,6 +34,32 @@ export default async function HizliOkumaPage() {
     title: (r.passage_title as string) ?? "",
   }));
 
+  // Egzersiz kayıtları — haftalık program ilerlemesi + Schulte en iyi süresi
+  const { data: exRows } = await admin
+    .from("reading_exercises")
+    .select("kind, value, created_at")
+    .eq("user_id", user!.id)
+    .order("created_at", { ascending: false })
+    .limit(500);
+
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const weekly = { test: 0, takistoskop: 0, pacer: 0, schulte: 0 };
+  for (const e of exRows ?? []) {
+    if (new Date(e.created_at as string).getTime() < weekAgo) continue;
+    const k = e.kind as string;
+    if (k === "takistoskop") weekly.takistoskop++;
+    else if (k === "golgeleme" || k === "blok") weekly.pacer++;
+    else if (k === "schulte") weekly.schulte++;
+  }
+  // Bu haftaki okuma testi sayısı (reading_sessions'tan)
+  weekly.test = initialHistory.filter((h) => new Date(h.date).getTime() >= weekAgo).length;
+
+  // Schulte en iyi süre (ms → saniye)
+  const schulteMs = (exRows ?? [])
+    .filter((e) => e.kind === "schulte" && e.value != null)
+    .map((e) => e.value as number);
+  const schulteBestDb = schulteMs.length ? Math.min(...schulteMs) / 1000 : null;
+
   // Erişim yok → kilit ekranı
   if (!access.allowed) {
     const msg =
@@ -82,7 +108,7 @@ export default async function HizliOkumaPage() {
           )}
         </div>
       )}
-      <HizliOkumaClient initialHistory={initialHistory} />
+      <HizliOkumaClient initialHistory={initialHistory} weekly={weekly} schulteBestDb={schulteBestDb} />
     </div>
   );
 }

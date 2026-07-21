@@ -40,3 +40,6 @@ grant all on public.reading_exercises to anon, authenticated, service_role;
 
 alter table public.reading_sessions disable row level security;
 alter table public.reading_exercises disable row level security;
+
+-- 4) Egzersiz ölçümü (Schulte süresi ms; diğer egzersizlerde boş)
+alter table public.reading_exercises add column if not exists value integer;

@@ -100,6 +100,11 @@ interface ReadingSession {
   date: string;
 }
 
+interface ReadingExerciseSummary {
+  counts: { takistoskop: number; golgeleme: number; blok: number; schulte: number };
+  schulteBest: number | null;
+}
+
 const TABS = [
   { key: "deneme", label: "📝 Denemeler" },
   { key: "program", label: "📅 Ders Programı" },
@@ -121,6 +126,7 @@ export function StudentTabs({
   unreadMessages = 0,
   aiScan = null,
   readingSessions = [],
+  readingExercises,
 }: {
   studentId: string;
   denemeler: DenemeResult[];
@@ -132,6 +138,7 @@ export function StudentTabs({
   unreadMessages?: number;
   aiScan?: AiScan | null;
   readingSessions?: ReadingSession[];
+  readingExercises?: ReadingExerciseSummary;
 }) {
   const [tab, setTabState] = useState<string>("deneme");
   const [isPending, startTransition] = useTransition();
@@ -598,14 +605,49 @@ export function StudentTabs({
       )}
 
       {/* ── HIZLI OKUMA ── */}
-      {tab === "hizliokuma" && <HizliOkumaPanel sessions={readingSessions} />}
+      {tab === "hizliokuma" && <HizliOkumaPanel sessions={readingSessions} exercises={readingExercises} />}
     </div>
   );
 }
 
-function HizliOkumaPanel({ sessions }: { sessions: ReadingSession[] }) {
+function HizliOkumaPanel({ sessions, exercises }: { sessions: ReadingSession[]; exercises?: ReadingExerciseSummary }) {
+  const c = exercises?.counts;
+  const totalTur = c ? c.takistoskop + c.golgeleme + c.blok + c.schulte : 0;
+  const exerciseBlock = c && totalTur > 0 ? (
+    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-bold text-gray-700">Egzersiz Aktivitesi</h3>
+        <span className="text-xs text-gray-400">
+          toplam {totalTur} tur
+          {exercises?.schulteBest != null && <> · Schulte en iyi {exercises.schulteBest.toFixed(1)}s</>}
+        </span>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-4">
+        {[
+          { label: "Takistoskop", v: c.takistoskop, icon: "👁️" },
+          { label: "Gölgeleme", v: c.golgeleme, icon: "🎯" },
+          { label: "Blok Okuma", v: c.blok, icon: "🔲" },
+          { label: "Göz Açısı", v: c.schulte, icon: "🔢" },
+        ].map((e) => (
+          <div key={e.label} className="rounded-xl bg-gray-50 px-3 py-2.5 text-center">
+            <div className="text-lg">{e.icon}</div>
+            <div className="mt-0.5 text-lg font-bold text-[#0E8FA3]">{e.v}</div>
+            <div className="text-[11px] text-gray-400">{e.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ) : null;
+
   if (sessions.length === 0) {
-    return <Empty text="Öğrenci henüz Hızlı Okuma testi çözmemiş. Sonuçlar geldikçe gelişimi burada görünür." />;
+    return exerciseBlock ? (
+      <div className="space-y-4">
+        {exerciseBlock}
+        <Empty text="Öğrenci egzersiz yapıyor ama henüz okuma hızı testi çözmemiş. Test sonuçları geldikçe gelişim grafiği burada oluşur." />
+      </div>
+    ) : (
+      <Empty text="Öğrenci henüz Hızlı Okuma testi çözmemiş. Sonuçlar geldikçe gelişimi burada görünür." />
+    );
   }
 
   const last = sessions[sessions.length - 1];
@@ -650,6 +692,9 @@ function HizliOkumaPanel({ sessions }: { sessions: ReadingSession[] }) {
           ))}
         </svg>
       </div>
+
+      {/* Egzersiz aktivitesi */}
+      {exerciseBlock}
 
       {/* Son testler tablosu */}
       <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
