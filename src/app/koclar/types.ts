@@ -2,6 +2,14 @@ export type CoachType = "YKS" | "LGS" | "KPSS/AGS" | "DGS" | "PDR";
 export type Availability = "open" | "low" | "full";
 export type FilterType = "all" | CoachType;
 
+// Psikolog / Psikolojik Danışman (PDR) koçlarda YKS derece rozeti gösterilmez —
+// onların kimliği YKS sıralaması değil, psikoloji ünvanıdır.
+export function isPdrCoach(coach: { types?: CoachType[]; department?: string | null }): boolean {
+  if (coach.types?.includes("PDR")) return true;
+  const d = (coach.department ?? "").toLocaleLowerCase("tr");
+  return /psikolo|rehberl|\bpdr\b/.test(d);
+}
+
 export interface Coach {
   id: string;
   name: string;

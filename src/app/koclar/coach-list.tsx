@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Availability, Coach, CoachType, FilterType } from "./types";
+import { isPdrCoach, type Availability, type Coach, type CoachType, type FilterType } from "./types";
 import Link from "next/link";
 import { BookingModal } from "./booking-modal";
 import { StartCoachingButton } from "./start-coaching-button";
@@ -88,8 +88,8 @@ function CoachCard({
           {coach.university}{coach.department ? ` - ${coach.department}` : ""}
         </p>
 
-        {/* Türkiye sıralaması rozeti */}
-        {coach.rank_type && coach.rank_value ? (
+        {/* Türkiye sıralaması rozeti — PDR/psikolog koçlarda gizli */}
+        {coach.rank_type && coach.rank_value && !isPdrCoach(coach) ? (
           <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3.5 py-1 text-sm font-bold text-amber-700">
             🏆 {coach.rank_type} - {coach.rank_value.toLocaleString("tr-TR")}
           </span>

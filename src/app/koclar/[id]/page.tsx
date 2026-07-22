@@ -1,7 +1,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import type { Coach, CoachType } from "../types";
+import { isPdrCoach, type Coach, type CoachType } from "../types";
 import { BookingSection } from "./booking-section";
 import { ShareButton } from "./profile-actions";
 
@@ -44,10 +44,11 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
   if (!coach) notFound();
 
   const c = coach as Coach;
+  const hidePdrRank = isPdrCoach(c); // PDR/psikolog koçlarda YKS derecesi + belgesi gizlenir
 
-  // Başarı belgesi: yalnızca yüklü + yönetici doğrulamışsa gösterilir (gizli bucket, 1 saatlik imzalı link)
+  // Başarı belgesi: yalnızca yüklü + yönetici doğrulamışsa (ve PDR koçu değilse) gösterilir
   let belgeUrl: string | null = null;
-  if (c.result_doc_path && c.doc_verified) {
+  if (c.result_doc_path && c.doc_verified && !hidePdrRank) {
     const adminClient = createAdminClient();
     const { data: signed } = await adminClient.storage
       .from("belgeler")
@@ -125,8 +126,8 @@ export default async function CoachDetailPage({ params }: { params: Promise<{ id
                 {c.department && <p className="text-sm text-gray-500">{c.department}</p>}
               </div>
 
-              {/* Türkiye sıralaması rozeti */}
-              {c.rank_type && c.rank_value ? (
+              {/* Türkiye sıralaması rozeti — PDR/psikolog koçlarda gizli */}
+              {c.rank_type && c.rank_value && !hidePdrRank ? (
                 <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-4 py-1.5 text-sm font-bold text-amber-700">
                   🏆 {c.rank_type} - {c.rank_value.toLocaleString("tr-TR")} <span className="font-medium text-amber-600/80">Türkiye Sıralaması</span>
                 </span>
