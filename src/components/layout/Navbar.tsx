@@ -9,7 +9,6 @@ import { signOut } from "@/app/auth/actions";
 const navLinks = [
   { href: "/", label: "Ana Sayfa", icon: "home" },
   { href: "/hakkimizda", label: "Hakkımızda", icon: "information-circle-outline" },
-  { href: "/koclar", label: "Koçlar", icon: "people" },
   { href: "/nasil-calisir", label: "Nasıl Çalışır", icon: "swap-horizontal" },
   { href: "/paketler", label: "Paketler", icon: "layers" },
   { href: "/blog", label: "Blog", icon: "newspaper-outline" },

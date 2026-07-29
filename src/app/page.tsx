@@ -137,8 +137,8 @@ export default function HomePage() {
                   'Deneme AI Analiz ve Soru Çözümü',
                   '7/24 WhatsApp Üzerinden Kesintisiz Destek',
                 ],
-                btn: 'YKS Koçlarını İncele',
-                href: '/koclar?tip=YKS',
+                btn: 'Ücretsiz Ön Görüşme',
+                href: '/on-gorusme',
               },
               {
                 title: 'LGS Koçluk',
@@ -151,8 +151,8 @@ export default function HomePage() {
                   'Yeni Nesil Paragraf ve Soru Taktikleri',
                   'Düzenli Deneme Analizi ve Veli Bilgilendirme',
                 ],
-                btn: 'LGS Koçlarını İncele',
-                href: '/koclar?tip=LGS',
+                btn: 'Ücretsiz Ön Görüşme',
+                href: '/on-gorusme',
               },
               {
                 title: 'PDR Uzmanından Koçluk',
@@ -165,8 +165,8 @@ export default function HomePage() {
                   'Birebir Motivasyon ve Odaklanma Görüşmeleri',
                   'Üniversite Kariyer ve Tercih Rehberliği',
                 ],
-                btn: 'PDR Uzmanlarını Gör',
-                href: '/koclar?tip=PDR',
+                btn: 'Ücretsiz Ön Görüşme',
+                href: '/on-gorusme',
               },
             ].map(c => (
               <div
@@ -250,8 +250,8 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <Link href="/koclar" className="btn-primary inline-block px-8 py-4 text-base">
-              Koçları Keşfet →
+            <Link href="/on-gorusme" className="btn-primary inline-block px-8 py-4 text-base">
+              Ücretsiz Ön Görüşme →
             </Link>
           </div>
         </div>
@@ -422,7 +422,7 @@ export default function HomePage() {
           <p className="text-white/80 text-lg mb-10 leading-relaxed">
             30 dakikalık ücretsiz görüşmede seviyeni, hedefini ve en uygun koçu birlikte belirliyoruz. Taahhüt yok.
           </p>
-          <Link href="/koclar" className="bg-white text-blue-600 font-bold px-10 py-4 rounded-xl text-lg transition-all hover:-translate-y-1 hover:shadow-2xl inline-block">
+          <Link href="/on-gorusme" className="bg-white text-blue-600 font-bold px-10 py-4 rounded-xl text-lg transition-all hover:-translate-y-1 hover:shadow-2xl inline-block">
             Ücretsiz görüşme planla →
           </Link>
         </div>
