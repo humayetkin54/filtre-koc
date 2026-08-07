@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { startExamScan, analyzeScanBatch, finalizeExamScan } from "../actions";
 
 const MAX_PHOTOS = 50;
-// Grubu küçük tut: istek boyutu değil, YÜKLEME SÜRESİ darboğaz. Yavaş bir mobil bağlantıda
-// 2.5MB'lık grup tek başına 20 sn sürüp fonksiyon süresini yiyordu (yarıda kopma sebebi).
+// TEŞHİS AYARI (2026-08-07): grup başına TEK fotoğraf. 4'lü/1.5MB gruplarda istek istemciye
+// dönmeden düşüyordu; Gemini'nin kendisi ~10 sn sürdüğü ölçüldüğü için şüpheli istek boyutu /
+// yükleme süresi kaldı. Tek fotoğrafla istek ~350KB'a iner: çalışırsa sebep boyut, çalışmazsa
+// boyut elenir. Sonuç alınınca bu değer tekrar yükseltilmeli (41 sayfa = 41 istek, yavaş).
 const MAX_BATCH_BYTES = 1.5 * 1024 * 1024;
-const MAX_BATCH_COUNT = 4;
+const MAX_BATCH_COUNT = 1;
 
 // Sunucu çağrısı çökerse veya geçici hata dönerse aynı işlemi 3 kez dene
 async function callWithRetry<T extends { error?: string }>(
