@@ -5,12 +5,11 @@ import { useRouter } from "next/navigation";
 import { startExamScan, analyzeScanBatch, finalizeExamScan } from "../actions";
 
 const MAX_PHOTOS = 50;
-// TEŞHİS AYARI (2026-08-07): grup başına TEK fotoğraf. 4'lü/1.5MB gruplarda istek istemciye
-// dönmeden düşüyordu; Gemini'nin kendisi ~10 sn sürdüğü ölçüldüğü için şüpheli istek boyutu /
-// yükleme süresi kaldı. Tek fotoğrafla istek ~350KB'a iner: çalışırsa sebep boyut, çalışmazsa
-// boyut elenir. Sonuç alınınca bu değer tekrar yükseltilmeli (41 sayfa = 41 istek, yavaş).
-const MAX_BATCH_BYTES = 1.5 * 1024 * 1024;
-const MAX_BATCH_COUNT = 1;
+// ÖLÇÜLDÜ (2026-08-07): ~350KB istek geçiyor, 1.5MB istek istemciye dönmeden düşüyor.
+// Gemini'nin kendisi ~10 sn (4 görsel 4.6 + 37 kayıt çıktı 3.5) — darboğaz o değil, istek
+// boyutu. Bu yüzden tavan DÜŞÜK tutuluyor; büyütmeden önce gerçek fotoğrafla test şart.
+const MAX_BATCH_BYTES = 600 * 1024;
+const MAX_BATCH_COUNT = 2;
 
 // Sunucu çağrısı çökerse veya geçici hata dönerse aynı işlemi 3 kez dene
 async function callWithRetry<T extends { error?: string }>(
@@ -69,13 +68,24 @@ async function compressOnce(file: File, maxDim: number, quality: number): Promis
   }
 }
 
+// Sayfa başına hedef boyut. Küçük istek = kısa yükleme; bu akışta belirleyici olan bu.
+const TARGET_BYTES = 300 * 1024;
+// Alt sınır 1100px: Gemini'nin soru metnini okuyup konu tespiti yapabilmesi için gereken
+// çözünürlük. Daha aşağı inmek analiz kalitesini düşürür — boyut için buradan feragat etme.
+const COMPRESS_LADDER: [number, number][] = [
+  [1400, 0.7],
+  [1200, 0.6],
+  [1100, 0.5],
+];
+
 async function compressImage(file: File): Promise<File> {
-  // İlk deneme: 1400px, %70 kalite
-  let out = await compressOnce(file, 1400, 0.7);
-  // Hâlâ büyükse: 1100px, %55 kalite
-  if (out && out.size > 500 * 1024) {
-    const smaller = await compressOnce(file, 1100, 0.55);
-    if (smaller) out = smaller;
+  let out: File | null = null;
+  for (const [maxDim, quality] of COMPRESS_LADDER) {
+    // Her adım ORİJİNALDEN sıkıştırır — üst üste bindirip artefakt biriktirmemek için
+    const candidate = await compressOnce(file, maxDim, quality);
+    if (!candidate) break;
+    out = candidate;
+    if (candidate.size <= TARGET_BYTES) break;
   }
   return out ?? file;
 }
