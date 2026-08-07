@@ -69,8 +69,10 @@ async function geminiGenerate(body: string): Promise<string> {
   if (!apiKey) throw new Error("GEMINI_API_KEY tanımlı değil");
 
   let lastError = "";
-  // Vercel fonksiyon süre limitine (60 sn olabilir) takılmamak için toplam bütçe: 45 sn
-  const deadline = Date.now() + 45_000;
+  // Vercel fonksiyon tavanı 60 sn ve bu bütçe İSTEK GÖVDESİ YÜKLENDİKTEN SONRA başlıyor;
+  // yavaş bağlantıda yükleme tek başına 10-15 sn yiyebiliyor. 35 sn'de kesip anlamlı hata
+  // döndürmek, platformun isteği öldürüp istemciye jenerik "ulaşılamadı" yazdırmasından iyi.
+  const deadline = Date.now() + 35_000;
   for (const model of MODEL_CHAIN) {
     const remaining = deadline - Date.now();
     if (remaining < 8_000) break; // kalan süre yetmez — istemci yeniden denesin
@@ -82,7 +84,7 @@ async function geminiGenerate(body: string): Promise<string> {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body,
-        signal: AbortSignal.timeout(Math.min(30_000, remaining)),
+        signal: AbortSignal.timeout(Math.min(20_000, remaining)),
       });
     } catch (e) {
       lastError = `${model}: zaman aşımı / bağlantı hatası (${e instanceof Error ? e.message : ""})`;

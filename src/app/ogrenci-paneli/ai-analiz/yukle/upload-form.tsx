@@ -5,16 +5,21 @@ import { useRouter } from "next/navigation";
 import { startExamScan, analyzeScanBatch, finalizeExamScan } from "../actions";
 
 const MAX_PHOTOS = 50;
-const MAX_BATCH_BYTES = 2.5 * 1024 * 1024; // Vercel istek limiti 4.5MB — güvenli pay ile 2.5MB
-const MAX_BATCH_COUNT = 6; // grup başına ~6 sayfa: daha az istek, RPM baskısı düşük, süre marjı rahat
+// Grubu küçük tut: istek boyutu değil, YÜKLEME SÜRESİ darboğaz. Yavaş bir mobil bağlantıda
+// 2.5MB'lık grup tek başına 20 sn sürüp fonksiyon süresini yiyordu (yarıda kopma sebebi).
+const MAX_BATCH_BYTES = 1.5 * 1024 * 1024;
+const MAX_BATCH_COUNT = 4;
 
 // Sunucu çağrısı çökerse veya geçici hata dönerse aynı işlemi 3 kez dene
 async function callWithRetry<T extends { error?: string }>(
   fn: () => Promise<T>,
   onRetry: (attempt: number) => void,
+  stage: string,
   attempts = 3
 ): Promise<T | { error: string }> {
-  let lastErr = "Sunucuya ulaşılamadı (zaman aşımı olabilir). İnternetini kontrol edip tekrar dene.";
+  // Bu metin yalnızca 3 denemenin da isteği tamamen düştüğünde görünür (sunucu hata bile
+  // döndüremedi) — hangi adımda koptuğunu yazmazsak teşhis imkânsız oluyor.
+  let lastErr = `${stage} sırasında sunucu yanıt vermedi (istek zaman aşımına uğramış olabilir). Bağlantın yavaşsa fotoğrafları daha az sayfa hâlinde yüklemeyi dene.`;
   for (let i = 0; i < attempts; i++) {
     try {
       const res = await fn();
@@ -131,7 +136,8 @@ export function UploadForm() {
       // 2) Tarama kaydı başlat
       const start = await callWithRetry(
         () => startExamScan(examName, examDate, compressed.length),
-        (n) => setProgress(`Bağlantı sorunu — tekrar deneniyor (${n}/3)...`)
+        (n) => setProgress(`Bağlantı sorunu — tekrar deneniyor (${n}/3)...`),
+        "Kayıt oluşturma"
       );
       if ("error" in start || !("id" in start) || !start.id) {
         setProgress(null);
@@ -149,7 +155,7 @@ export function UploadForm() {
 
       const batches = buildBatches(compressed);
       let donePages = 0;
-      for (const chunk of batches) {
+      for (const [i, chunk] of batches.entries()) {
         donePages += chunk.length;
         const label = `Sayfalar analiz ediliyor... (${donePages}/${compressed.length})`;
         setProgress(label);
@@ -159,7 +165,8 @@ export function UploadForm() {
 
         const res = await callWithRetry(
           () => analyzeScanBatch(start.id, fd),
-          (n) => setProgress(`${label} — tekrar deneniyor (${n}/3)...`)
+          (n) => setProgress(`${label} — tekrar deneniyor (${n}/3)...`),
+          `${i + 1}. grubun analizi (sayfa ${donePages - chunk.length + 1}-${donePages})`
         );
         if (res && "error" in res && res.error) {
           setProgress(null);
@@ -172,7 +179,8 @@ export function UploadForm() {
       setProgress("Analiz özeti ve program önerisi hazırlanıyor...");
       const fin = await callWithRetry(
         () => finalizeExamScan(start.id),
-        (n) => setProgress(`Analiz özeti — tekrar deneniyor (${n}/3)...`)
+        (n) => setProgress(`Analiz özeti — tekrar deneniyor (${n}/3)...`),
+        "Analiz özeti üretimi"
       );
       setProgress(null);
       if (fin && "error" in fin && fin.error) {

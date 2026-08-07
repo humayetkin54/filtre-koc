@@ -1,7 +1,9 @@
 import { UploadForm } from "./upload-form";
 
-// Gemini analizi uzun sürebilir (50 sayfaya kadar) — Vercel fonksiyon süresini artır
-export const maxDuration = 300;
+// Gemini analizi uzun sürebilir — Vercel fonksiyon süresini üst sınıra çek.
+// DİKKAT: Hobby planında tavan 60 sn. Üstünde bir değer (ör. 300) geçerli sayılmaz ve
+// süre varsayılana (~15 sn) düşer; grup yüklemesi ortada kesilir. Plan yükseltilmeden artırma.
+export const maxDuration = 60;
 
 export default function YuklePage() {
   return (
