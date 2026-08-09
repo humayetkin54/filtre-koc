@@ -198,8 +198,8 @@ export default function GizlilikPage() {
                 },
                 {
                   title: "Vercel Inc. (hosting)",
-                  scope: "IP adresi, istek logları",
-                  reason: "Platform barındırma ve CDN",
+                  scope: "IP adresi, istek logları, anonim ziyaret istatistikleri (çerezsiz)",
+                  reason: "Platform barındırma, CDN ve toplu ziyaretçi ölçümü",
                   location: "🌍 ABD/AB — SCCs kapsamında",
                 },
                 {

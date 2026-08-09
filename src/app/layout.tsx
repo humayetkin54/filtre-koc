@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import { CookieConsent } from "@/components/layout/CookieConsent";
 import { MetaPixel } from "@/components/analytics/MetaPixel";
+import { Analytics } from "@vercel/analytics/next";
 import { PwaSetup } from "@/components/pwa/PwaSetup";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { ADMIN_EMAILS } from "@/lib/admins";
@@ -139,6 +140,8 @@ export default async function RootLayout({
         <WhatsAppButton />
         <MetaPixel />
         <CookieConsent />
+        {/* Cerezsiz, kisi tanimlamayan ziyaretci olcumu — riza bandi gerektirmez */}
+        <Analytics />
       </body>
     </html>
   );
