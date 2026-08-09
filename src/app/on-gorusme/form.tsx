@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { submitIntroRequest } from "./actions";
+import { trackEvent } from "@/lib/consent";
 
 export function OnGorusmeForm() {
   const [isPending, startTransition] = useTransition();
@@ -16,7 +17,12 @@ export function OnGorusmeForm() {
     startTransition(async () => {
       const result = await submitIntroRequest(fd);
       if (result?.error) setError(result.error);
-      else setDone(true);
+      else {
+        // Meta Pixel dönüşümü — rıza yoksa sessizce atlanır.
+        // Kişisel veri GÖNDERİLMEZ; yalnızca olayın gerçekleştiği bilgisi gider.
+        trackEvent("Lead", { content_name: "Ucretsiz On Gorusme" });
+        setDone(true);
+      }
     });
   }
 

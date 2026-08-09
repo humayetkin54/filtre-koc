@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
+import { CookieConsent } from "@/components/layout/CookieConsent";
+import { MetaPixel } from "@/components/analytics/MetaPixel";
 import { PwaSetup } from "@/components/pwa/PwaSetup";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { ADMIN_EMAILS } from "@/lib/admins";
@@ -135,6 +137,8 @@ export default async function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <WhatsAppButton />
+        <MetaPixel />
+        <CookieConsent />
       </body>
     </html>
   );

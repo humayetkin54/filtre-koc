@@ -152,6 +152,7 @@ export default function GizlilikPage() {
                     ["Oturum çerezleri", "Giriş durumunuzu korur (Supabase auth token)", "Evet"],
                     ["Tercih çerezleri", "Popup kapatma gibi UI tercihlerini hatırlar (localStorage)", "Evet"],
                     ["Analitik çerezler", "Sayfa görüntüleme ve kullanım istatistikleri", "Hayır (rızayla)"],
+                    ["Pazarlama çerezleri", "Meta Pixel — reklam performansı ölçümü ve yeniden hedefleme", "Hayır (rızayla)"],
                   ].map(([type, purpose, required]) => (
                     <tr key={type} className="even:bg-gray-50/50">
                       <td className="px-4 py-2.5 font-medium text-gray-700">{type}</td>
@@ -163,8 +164,12 @@ export default function GizlilikPage() {
               </table>
             </div>
             <p className="mt-3 text-xs text-gray-400">
-              Üçüncü taraf reklam veya izleme çerezleri <strong className="text-gray-600">kullanılmamaktadır.</strong>{" "}
-              Zorunlu olmayan çerezleri tarayıcı ayarlarınızdan devre dışı bırakabilirsiniz; ancak
+              Zorunlu olmayan çerezler <strong className="text-gray-600">yalnızca açık rızanızla</strong>{" "}
+              çalışır. Siteye ilk girişinizde çıkan çerez bandında &ldquo;Sadece zorunlu&rdquo; derseniz
+              Meta Pixel <strong className="text-gray-600">hiç yüklenmez</strong> ve reklam ölçümü için
+              hakkınızda hiçbir veri toplanmaz. Kararınızı sayfanın altındaki{" "}
+              <strong className="text-gray-600">Çerez tercihleri</strong> bağlantısından dilediğiniz zaman
+              değiştirebilirsiniz. Zorunlu çerezleri tarayıcı ayarlarınızdan kapatabilirsiniz; ancak
               bu durumda bazı platform özellikleri çalışmayabilir.
             </p>
           </section>
@@ -195,6 +200,12 @@ export default function GizlilikPage() {
                   title: "Vercel Inc. (hosting)",
                   scope: "IP adresi, istek logları",
                   reason: "Platform barındırma ve CDN",
+                  location: "🌍 ABD/AB — SCCs kapsamında",
+                },
+                {
+                  title: "Meta Platforms (yalnızca çerez onayı verirseniz)",
+                  scope: "Çerez kimliği, IP adresi, ziyaret edilen sayfa ve form gönderimi olayı",
+                  reason: "Instagram/Facebook reklam performansının ölçümü ve yeniden hedefleme",
                   location: "🌍 ABD/AB — SCCs kapsamında",
                 },
                 {

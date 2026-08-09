@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { CookiePreferencesButton } from "@/components/layout/CookieConsent";
 
 const footerLinks = [
   { href: "/hakkimizda", label: "Hakkımızda" },
@@ -85,8 +86,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-white/10 pt-6 text-center text-sm text-white/40">
-          © 2026 Rekor Zeka
+        <div className="mt-10 flex flex-col items-center gap-2 border-t border-white/10 pt-6 text-sm text-white/40">
+          <span>© 2026 Rekor Zeka</span>
+          <CookiePreferencesButton className="text-xs text-white/40 underline underline-offset-2 transition-colors hover:text-white/70" />
         </div>
       </div>
     </footer>
