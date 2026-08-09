@@ -12,6 +12,9 @@ interface SendArgs {
   to: EmailRecipient[];
   subject: string;
   html: string;
+  // Yanıtın kime gideceği. Verilmezse gönderici adresi kullanılır (mevcut davranış).
+  // İletişim formu gibi akışlarda ziyaretçinin adresi geçilir → "Yanıtla" doğrudan ona gider.
+  replyTo?: EmailRecipient;
 }
 
 export async function sendEmail(args: SendArgs): Promise<{ ok: boolean; skipped?: boolean }> {
@@ -26,10 +29,15 @@ export async function sendEmail(args: SendArgs): Promise<{ ok: boolean; skipped?
     return { ok: false, skipped: true };
   }
 
+  const replyTo =
+    args.replyTo?.email && args.replyTo.email.includes("@")
+      ? args.replyTo
+      : { email: senderEmail, name: "Rekor Zeka" };
+
   if (provider === "sender") {
-    return sendViaSender(validTo, args.subject, args.html, senderEmail);
+    return sendViaSender(validTo, args.subject, args.html, senderEmail, replyTo);
   }
-  return sendViaBrevo(validTo, args.subject, args.html, senderEmail);
+  return sendViaBrevo(validTo, args.subject, args.html, senderEmail, replyTo);
 }
 
 export function appointmentEmailHtml({
@@ -71,7 +79,8 @@ async function sendViaBrevo(
   to: EmailRecipient[],
   subject: string,
   html: string,
-  senderEmail: string
+  senderEmail: string,
+  replyTo: EmailRecipient
 ): Promise<{ ok: boolean; skipped?: boolean }> {
   const apiKey = process.env.BREVO_API_KEY;
   if (!apiKey) {
@@ -85,7 +94,7 @@ async function sendViaBrevo(
       headers: { "api-key": apiKey, "Content-Type": "application/json" },
       body: JSON.stringify({
         sender: { email: senderEmail, name: "Rekor Zeka" },
-        replyTo: { email: senderEmail, name: "Rekor Zeka" },
+        replyTo,
         to,
         subject,
         htmlContent: html,
@@ -111,7 +120,8 @@ async function sendViaSender(
   to: EmailRecipient[],
   subject: string,
   html: string,
-  senderEmail: string
+  senderEmail: string,
+  replyTo: EmailRecipient
 ): Promise<{ ok: boolean; skipped?: boolean }> {
   const apiKey = process.env.SENDER_API_KEY;
   if (!apiKey) {
@@ -132,6 +142,7 @@ async function sendViaSender(
         },
         body: JSON.stringify({
           from: { email: senderEmail, name: "Rekor Zeka" },
+          reply_to: { email: replyTo.email, name: replyTo.name ?? "" },
           to: { email: recipient.email, name: recipient.name ?? "" },
           subject,
           html,

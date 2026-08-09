@@ -1,4 +1,4 @@
-const PHONE = "905333742854";
+const PHONE = "905555442854";
 
 export default function WhatsAppButton() {
   return (

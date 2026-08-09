@@ -21,7 +21,7 @@ export default function KvkkPage() {
               {[
                 ["Unvan", "Rekor Zeka Eğitim Teknolojileri"],
                 ["Adres", "Türkiye"],
-                ["E-posta", "destek@rekorzeka.com"],
+                ["E-posta", "bilgi@rekorzeka.com"],
                 ["Web Sitesi", "rekorzeka.com"],
               ].map(([label, value]) => (
                 <div key={label} className="flex px-4 py-3 gap-4">
@@ -232,7 +232,7 @@ export default function KvkkPage() {
                 {
                   icon: "✉️",
                   title: "E-posta",
-                  desc: "destek@rekorzeka.com adresine \"KVKK Başvurusu\" konusuyla yazabilirsiniz. Kimliğinizi doğrulayan bir belge eklemeniz gerekmektedir.",
+                  desc: "bilgi@rekorzeka.com adresine \"KVKK Başvurusu\" konusuyla yazabilirsiniz. Kimliğinizi doğrulayan bir belge eklemeniz gerekmektedir.",
                 },
                 {
                   icon: "📬",

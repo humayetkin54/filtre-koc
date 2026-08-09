@@ -281,8 +281,8 @@ export default function GizlilikPage() {
             <h2 className="text-base font-bold text-[#1e293b] mb-3">8. Gizlilik Haklarınız</h2>
             <p className="mb-4">
               Aşağıdaki hakları kullanmak için{" "}
-              <a href="mailto:destek@rekorzeka.com" className="text-[#0E8FA3] hover:underline">
-                destek@rekorzeka.com
+              <a href="mailto:bilgi@rekorzeka.com" className="text-[#0E8FA3] hover:underline">
+                bilgi@rekorzeka.com
               </a>{" "}
               adresine yazabilir ya da{" "}
               <a href="/kvkk" className="text-[#0E8FA3] hover:underline">KVKK Aydınlatma Metni</a>mizdeki
@@ -327,7 +327,7 @@ export default function GizlilikPage() {
             <h2 className="text-base font-bold text-[#1e293b] mb-3">10. İletişim</h2>
             <div className="rounded-xl border border-[#0E8FA3]/20 bg-[#eef9f9] px-5 py-4 space-y-1 text-xs text-gray-600">
               <p><strong className="text-gray-800">Rekor Zeka Eğitim Teknolojileri</strong></p>
-              <p>E-posta: <a href="mailto:destek@rekorzeka.com" className="text-[#0E8FA3] hover:underline">destek@rekorzeka.com</a></p>
+              <p>E-posta: <a href="mailto:bilgi@rekorzeka.com" className="text-[#0E8FA3] hover:underline">bilgi@rekorzeka.com</a></p>
               <p>Web: <a href="https://rekorzeka.com" className="text-[#0E8FA3] hover:underline">rekorzeka.com</a></p>
               <p className="pt-1 text-gray-400">
                 Gizlilik talepleriniz için e-postanızın konusuna <strong>&quot;Gizlilik Talebi&quot;</strong> yazmanız

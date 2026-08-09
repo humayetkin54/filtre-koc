@@ -1,12 +1,14 @@
+import { ContactForm } from "./contact-form";
+
 const contactItems = [
   {
     label: "E-posta",
-    value: "destek@rekorzeka.com",
+    value: "bilgi@rekorzeka.com",
     icon: "✉️",
   },
   {
     label: "WhatsApp",
-    value: "+90 555 123 45 67",
+    value: "+90 555 544 28 54",
     icon: "💬",
   },
   {
@@ -43,56 +45,7 @@ export default function IletisimPage() {
               <p className="mt-2 text-sm text-gray-500">
                 Formu doldurun, ekibimiz en kısa sürede size dönüş yapsın.
               </p>
-              <form className="mt-8 space-y-4">
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                    Adınız
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ada Yılmaz"
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                    E-posta
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="ada@ornek.com"
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                    Konu
-                  </label>
-                  <select className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20">
-                    <option value="">Seçin...</option>
-                    <option>Koç eşleştirme</option>
-                    <option>Fiyatlandırma</option>
-                    <option>Teknik sorun</option>
-                    <option>Diğer</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                    Mesajınız
-                  </label>
-                  <textarea
-                    rows={4}
-                    placeholder="Mesajınızı yazın..."
-                    className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#123A57] focus:ring-2 focus:ring-[#123A57]/20"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn-primary w-full py-3"
-                >
-                  Gönder
-                </button>
-              </form>
+              <ContactForm />
             </div>
 
             {/* Contact info */}

@@ -27,7 +27,7 @@ export default function MesafeliSatisSozlesmesiPage() {
                   {[
                     ["Unvan", "Rekor Zeka Eğitim Teknolojileri"],
                     ["Adres", "Türkiye"],
-                    ["E-posta", "destek@rekorzeka.com"],
+                    ["E-posta", "bilgi@rekorzeka.com"],
                     ["Web", "rekorzeka.com"],
                   ].map(([label, value]) => (
                     <div key={label} className="flex gap-3 px-4 py-2.5 text-xs">
@@ -175,7 +175,7 @@ export default function MesafeliSatisSozlesmesiPage() {
               Satıcı'ya yazılı bildirimde bulunması yeterlidir:
             </p>
             <ul className="space-y-1 text-xs text-gray-600 mb-4 pl-4 list-disc">
-              <li>E-posta: <a href="mailto:destek@rekorzeka.com" className="text-[#0E8FA3] hover:underline">destek@rekorzeka.com</a> — konu: &quot;Cayma Bildirimi&quot;</li>
+              <li>E-posta: <a href="mailto:bilgi@rekorzeka.com" className="text-[#0E8FA3] hover:underline">bilgi@rekorzeka.com</a> — konu: &quot;Cayma Bildirimi&quot;</li>
               <li>Platform destek formu: <a href="/destek" className="text-[#0E8FA3] hover:underline">rekorzeka.com/destek</a></li>
             </ul>
 
@@ -313,7 +313,7 @@ export default function MesafeliSatisSozlesmesiPage() {
               {[
                 {
                   title: "Önce Satıcı ile iletişim",
-                  desc: "Uyuşmazlık doğduğunda öncelikle destek@rekorzeka.com adresine başvurmanızı tavsiye ederiz. Talebiniz 5 iş günü içinde yanıtlanır.",
+                  desc: "Uyuşmazlık doğduğunda öncelikle bilgi@rekorzeka.com adresine başvurmanızı tavsiye ederiz. Talebiniz 5 iş günü içinde yanıtlanır.",
                 },
                 {
                   title: "Tüketici Hakem Heyeti",
@@ -344,8 +344,8 @@ export default function MesafeliSatisSozlesmesiPage() {
             <p>Son güncelleme: Temmuz 2026 &nbsp;·&nbsp; Bu sözleşme Türk hukuku kapsamında hazırlanmıştır.</p>
             <p className="mt-1">
               Sorularınız için:{" "}
-              <a href="mailto:destek@rekorzeka.com" className="text-[#0E8FA3] hover:underline">
-                destek@rekorzeka.com
+              <a href="mailto:bilgi@rekorzeka.com" className="text-[#0E8FA3] hover:underline">
+                bilgi@rekorzeka.com
               </a>
             </p>
           </div>
