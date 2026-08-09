@@ -14,6 +14,7 @@ import {
   markStudentMessagesRead,
   applyAiProgram,
 } from "../../actions";
+import { TopicTracker, type TopicRow, type ExamWeakness } from "./topic-tracker";
 
 /* ── Tipler ── */
 interface DenemeResult {
@@ -107,6 +108,7 @@ interface ReadingExerciseSummary {
 
 const TABS = [
   { key: "deneme", label: "📝 Denemeler" },
+  { key: "konu", label: "📚 Konu Takibi" },
   { key: "program", label: "📅 Ders Programı" },
   { key: "odev", label: "✅ Ödevler" },
   { key: "hizliokuma", label: "👁️ Hızlı Okuma" },
@@ -127,6 +129,8 @@ export function StudentTabs({
   aiScan = null,
   readingSessions = [],
   readingExercises,
+  topicRows = [],
+  examWeakness = {},
 }: {
   studentId: string;
   denemeler: DenemeResult[];
@@ -139,6 +143,8 @@ export function StudentTabs({
   aiScan?: AiScan | null;
   readingSessions?: ReadingSession[];
   readingExercises?: ReadingExerciseSummary;
+  topicRows?: TopicRow[];
+  examWeakness?: ExamWeakness;
 }) {
   const [tab, setTabState] = useState<string>("deneme");
   const [isPending, startTransition] = useTransition();
@@ -205,6 +211,11 @@ export function StudentTabs({
         ) : (
           <ResultsTabs results={denemeler} readOnly />
         )
+      )}
+
+      {/* ── KONU TAKİBİ ── */}
+      {tab === "konu" && (
+        <TopicTracker studentId={studentId} rows={topicRows} examWeakness={examWeakness} />
       )}
 
       {/* ── DERS PROGRAMI ── */}

@@ -8,6 +8,7 @@ const NAV = [
   { href: "/ogrenci-paneli/ai-analiz", label: "Deneme AI Analiz", icon: "📊" },
   { href: "/ogrenci-paneli/hizli-okuma", label: "Hızlı Okuma", icon: "👁️" },
   { href: "/ogrenci-paneli/deneme", label: "Deneme Sonuçları", icon: "📝" },
+  { href: "/ogrenci-paneli/konu-takibi", label: "Konu Takibim", icon: "📚" },
   { href: "/ogrenci-paneli/program", label: "Ders Programı", icon: "📅" },
   { href: "/ogrenci-paneli/odevler", label: "Ödevlerim", icon: "✅" },
   { href: "/ogrenci-paneli/hedefler", label: "Hedeflerim", icon: "🎯" },

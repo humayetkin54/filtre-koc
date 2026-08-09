@@ -325,3 +325,43 @@ export async function saveAvailability(
   revalidatePath("/koc-paneli");
   revalidatePath(`/koclar/${coachId}`);
 }
+
+/* ── KONU TAKİBİ (koç işaretler, öğrenci salt-okunur görür) ── */
+export async function setTopicProgress(formData: FormData) {
+  const studentId = formData.get("student_id") as string;
+  const ctx = await getCoachForStudent(studentId);
+  if (!ctx) return { error: "Bu öğrenci için yetkin yok." };
+
+  const subjectKey = (formData.get("subject_key") as string)?.trim();
+  const topic = (formData.get("topic") as string)?.trim();
+  if (!subjectKey || !topic) return { error: "Ders ve konu zorunlu." };
+
+  const status = (formData.get("status") as string) || "baslanmadi";
+  if (!["baslanmadi", "devam", "bitti", "tekrar"].includes(status)) {
+    return { error: "Geçersiz durum." };
+  }
+
+  const rawSolved = parseInt((formData.get("solved_count") as string) || "0", 10);
+  const solved = Number.isFinite(rawSolved) ? Math.min(Math.max(rawSolved, 0), 99999) : 0;
+  const resources = ((formData.get("resources") as string) || "").trim().slice(0, 300);
+
+  // (student_id, subject_key, topic) benzersiz — aynı konu ikinci kez eklenmez, güncellenir
+  const { error } = await ctx.admin.from("topic_progress").upsert(
+    {
+      student_id: studentId,
+      subject_key: subjectKey,
+      topic,
+      status,
+      solved_count: solved,
+      resources: resources || null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "student_id,subject_key,topic" }
+  );
+
+  if (error) return { error: "Kaydedilemedi: " + error.message };
+
+  revalidatePath(`/koc-paneli/ogrencilerim/${studentId}`);
+  revalidatePath("/ogrenci-paneli/konu-takibi");
+  return { ok: true };
+}

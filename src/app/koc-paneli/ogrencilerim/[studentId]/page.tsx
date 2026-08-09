@@ -47,6 +47,8 @@ export default async function StudentDetailPage({
     { data: aiScans },
     { data: readingSessions },
     { data: readingExercises },
+    { data: topicRows },
+    { data: scanQuestions },
   ] = await Promise.all([
     admin.from("goals").select("*").eq("student_id", studentId).maybeSingle(),
     admin.from("deneme_results").select("*").eq("student_id", studentId).order("exam_date", { ascending: false }),
@@ -58,6 +60,9 @@ export default async function StudentDetailPage({
     admin.from("exam_scans").select("id, exam_name, exam_date, analysis_text, program_suggestion").eq("student_id", studentId).eq("status", "done").order("exam_date", { ascending: false }).limit(1),
     admin.from("reading_sessions").select("wpm, comprehension, effective_wpm, passage_title, created_at").eq("user_id", studentId).order("created_at", { ascending: true }).limit(100),
     admin.from("reading_exercises").select("kind, value").eq("user_id", studentId).limit(1000),
+    admin.from("topic_progress").select("subject_key, topic, status, solved_count, resources").eq("student_id", studentId),
+    // Konu Takibi'ndeki "denemede zayıf" rozeti için tüm tamamlanmış taramaların soruları
+    admin.from("exam_scans").select("questions").eq("student_id", studentId).eq("status", "done"),
   ]);
 
   const initials = (purchase.student_name ?? purchase.student_email ?? "?")
@@ -135,6 +140,34 @@ export default async function StudentDetailPage({
               if (e.kind === "schulte" && e.value != null) schulteMs.push(e.value);
             }
             return { counts, schulteBest: schulteMs.length ? Math.min(...schulteMs) / 1000 : null };
+          })()}
+          topicRows={(topicRows ?? []) as {
+            subject_key: string;
+            topic: string;
+            status: string;
+            solved_count: number;
+            resources: string | null;
+          }[]}
+          examWeakness={(() => {
+            // AI Analiz'in serbest metin konu adlarını müfredatla eşleştirebilmek için
+            // aynı sadeleştirmeyi uygula (topic-tracker.tsx içindeki normalizeTopic ile aynı)
+            const norm = (s: string) =>
+              s
+                .toLocaleLowerCase("tr")
+                .replace(/[çğıöşü]/g, (c) => ({ ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u" })[c] ?? c)
+                .replace(/[^a-z0-9]/g, "");
+            const acc: Record<string, { d: number; y: number }> = {};
+            for (const row of (scanQuestions ?? []) as { questions: { konu?: string; sonuc?: string }[] | null }[]) {
+              for (const q of row.questions ?? []) {
+                if (!q.konu) continue;
+                const k = norm(q.konu);
+                if (!k) continue;
+                acc[k] ??= { d: 0, y: 0 };
+                if (q.sonuc === "dogru") acc[k].d++;
+                else acc[k].y++;
+              }
+            }
+            return acc;
           })()}
         />
       </div>
