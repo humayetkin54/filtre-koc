@@ -42,3 +42,6 @@ next-env.d.ts
 
 # instagram gorsel uretim dosyalari
 /ig/
+
+# sunum dosyalari
+/sunum/
